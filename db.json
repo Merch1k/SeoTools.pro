@@ -2,26 +2,27 @@
   {
     "id": 1,
     "title": "Стильные Кроссовки",
-    "image": "https://disk.yandex.ru/i/xW0_ZPQ7Geascw",
+    "image": "Pins.png",
     "description": "Отличные кроссовки для бега и прогулок. Дышащий материал.",
     "video": "https://www.w3schools.com/html/mov_bbb.mp4"
   },
   {
     "id": 2,
     "title": "Умные Часы",
-    "image": "https://downloader.disk.yandex.ru/preview/2f65734693681b73b50950126f9c905b4c9218dc7d4ad9740af0fd3184c04e21/6978dadb/hGZ29teyov9DvKabLCCJkSmVdlAq_r8uZWGxZQOIzlmpk-gDn4vHImOrwaFCIFZ-YuIn3Qe5-3XkHxuoUyR8fg%3D%3D?uid=0&filename=eb34fcb4-661b-4cb5-9893-59ffe14293d9.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=0&tknv=v3&size=2048x2048",
+    "image": "Pins.png",
     "description": "Следите за здоровьем и уведомлениями 24/7.",
     "video": ""
   },
   {
     "id": 3,
     "title": "Рюкзак городской",
-    "image": "https://disk.yandex.ru/i/xW0_ZPQ7Geascw",
+    "image": "Pins.png",
     "description": "Водонепроницаемый рюкзак с отделением для ноутбука.",
     "video": ""
   }
 
 ]
+
 
 
 
