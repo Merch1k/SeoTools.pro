@@ -86,12 +86,12 @@ header {
 
 .card img {
     width: 100%;
-    height: 200px;
+    height: 100px;
     object-fit: cover;
 }
 
 .card-content {
-    padding: 1.5rem;
+    padding: 1.0rem;
 }
 
 .card h3 {
@@ -212,3 +212,4 @@ button[type="submit"] {
     background-color: #1d4ed8; /* Более темный синий */
     transform: scale(1.03);   /* Слегка увеличить кнопку */
 }
+
