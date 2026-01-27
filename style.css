@@ -195,13 +195,19 @@ button[type="submit"] {
     transition: background-color 0.2s, transform 0.2s; /* Плавные переходы */
 }
 
-.price-label {
-    font-size: 1rem;        /* Сделаем шрифт чуть крупнее */
-    font-weight: 600;       /* Сделаем его полужирным */
-    color: #cbd5e1;         /* Более яркий серый, чтобы лучше читался */
-    text-align: left;
-    margin-top: 20px;       /* Увеличим отступ сверху */
-    margin-bottom: 8px;     /* И немного снизу */
+/* Стили для значка со сроком лицензии поверх картинки */
+.card-term-badge {
+    position: absolute; /* <-- Главное свойство для позиционирования */
+    top: 10px;          /* Отступ 10px от верхнего края карточки */
+    right: 10px;        /* Отступ 10px от правого края карточки */
+    
+    background-color: rgba(0, 0, 0, 0.7); /* Полупрозрачный черный фон */
+    color: white;
+    padding: 5px 10px; /* Внутренние отступы (вертикальный и горизонтальный) */
+    border-radius: 5px;
+    font-size: 0.8rem; /* Маленький шрифт */
+    font-weight: bold;
+    z-index: 1; /* Гарантирует, что значок будет НАД картинкой */
 }
 
 /* Эффект при наведении мыши */
@@ -209,6 +215,7 @@ button[type="submit"] {
     background-color: #1d4ed8; /* Более темный синий */
     transform: scale(1.03);   /* Слегка увеличить кнопку */
 }
+
 
 
 
