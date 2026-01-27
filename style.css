@@ -73,15 +73,11 @@ header {
 
 /* Карточка товара */
 .card {
-    background-color: #fff;
-    border-radius: 12px; /* Скругление углов */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* ВАЖНО: обрезает картинку по краям карточки */
-    padding: 0; /* ВАЖНО: убираем отступы, чтобы фото было во весь блок */
-    height: 100%; /* Чтобы карточки были одинаковой высоты */
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
 }
 
 .card:hover {
@@ -92,14 +88,6 @@ header {
     width: 100%;
     height: 200px;
     object-fit: cover;
-    overflow: hidden;
-}
-
-.image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполнит блок, не сплющиваясь */
-    display: block;
 }
 
 .card-content {
@@ -264,5 +252,6 @@ button[type="submit"] {
 .tool-btn:hover {
     background-color: #0056b3;
 }
+
 
 
