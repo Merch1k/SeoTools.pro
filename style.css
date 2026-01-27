@@ -149,8 +149,10 @@ button[type="submit"] {
     cursor: pointer;
 }
 
-
-
-
-
-
+.card-price {
+    font-size: 1.8rem; /* Крупный размер шрифта */
+    font-weight: bold;  /* Жирный шрифт */
+    color: #4ade80;     /* Яркий зеленый цвет */
+    margin-top: 15px;   /* Отступ сверху */
+    text-align: right;  /* Выравнивание по правому краю */
+}
