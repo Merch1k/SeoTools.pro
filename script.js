@@ -22,7 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             </video>
                         </div>
                     `;
-                }
+                    grid.appendChild(card);
+                });
+            })
+            .catch(err => {
+                grid.innerHTML = '<p style="color:red">Ошибка загрузки товаров. Проверьте db.json</p>';
+                console.error(err);
+            });
                 card.innerHTML = `
                     <img src="${product.image}" alt="${product.title}">
                     <div class="card-content">
@@ -101,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
 
 
 
