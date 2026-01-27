@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="price-button">${product.price}</button>
                         ${videoHTML}
                     </div>
+                    <div class="button-wrapper">
+                         <button class="buy-button">${product.price}</button> <!-- Переименовал класс на buy-button -->
+                    </div>
                 `;
                 grid.appendChild(card);
             });
@@ -100,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
 
 
 
