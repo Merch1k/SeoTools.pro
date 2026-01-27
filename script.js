@@ -22,26 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
                             </video>
                         </div>
                     `;
-                    grid.appendChild(card);
-                });
-            })
-            .catch(err => {
-                grid.innerHTML = '<p style="color:red">Ошибка загрузки товаров. Проверьте db.json</p>';
-                console.error(err);
-            });
+                }
+
                 card.innerHTML = `
                     <img src="${product.image}" alt="${product.title}">
                     <div class="card-content">
-                    <h3>${product.title}</h3>
-                    <p>${product.description}</p>
-                    ${videoHTML}
-                </div>
-                <div class="card-content">
-                    <h3>${tool.name}</h3>
-                    <p>${tool.description}</p>
-                    <a href="${tool.link}" target="_blank" class="tool-btn">Перейти</a>
-                </div>
-             `;
+                        <h3>${product.title}</h3>
+                        <p>${product.description}</p>
+                        ${videoHTML}
+                    </div>
+                `;
                 grid.appendChild(card);
             });
         })
@@ -105,20 +95,4 @@ document.addEventListener('DOMContentLoaded', () => {
             userProfile.classList.add('hidden');
         }
     }
-
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
