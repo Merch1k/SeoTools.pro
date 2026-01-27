@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 card.innerHTML = `
+                    <div class="card-term-badge">${product.term}</div>
                     <img src="${product.image}" alt="${product.title}">
                     <div class="card-content">
                         <h3>${product.title}</h3>
@@ -98,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
 
 
 
