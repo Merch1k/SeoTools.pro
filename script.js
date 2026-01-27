@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     videoHTML = `
                         <div class="hero">
                             <video controls muted>
-                                <source src="${product.video}" type="video/mp4">
+                                <source src="${product.video}" type= hero"video/mp4">
                                 Ваш браузер не поддерживает видео.
                             </video>
                         </div>
@@ -97,3 +97,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
