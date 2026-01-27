@@ -1,5 +1,5 @@
 :root {
-    --primary: #1e293b;
+    --primary: #2563eb;
     --dark: #1e293b;
     --light: #f8fafc;
     --white: #ffffff;
@@ -138,4 +138,5 @@ button[type="submit"] {
     border: none;
     cursor: pointer;
 }
+
 
