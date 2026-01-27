@@ -23,21 +23,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     `;
                 }
-
                 card.innerHTML = `
-                    <div class="price-label">${product.term}</div>
-                    <div class="card-term-badge">${product.term}</div>
-                    <img src="${product.image}" alt="${product.title}">
-                    <div class="card-content">
-                        <h3>${product.title}</h3>
-                        <p>${product.description}</p>
-                        <button class="price-button">${product.price}</button>
-                        ${videoHTML}
-                    </div>
-                    <div class="button-wrapper">
-                         <button class="buy-button">${product.price}</button> <!-- Переименовал класс на buy-button -->
-                    </div>
-                `;
+
+                <div class="card-image">
+                    <img src="${tool.image}" alt="${tool.name}">
+                </div>
+                <div class="card-content">
+                    <h3>${tool.name}</h3>
+                    <p>${tool.description}</p>
+                    <a href="${tool.link}" target="_blank" class="tool-btn">Перейти</a>
+                </div>
+             `;
                 grid.appendChild(card);
             });
         })
@@ -103,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
 
 
 
