@@ -134,15 +134,3 @@ button[type="submit"] {
     cursor: pointer;
 
 }
-footer {
-    padding: 2rem;
-    text-align: center;
-    color: white;
-    
-    /* Картинка down.jpg */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('down.jpg');
-    background-size: cover;
-    background-position: center;
-}
-
-
