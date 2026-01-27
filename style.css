@@ -183,3 +183,24 @@ button[type="submit"] {
     width: 100%;      /* Видео растягивается на всю ширину обертки */
     display: block;   /* Убирает лишний отступ под видео */
 }
+
+/* Стили для кнопки с ценой */
+.price-button {
+    width: 100%; /* Кнопка на всю ширину карточки */
+    padding: 12px;
+    margin-top: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    background-color: #2563eb; /* Синий цвет */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer; /* Курсор в виде руки при наведении */
+    transition: background-color 0.2s, transform 0.2s; /* Плавные переходы */
+}
+
+/* Эффект при наведении мыши */
+.price-button:hover {
+    background-color: #1d4ed8; /* Более темный синий */
+    transform: scale(1.03);   /* Слегка увеличить кнопку */
+}
