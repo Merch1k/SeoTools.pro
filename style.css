@@ -153,7 +153,6 @@ button[type="submit"] {
     font-size: 1.8rem; /* Крупный размер шрифта */
     font-weight: bold;  /* Жирный шрифт */
     color: #4ade80;     /* Яркий зеленый цвет */
-    margin-top: 15px;   /* Отступ сверху */
     text-align: right;  /* Выравнивание по правому краю */
 }
 
@@ -197,6 +196,15 @@ button[type="submit"] {
     border-radius: 5px;
     cursor: pointer; /* Курсор в виде руки при наведении */
     transition: background-color 0.2s, transform 0.2s; /* Плавные переходы */
+}
+
+.price-label {
+    font-size: 1rem;        /* Сделаем шрифт чуть крупнее */
+    font-weight: 600;       /* Сделаем его полужирным */
+    color: #cbd5e1;         /* Более яркий серый, чтобы лучше читался */
+    text-align: left;
+    margin-top: 20px;       /* Увеличим отступ сверху */
+    margin-bottom: 8px;     /* И немного снизу */
 }
 
 /* Эффект при наведении мыши */
