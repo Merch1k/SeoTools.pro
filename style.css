@@ -42,7 +42,7 @@ header {
 
 /* Hero */
 .hero {
-    text-align: center;
+    text-align: left;
     padding: 4rem 1rem;
     background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
     color: white;
@@ -138,6 +138,7 @@ button[type="submit"] {
     border: none;
     cursor: pointer;
 }
+
 
 
 
