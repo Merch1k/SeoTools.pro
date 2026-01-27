@@ -7,7 +7,6 @@
 
 body {
     font-family: 'Segoe UI', sans-serif;
-    margin: 0;
     
     /* Картинка center.jpg */
     background-image: url('center.jpg');
@@ -150,4 +149,5 @@ button[type="submit"] {
     cursor: pointer;
 
 }
+
 
