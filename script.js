@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Проверка: есть ли видео
                 let videoHTML = '';
-                if(product.video) {
+                if(product.hero) {
                     videoHTML = `
-                        <div class="hero">
+                        <div class="video">
                             <video controls muted>
                                 <source src="${product.video}" type= hero"video/mp4">
                                 Ваш браузер не поддерживает видео.
@@ -97,4 +97,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
 
