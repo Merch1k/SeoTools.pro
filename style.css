@@ -1,5 +1,5 @@
 :root {
-    --primary: #1e296b;
+    --primary: #2563eb;
     --dark: #1e293b;
     --light: #f8fafc;
     --white: #ffffff;
@@ -7,16 +7,9 @@
 
 body {
     font-family: 'Segoe UI', sans-serif;
-    
-    /* Картинка center.jpg */
-    background-image: url('center.jpg');
-    
-    /* Чтобы фон стоял на месте при прокрутке (параллакс эффект) */
-    background-attachment: fixed; 
-    background-size: cover;
-    background-position: center;
-    
-    color: #fff; /* Делаем весь текст белым, если фон темный */
+    margin: 0;
+    background-color: var(--light);
+    color: var(--dark);
 }
 
 /* Header */
@@ -50,13 +43,9 @@ header {
 /* Hero */
 .hero {
     text-align: center;
-    padding: 6rem 1rem;
+    padding: 4rem 1rem;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
     color: white;
-    
-    /* Затемнение + Картинка top.jpg */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('top.jpg');
-    background-size: cover;
-    background-position: center;
 }
 
 /* Grid */
@@ -65,6 +54,7 @@ header {
     margin: 0 auto;
     padding: 2rem 1rem;
 }
+
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -147,7 +137,4 @@ button[type="submit"] {
     color: white;
     border: none;
     cursor: pointer;
-
 }
-
-
