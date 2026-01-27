@@ -24,9 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 }
                 card.innerHTML = `
-
-                <div class="card-image">
-                    <img src="${tool.image}" alt="${tool.name}">
+                    <img src="${product.image}" alt="${product.title}">
+                    <div class="card-content">
+                    <h3>${product.title}</h3>
+                    <p>${product.description}</p>
+                    ${videoHTML}
                 </div>
                 <div class="card-content">
                     <h3>${tool.name}</h3>
@@ -99,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
 
 
 
