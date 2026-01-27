@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let videoHTML = '';
                 if(product.video) {
                     videoHTML = `
-                        <div class="video-container">
+                        <div class="hero">
                             <video controls muted>
                                 <source src="${product.video}" type="video/mp4">
                                 Ваш браузер не поддерживает видео.
@@ -95,4 +95,5 @@ document.addEventListener('DOMContentLoaded', () => {
             userProfile.classList.add('hidden');
         }
     }
+
 });
