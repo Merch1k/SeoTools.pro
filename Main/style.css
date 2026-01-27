@@ -8,8 +8,18 @@
 body {
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
-    background-color: var(--light);
-    color: var(--dark);
+    
+    /* ВОТ ЭТА СТРОЧКА ОТВЕЧАЕТ ЗА ФОН */
+    /* Замени nazvanie_foto.jpg на точное имя твоего файла */
+    background-image: url('Pins.png');
+    
+    /* Настройки, чтобы было красиво */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    
+    color: white; /* Делаем текст белым, чтобы его было видно на фоне */
 }
 
 /* Header */
@@ -137,4 +147,5 @@ button[type="submit"] {
     color: white;
     border: none;
     cursor: pointer;
+
 }
