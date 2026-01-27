@@ -156,3 +156,30 @@ button[type="submit"] {
     margin-top: 15px;   /* Отступ сверху */
     text-align: right;  /* Выравнивание по правому краю */
 }
+
+/* Стили для секции с главным видео */
+.video-section {
+    text-align: center; /* Центрируем заголовок */
+    padding: 40px 20px;
+    background-color: #0f172a; /* Темный фон для контраста */
+}
+
+.video-section h2 {
+    margin-bottom: 20px; /* Отступ под заголовком */
+    font-size: 2rem;
+    color: white;
+}
+
+/* Обертка для видео, чтобы задать ему ширину */
+.video-wrapper {
+    max-width: 800px; /* Максимальная ширина видео-плеера */
+    margin: 0 auto;   /* Центрирование самого блока */
+    border-radius: 10px;
+    overflow: hidden; /* Скрываем все, что выходит за скругленные углы */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.video-wrapper video {
+    width: 100%;      /* Видео растягивается на всю ширину обертки */
+    display: block;   /* Убирает лишний отступ под видео */
+}
