@@ -1,5 +1,5 @@
 :root {
-    --primary: #1e293b;
+    --primary: #1e296b;
     --dark: #1e293b;
     --light: #f8fafc;
     --white: #ffffff;
@@ -144,4 +144,5 @@ footer {
     background-size: cover;
     background-position: center;
 }
+
 
