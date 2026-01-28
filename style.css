@@ -308,7 +308,6 @@ footer {
     border-radius: 8px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.3);
     z-index: 1000;
-    overflow: hidden; /* Чтобы внутренние элементы не вылезали за скругленные углы */
 }
 
 .main-menu a {
@@ -416,6 +415,7 @@ footer {
         background-position: 0% 50%;
     }
 }
+
 
 
 
