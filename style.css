@@ -216,3 +216,46 @@ footer {
     margin-top: 2rem;
     background: var(--primary);
 }
+
+/* --- Мобильная оптимизация --- */
+@media (max-width: 768px) {
+    /* Уменьшаем отступы для экономии места */
+    body {
+        font-size: 14px; /* Немного уменьшим базовый шрифт */
+    }
+
+    header {
+        padding: 0.8rem 1rem;
+    }
+
+    .hero,
+    .video-section {
+        padding: 2rem 1rem; /* Уменьшаем боковые и вертикальные отступы */
+    }
+
+    /* Сетка теперь будет в одну колонку */
+    .grid {
+        grid-template-columns: 1fr; /* Одна колонка на всю ширину */
+        gap: 1.5rem;
+    }
+
+    .video-section h2 {
+        font-size: 1.5rem; /* Уменьшаем заголовок */
+    }
+
+    .modal-content {
+        width: 90%; /* Модальное окно почти на всю ширину */
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Дополнительные корректировки для самых маленьких экранов */
+    .logo {
+        font-size: 1.3rem;
+    }
+
+    .btn-login {
+        padding: 6px 16px;
+    }
+}
