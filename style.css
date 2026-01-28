@@ -118,9 +118,23 @@ header {
 
 /* Подменю языка (аккордеон) */
 .lang-submenu {
-    position: relative; /* Выпадает вниз, раздвигая список */
-    background: rgba(0, 0, 0, 0.2); /* Чуть темнее */
-    width: 100%;
+    position: absolute; /* Летает отдельно от списка */
+    top: 0;             /* Выравниваем по верху кнопки Язык */
+    right: 100%;        /* Сдвигаем влево на 100% ширины */
+    
+    background: var(--primary); /* Цвет фона как у основного меню */
+    width: auto;        /* Ширина по содержимому */
+    min-width: 120px;   /* Минимальная ширина, чтобы текст влезал */
+    
+    border-radius: 8px 0 0 8px; /* Скругляем только левые углы */
+    box-shadow: -5px 5px 20px rgba(0,0,0,0.3); /* Тень слева */
+    
+    display: flex;
+    flex-direction: column;
+    z-index: 3001;      /* Чтобы было поверх всего */
+    
+    /* Убираем лишние границы, если были */
+    border-top: none;
 }
 
 .lang-submenu a {
@@ -335,11 +349,11 @@ footer {
 .telegram-btn:hover { transform: scale(1.05); }
 
 /* --- МОБИЛЬНАЯ ОПТИМИЗАЦИЯ --- */
-/* --- МОБИЛЬНАЯ ОПТИМИЗАЦИЯ --- */
 @media (max-width: 768px) {
     /* Настройка общих отступов */
     header { padding: 0.8rem 1rem; }
     .hero { padding: 1rem 0.5rem; } /* Уменьшаем боковые поля */
+    .logo { font-size: 1.5rem;}
     
     /* 1. Сетка: Две колонки */
     .grid {
@@ -396,4 +410,5 @@ footer {
         padding: 1.5rem;
     }
 }
+
 
