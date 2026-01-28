@@ -26,29 +26,33 @@ header {
     z-index: 100;
 }
 
+.header-left, .header-right {
+    flex: 1; /* Занимают одинаковое пространство по бокам */
+}
+.header-center {
+    flex-grow: 1; /* Занимает центральное пространство */
+    text-align: center;
+}
+.header-right {
+    display: flex;
+    justify-content: flex-end; /* Прижимает элементы вправо */
+}
+
+.header-title {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--light);
+}
+
 .logo {
     font-weight: bold;
-    font-size: 1.5rem;
-    /* УДАЛЯЕМ 'color' и добавляем код ниже */
-
-    /* --- Код для эффекта радуги --- */
-    background: linear-gradient(to right, 
-        #66ff66, /* Салатовый */
-        #00ffff, /* Бирюзовый */
-        #7d26cd, /* Фиолетовый */
-        #ff00ff, /* Пурпурный */
-        #ff3366, /* Розовый */
-        #ffff66, /* Желтый */
-        #66ff66  /* Возвращаемся к салатовому для плавного цикла */
-    );
-    background-size: 200% auto; /* Делаем фон градиента шире самого текста */
-
-    /* Магия, которая обрезает фон по форме текста */
-    color: transparent; /* Делаем сам текст прозрачным */
+    font-size: 2rem; /* Сделаем центральный логотип чуть больше */
+    /* ... все ваши стили для радужной анимации остаются здесь ... */
+    background: linear-gradient(to right, #66ff66, #00ffff, #7d26cd, #ff00ff, #ff3366, #ffff66, #66ff66);
+    background-size: 200% auto;
+    color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
-
-    /* Подключаем анимацию */
     animation: rainbow-animation 4s ease-in-out infinite;
 }
 
@@ -343,3 +347,4 @@ footer {
         background-position: 0% 50%;
     }
 }
+
