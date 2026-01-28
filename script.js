@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- !!! НАСТРОЙКИ TELEGRAM !!! ---
     // Вставьте сюда токен, который дал @BotFather
-    const TG_BOT_TOKEN = 'ВАШ_ТОКЕН_ЗДЕСЬ'; 
+    const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; 
     // Вставьте сюда цифры вашего ID (от @userinfobot)
-    const TG_CHAT_ID = 'ВАШ_ID_ЗДЕСЬ'; 
+    const TG_CHAT_ID = '5683927471'; 
 
     // --- СЛОВАРЬ ПЕРЕВОДОВ ---
     const translations = {
@@ -227,3 +227,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // ДИАГНОСТИКА
     console.log('Script loaded. Forms check:', loginForm ? 'OK' : 'FAIL', regFormRequest ? 'OK' : 'FAIL');
 });
+
