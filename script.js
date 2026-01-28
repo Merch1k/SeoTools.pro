@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 let videoHTML = product.video ? `<div class="video-container"><video controls muted><source src="${product.video}" type="video/mp4"></video></div>` : '';
-                card.innerHTML = `<img src="${product.image}" alt="${product.title}"><div class="card-content"><h3>${product.title}</h3><p>${product.description}</p><button class="price-button">${product.price}</button>${videoHTML}</div>`;
+                card.innerHTML = `<img src="${product.image}" alt="${product.title}"><div class.card-content"><h3>${product.title}</h3><p>${product.description}</p><button class="price-button">${product.price}</button>${videoHTML}</div>`;
                 grid.appendChild(card);
             });
         })
@@ -141,4 +141,5 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedUser = localStorage.getItem('user');
     updateAuthUI(savedUser);
 });
+
 
