@@ -103,20 +103,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logoutBtn');
 
     // Открытие окон
-    menuLoginBtn.addEventListener('click', () => {
-        authModal.classList.remove('hidden');
-        mainMenu.classList.add('hidden');
-    });
+    if (menuLoginBtn) {
+        menuLoginBtn.addEventListener('click', () => {
+            if (authModal) authModal.classList.remove('hidden');
+            if (mainMenu) mainMenu.classList.add('hidden');
+            if (langSubmenu) langSubmenu.classList.add('hidden');
+        });
+    } else {
+        console.warn('Кнопка menuLoginBtn не найдена в HTML');
+    }
 
-    menuRegisterBtn.addEventListener('click', () => {
-        regModal.classList.remove('hidden');
-        mainMenu.classList.add('hidden');
-    });
+    // Функция для кнопки "Регистрация"
+    if (menuRegisterBtn) {
+        menuRegisterBtn.addEventListener('click', () => {
+            if (regModal) regModal.classList.remove('hidden');
+            if (mainMenu) mainMenu.classList.add('hidden');
+            if (langSubmenu) langSubmenu.classList.add('hidden');
+        });
+    }
 
-    closeBtns.forEach(btn => btn.addEventListener('click', () => {
-        authModal.classList.add('hidden');
-        regModal.classList.add('hidden');
-    }));
+    // Функция для закрытия крестиками
+    closeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (authModal) authModal.classList.add('hidden');
+            if (regModal) regModal.classList.add('hidden');
+        });
+    });
 
     // === ЛОГИКА ВХОДА (ПРОВЕРКА ЧЕРЕЗ USERS.JSON) ===
     loginForm.addEventListener('submit', (e) => {
@@ -224,6 +236,7 @@ console.log('Кнопка входа в меню:', document.getElementById('men
 console.log('Окно входа:', document.getElementById('authModal') ? 'OK' : 'НЕ НАЙДЕНО');
 console.log('Форма входа:', document.getElementById('loginForm') ? 'OK' : 'НЕ НАЙДЕНА');
 console.log('Файл users.json:', 'Проверяется при входе...');
+
 
 
 
