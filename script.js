@@ -219,6 +219,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedUser = localStorage.getItem('user');
     updateAuthUI(savedUser);
 });
+console.log('--- ПРОВЕРКА ЭЛЕМЕНТОВ ---');
+console.log('Кнопка входа в меню:', document.getElementById('menuLoginBtn') ? 'OK' : 'НЕ НАЙДЕНА (Проверьте HTML)');
+console.log('Окно входа:', document.getElementById('authModal') ? 'OK' : 'НЕ НАЙДЕНО');
+console.log('Форма входа:', document.getElementById('loginForm') ? 'OK' : 'НЕ НАЙДЕНА');
+console.log('Файл users.json:', 'Проверяется при входе...');
 
 
 
