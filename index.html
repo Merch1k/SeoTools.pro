@@ -3,110 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>seo tools — профессиональный софт для продвижения сайтов и SEO-аудита</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="Logoito.png">
-    <link rel="shortcut icon" href="Logoito.png">
-    <meta name="description" content="seo tools мощный мультитул для аудита и семантики. Автоматизируйте продвижение и выводите сайты в ТОП-1. Профессиональный софт.">
+    <title>SEO Tools — Профессиональный софт</title>
+    <link rel="icon" type="image/png" href="Logoito.png">
     <link rel="stylesheet" href="style.css">
-    <!-- Иконки -->
+    <!-- Иконки FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+
     <!-- Шапка -->
-<header>
-    <div class="header-left">
-        <h1 class="header-title" data-lang-key="headerTitle">SEO Мультитул</h1>
-    </div>
-    <div class="header-center">
-        <div class="logo">ACUS</div>
-    </div>
-    <div class="header-right">
-        <!-- Новое меню-бургер -->
-        <div class="menu-container">
-            <button id="hamburgerBtn" class="hamburger-btn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <div id="mainMenu" class="main-menu hidden">
-                <a href="#" id="menuLoginBtn" data-lang-key="loginBtn">Войти</a>
+    <header>
+        <div class="header-left">
+            <h1 class="header-title" data-lang-key="headerTitle">SEO Утилита</h1>
+        </div>
+        <div class="header-center">
+            <div class="logo">ACUS</div>
+        </div>
+        <div class="header-right">
+            <!-- Меню-бургер -->
+            <div class="menu-container">
+                <button id="hamburgerBtn" class="hamburger-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
                 
-                <a href="#" id="menuRegisterBtn" data-lang-key="registerBtn">Регистрация</a>
-                
-                <div class="submenu-container">
-                    <a href="#" id="menuLangBtn" data-lang-key="languageBtn">Язык</a>
-                    <div id="langSubmenu" class="lang-submenu hidden">
-                        <a href="#" data-lang="ru">Русский</a>
-                        <a href="#" data-lang="en">English</a>
+                <!-- Выпадающее меню -->
+                <div id="mainMenu" class="main-menu hidden">
+                    <a href="#" id="menuLoginBtn" data-lang-key="loginBtn">Войти</a>
+                    <a href="#" id="menuRegisterBtn" data-lang-key="registerBtn">Регистрация</a>
+                    
+                    <!-- Пункт выбора языка -->
+                    <div class="submenu-container">
+                        <a href="#" id="menuLangBtn" data-lang-key="languageBtn">Язык</a>
+                        <div id="langSubmenu" class="lang-submenu hidden">
+                            <a href="#" data-lang="ru">Русский</a>
+                            <a href="#" data-lang="en">English</a>
+                        </div>
                     </div>
                 </div>
             </div>
+            
+            <!-- Профиль пользователя (появляется после входа) -->
+            <div id="userProfile" class="hidden">
+                <span id="userName">User</span>
+                <button id="logoutBtn" data-lang-key="logoutBtn">Выйти</button>
+            </div>
         </div>
-        
-        <!-- Профиль пользователя остается здесь, но будет управляться JS -->
-        <div id="userProfile" class="hidden">
-            <span id="userName">User</span>
-            <button id="logoutBtn" data-lang-key="logoutBtn">Выйти</button>
-        </div>
-    </div>
-</header>
+    </header>
+
+    <!-- Видео секция -->
     <section class="video-section">
         <h2 data-lang-key="videoTitle">Посмотрите наш продукт в действии</h2>
         <div class="video-wrapper">
             <video controls muted poster="Pins.png">
-                <!-- Замените ссылку на свое главное видео -->
-                <source src="https://www.w3schools.com/html/" type="video/mp4">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
                 Ваш браузер не поддерживает видео.
             </video>
             <div class="video-description">
-            <h1 data-lang-key="multitoolTitle">SEO Мультитул</h1>
-            <p data-lang-key="multitoolDesc">
-                Наш инструмент анализирует ключевые слова, отслеживает позиции 
-                и помогает вам обойти конкурентов. Посмотрите, как легко 
-                управлять вашей SEO-стратегией.
-            </p>
-        </div>
+                <h1 data-lang-key="multitoolTitle">SEO Мультитул</h1>
+                <p data-lang-key="multitoolDesc">
+                    Наш инструмент анализирует ключевые слова, отслеживает позиции 
+                    и помогает вам обойти конкурентов.
+                </p>
+            </div>
         </div>
     </section>
+
     <!-- Сетка товаров -->
     <main class="hero">
-        <div id="products-grid" class="grid">
-            <div class="loading" data-lang-key="loading">Загрузка товаров...</div>
+        <div class="container">
+            <div id="products-grid" class="grid">
+                <div class="loading" data-lang-key="loading">Загрузка товаров...</div>
+            </div>
         </div>
     </main>
-    <!-- Модальное окно авторизации -->
-<!-- Модальное окно Регистрации (Отправка заявки) -->
-<div id="regModal" class="modal hidden">
-    <div class="modal-content">
-        <span class="close-reg">&times;</span>
-        <h2 data-lang-key="registerTitle">Регистрация</h2>
-        <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">
-            Придумайте логин и пароль. После отправки администратор активирует ваш доступ.
-        </p>
-        
-        <form id="regFormRequest">
-            <input type="text" id="newLogin" placeholder="Придумайте Логин" required>
-            <input type="text" id="newPass" placeholder="Придумайте Пароль" required>
-            <button type="submit" data-lang-key="sendRequestBtn">Отправить заявку</button>
-        </form>
-    </div>
-</div>
 
+    <!-- Подвал -->
     <footer>
         <p>&copy; SEO TOOLS. <span data-lang-key="developedIn">Разработан в 2026.</span></p>
-        <a href="https://t.me/seo_dark_side" target="_blank" class="telegram-btn">
-            <i class="fab fa-telegram"></i>
+        <a href="https://t.me/your_channel" target="_blank" class="telegram-btn">
+            <i class="fab fa-telegram"></i> <span data-lang-key="telegramBtn">Наш Telegram канал</span>
         </a>
     </footer>
 
+    <!-- === МОДАЛЬНЫЕ ОКНА === -->
+
+    <!-- Окно ВХОДА -->
+    <div id="authModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 data-lang-key="authTitle">Авторизация</h2>
+            <form id="loginForm">
+                <input type="text" id="loginEmail" placeholder="Логин" required>
+                <input type="password" id="loginPass" placeholder="Пароль" required data-lang-placeholder="passwordPlaceholder">
+                <button type="submit" data-lang-key="authBtn">Войти</button>
+            </form>
+            <p class="small-text" data-lang-key="demoMode">Демо режим: введите любые данные</p>
+        </div>
+    </div>
+
+    <!-- Окно РЕГИСТРАЦИИ (Заявка) -->
+    <div id="regModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-reg">&times;</span>
+            <h2 data-lang-key="registerTitle">Регистрация</h2>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">
+                Придумайте логин и пароль. Данные отправятся администратору в Telegram для активации.
+            </p>
+            <form id="regFormRequest">
+                <input type="text" id="newLogin" placeholder="Придумайте Логин" required>
+                <input type="text" id="newPass" placeholder="Придумайте Пароль" required>
+                <button type="submit" data-lang-key="sendRequestBtn">Отправить заявку</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ПОДКЛЮЧЕНИЕ СКРИПТА -->
     <script src="script.js"></script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
