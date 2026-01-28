@@ -129,7 +129,7 @@ header {
     cursor: pointer;
     font-weight: bold;
     font-size: 1.2rem;
-    margin-top: 1rem;
+    margin-top: 1.2rem;
     position: relative;
     overflow: hidden;
     transition: transform 0.2s;
@@ -415,6 +415,7 @@ footer {
         background-position: 0% 50%;
     }
 }
+
 
 
 
