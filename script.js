@@ -131,83 +131,84 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // === ЛОГИКА ВХОДА (ПРОВЕРКА ЧЕРЕЗ USERS.JSON) ===
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const emailInput = document.getElementById('loginEmail').value.trim(); // Используем поле email как логин
-        const passInput = document.getElementById('loginPass').value.trim();
-        const btn = loginForm.querySelector('button');
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('loginEmail').value.trim();
+            const passInput = document.getElementById('loginPass').value.trim();
+            const btn = loginForm.querySelector('button');
+            const originalBtnText = btn.textContent;
 
-        btn.textContent = 'Проверка...';
-        
-        // Скачиваем базу пользователей
-        fetch('users.json')
-            .then(response => {
-                if (!response.ok) throw new Error("Файл users.json не найден!");
-                return response.json();
+            btn.textContent = 'Проверка...';
+            
+            fetch('users.json')
+                .then(response => {
+                    if (!response.ok) throw new Error("Файл users.json не найден!");
+                    return response.json();
+                })
+                .then(users => {
+                    const userFound = users.find(u => u.login === emailInput && u.password === passInput);
+                    if (userFound) {
+                        localStorage.setItem('user', userFound.login);
+                        updateAuthUI(userFound.login);
+                        if(authModal) authModal.classList.add('hidden');
+                        alert(`Добро пожаловать, ${userFound.login}!`);
+                    } else {
+                        alert('Неверный логин или пароль.');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Ошибка: ' + err.message);
+                })
+                .finally(() => {
+                    btn.textContent = originalBtnText;
+                });
+        });
+    } else {
+        console.warn('Внимание: Форма входа (id="loginForm") не найдена в HTML!');
+    }
+
+    // === БЕЗОПАСНАЯ ЛОГИКА РЕГИСТРАЦИИ ===
+    if (regFormRequest) {
+        regFormRequest.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newLogin = document.getElementById('newLogin').value;
+            const newPass = document.getElementById('newPass').value;
+            const btn = regFormRequest.querySelector('button');
+            
+            btn.textContent = 'Отправка...';
+            btn.disabled = true;
+
+            const message = `🚀 <b>НОВАЯ ЗАЯВКА</b>\n👤: <code>${newLogin}</code>\n🔑: <code>${newPass}</code>`;
+
+            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: TG_CHAT_ID,
+                    text: message,
+                    parse_mode: 'HTML'
+                })
             })
-            .then(users => {
-                // Ищем совпадение
-                const userFound = users.find(u => u.login === emailInput && u.password === passInput);
-                
-                if (userFound) {
-                    localStorage.setItem('user', userFound.login);
-                    updateAuthUI(userFound.login);
-                    authModal.classList.add('hidden');
-                    alert(`Добро пожаловать, ${userFound.login}!`);
+            .then(res => {
+                if(res.ok) {
+                    alert('Заявка отправлена!');
+                    if(regModal) regModal.classList.add('hidden');
+                    regFormRequest.reset();
                 } else {
-                    alert('Неверный логин или пароль, либо аккаунт еще не активирован.');
+                    alert('Ошибка Telegram API');
                 }
             })
-            .catch(err => {
-                console.error(err);
-                alert('Ошибка системы авторизации.');
-            })
+            .catch(err => alert('Ошибка сети'))
             .finally(() => {
-                btn.textContent = translations[localStorage.getItem('language') || 'ru'].authBtn;
+                btn.textContent = 'Отправить заявку';
+                btn.disabled = false;
             });
-    });
-
-    // === ЛОГИКА РЕГИСТРАЦИИ (ОТПРАВКА В TELEGRAM) ===
-    regFormRequest.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const newLogin = document.getElementById('newLogin').value;
-        const newPass = document.getElementById('newPass').value;
-        const btn = regFormRequest.querySelector('button');
-        
-        btn.textContent = 'Отправка...';
-        btn.disabled = true;
-
-        // Формируем сообщение для Телеграма
-        const message = `🚀 <b>НОВАЯ ЗАЯВКА НА САЙТЕ</b>\n\n👤 Логин: <code>${newLogin}</code>\n🔑 Пароль: <code>${newPass}</code>\n\n<i>Добавьте в users.json, чтобы активировать.</i>`;
-
-        // Отправляем через API Telegram
-        fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: TG_CHAT_ID,
-                text: message,
-                parse_mode: 'HTML'
-            })
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('Заявка отправлена администратору! Ожидайте активации доступа.');
-                regModal.classList.add('hidden');
-                regFormRequest.reset();
-            } else {
-                alert('Ошибка отправки. Свяжитесь с админом напрямую.');
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            alert('Ошибка сети.');
-        })
-        .finally(() => {
-            btn.textContent = 'Отправить заявку';
-            btn.disabled = false;
         });
-    });
+    } else {
+        console.warn('Внимание: Форма регистрации (id="regFormRequest") не найдена в HTML!');
+    }
 
     // Выход
     logoutBtn.addEventListener('click', () => {
@@ -236,6 +237,7 @@ console.log('Кнопка входа в меню:', document.getElementById('men
 console.log('Окно входа:', document.getElementById('authModal') ? 'OK' : 'НЕ НАЙДЕНО');
 console.log('Форма входа:', document.getElementById('loginForm') ? 'OK' : 'НЕ НАЙДЕНА');
 console.log('Файл users.json:', 'Проверяется при входе...');
+
 
 
 
