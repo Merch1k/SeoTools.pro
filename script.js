@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- СЛОВАРЬ ПЕРЕВОДОВ ---
     const translations = {
         ru: {
-            languageBtn: "Язык", headerTitle: "Мультитул для SEO задачь", loginBtn: "Войти", logoutBtn: "Выйти",
+            languageBtn: "Язык", headerTitle: "Мультитул для SEO задач", loginBtn: "Войти", logoutBtn: "Выйти",
             videoTitle: "Посмотрите наш продукт в действии", multitoolTitle: "SEO Мультитул",
             multitoolDesc: "Наш инструмент анализирует ключевые слова, отслеживает позиции и помогает вам обойти конкурентов. Посмотрите, как легко управлять вашей SEO-стратегией.",
             loading: "Загрузка товаров...", authTitle: "Авторизация", passwordPlaceholder: "Пароль", authBtn: "Войти",
@@ -141,5 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedUser = localStorage.getItem('user');
     updateAuthUI(savedUser);
 });
+
 
 
