@@ -21,22 +21,31 @@
         <div class="logo">ACUS</div>
     </div>
     <div class="header-right">
-        <nav>
-            <!-- Блок смены языка -->
-            <div class="lang-switcher">
-                <button id="langBtn" class="btn-lang">Русский</button>
-                <div id="langMenu" class="lang-menu hidden">
-                    <a href="#" data-lang-key="ru">Русский</a>
-                    <a href="#" data-lang-key="en">English</a>
+        <!-- Новое меню-бургер -->
+        <div class="menu-container">
+            <button id="hamburgerBtn" class="hamburger-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div id="mainMenu" class="main-menu hidden">
+                <a href="#" id="menuLoginBtn" data-lang-key="loginBtn">Войти</a>
+                
+                <div class="submenu-container">
+                    <a href="#" id="menuLangBtn" data-lang-key="languageBtn">Язык</a>
+                    <div id="langSubmenu" class="lang-submenu hidden">
+                        <a href="#" data-lang="ru">Русский</a>
+                        <a href="#" data-lang="en">English</a>
+                    </div>
                 </div>
             </div>
-
-            <button id="authBtn" class="btn-login" data-lang-key="loginBtn">Войти</button>
-            <div id="userProfile" class="hidden">
-                <span id="userName">User</span>
-                <button id="logoutBtn" data-lang-key="logoutBtn">Выйти</button>
-            </div>
-        </nav>
+        </div>
+        
+        <!-- Профиль пользователя остается здесь, но будет управляться JS -->
+        <div id="userProfile" class="hidden">
+            <span id="userName">User</span>
+            <button id="logoutBtn" data-lang-key="logoutBtn">Выйти</button>
+        </div>
     </div>
 </header>
     <section class="video-section">
@@ -87,6 +96,7 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
