@@ -335,23 +335,65 @@ footer {
 .telegram-btn:hover { transform: scale(1.05); }
 
 /* --- МОБИЛЬНАЯ ОПТИМИЗАЦИЯ --- */
+/* --- МОБИЛЬНАЯ ОПТИМИЗАЦИЯ --- */
 @media (max-width: 768px) {
+    /* Настройка общих отступов */
     header { padding: 0.8rem 1rem; }
+    .hero { padding: 1rem 0.5rem; } /* Уменьшаем боковые поля */
     
+    /* 1. Сетка: Две колонки */
     .grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 колонки */
-        gap: 1rem;
+        grid-template-columns: repeat(2, 1fr); /* Строго 2 колонки */
+        gap: 0.8rem; /* Маленькое расстояние между карточками */
     }
 
-    .card img { height: 140px; }
-    .card-content { padding: 15px; }
-    .card h3 { font-size: 1.1rem; }
-    .card p { font-size: 0.9rem; margin-bottom: 10px; }
-    .price-button { font-size: 1rem; padding: 10px; }
+    /* 2. Картинка: Меньше высоты */
+    .card img {
+        height: 110px; /* Компактная высота фото */
+    }
+
+    /* 3. Контент: Меньше отступов */
+    .card-content {
+        padding: 10px; /* Внутренний отступ */
+    }
+
+    /* 4. Текст: Уменьшаем шрифты */
+    .card h3 {
+        font-size: 0.95rem; /* Заголовок товара */
+        margin-bottom: 5px;
+        line-height: 1.2;
+    }
+
+    .card p {
+        font-size: 0.75rem; /* Описание */
+        line-height: 1.3;
+        margin-bottom: 10px;
+        
+        /* Обрезаем текст, если он слишком длинный (опционально) */
+        display: -webkit-box;
+        -webkit-line-clamp: 4; /* Показать только 4 строки */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* 5. Кнопка: Компактная */
+    .price-button {
+        font-size: 0.85rem;
+        padding: 8px 0; /* Отступы сверху/снизу */
+        width: 100%; /* На всю ширину */
+        margin-top: auto;
+    }
     
-    .video-section h2 { font-size: 1.5rem; }
+    /* Уменьшаем заголовок видео-секции */
+    .video-section h2 { 
+        font-size: 1.3rem; 
+        padding: 0 10px;
+    }
+    
+    /* Уменьшаем модальные окна */
+    .modal-content {
+        width: 85%;
+        padding: 1.5rem;
+    }
 }
 
-@media (max-width: 480px) {
-    .grid { grid-template-columns: 1fr; /* 1 колонка на совсем маленьких */ }
-}
