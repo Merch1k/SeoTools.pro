@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- НАСТРОЙКИ TELEGRAM (ВСТАВЬТЕ СВОИ ДАННЫЕ!) ---
-    const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; // Пример: '712345678:AAH...'
-    const TG_CHAT_ID = '5683927471';             // Пример: '123456789'
+    // --- !!! НАСТРОЙКИ TELEGRAM !!! ---
+    // Вставьте сюда токен, который дал @BotFather
+    const TG_BOT_TOKEN = 'ВАШ_ТОКЕН_ЗДЕСЬ'; 
+    // Вставьте сюда цифры вашего ID (от @userinfobot)
+    const TG_CHAT_ID = 'ВАШ_ID_ЗДЕСЬ'; 
 
     // --- СЛОВАРЬ ПЕРЕВОДОВ ---
     const translations = {
@@ -10,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             languageBtn: "Язык", headerTitle: "SEO Утилита", loginBtn: "Войти", logoutBtn: "Выйти",
             registerBtn: "Регистрация", registerTitle: "Регистрация", sendRequestBtn: "Отправить заявку",
             videoTitle: "Посмотрите наш продукт в действии", multitoolTitle: "SEO Мультитул",
-            multitoolDesc: "Наш инструмент анализирует ключевые слова...",
+            multitoolDesc: "Наш инструмент анализирует ключевые слова, отслеживает позиции и помогает вам обойти конкурентов.",
             loading: "Загрузка товаров...", authTitle: "Авторизация", passwordPlaceholder: "Пароль", authBtn: "Войти",
             demoMode: "Введите данные для входа", developedIn: "Разработан в 2026.", telegramBtn: "Наш Telegram канал"
         },
@@ -18,13 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
             languageBtn: "Language", headerTitle: "SEO Utility", loginBtn: "Login", logoutBtn: "Logout",
             registerBtn: "Registration", registerTitle: "Registration", sendRequestBtn: "Send Request",
             videoTitle: "See our product in action", multitoolTitle: "SEO Multitool",
-            multitoolDesc: "Our tool analyzes keywords...",
+            multitoolDesc: "Our tool analyzes keywords, tracks rankings, and helps you outperform competitors.",
             loading: "Loading products...", authTitle: "Authorization", passwordPlaceholder: "Password", authBtn: "Login",
             demoMode: "Enter login credentials", developedIn: "Developed in 2026.", telegramBtn: "Our Telegram channel"
         }
     };
 
-    // --- ЭЛЕМЕНТЫ МЕНЮ ---
+    // --- ЭЛЕМЕНТЫ DOM ---
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mainMenu = document.getElementById('mainMenu');
     const menuLoginBtn = document.getElementById('menuLoginBtn');
@@ -32,26 +34,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuLangBtn = document.getElementById('menuLangBtn');
     const langSubmenu = document.getElementById('langSubmenu');
 
-    // Управление меню
-    hamburgerBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        mainMenu.classList.toggle('hidden');
-        if (mainMenu.classList.contains('hidden')) langSubmenu.classList.add('hidden');
-    });
+    const authModal = document.getElementById('authModal');
+    const regModal = document.getElementById('regModal');
+    const loginForm = document.getElementById('loginForm');
+    const regFormRequest = document.getElementById('regFormRequest');
+    const closeBtns = document.querySelectorAll('.close, .close-reg');
+    const userProfile = document.getElementById('userProfile');
+    const userNameSpan = document.getElementById('userName');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-    menuLangBtn.addEventListener('click', (e) => {
-        e.preventDefault(); e.stopPropagation();
-        langSubmenu.classList.toggle('hidden');
-    });
+    // --- УПРАВЛЕНИЕ МЕНЮ ---
+    if(hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mainMenu.classList.toggle('hidden');
+        });
+    }
 
+    if(menuLangBtn) {
+        menuLangBtn.addEventListener('click', (e) => {
+            e.preventDefault(); e.stopPropagation();
+            langSubmenu.classList.toggle('hidden');
+        });
+    }
+
+    // Закрытие меню при клике вне
     document.addEventListener('click', (e) => {
-        if (!mainMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+        if (mainMenu && !mainMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
             mainMenu.classList.add('hidden');
-            langSubmenu.classList.add('hidden');
+            if(langSubmenu) langSubmenu.classList.add('hidden');
         }
     });
 
-    // Смена языка
+    // --- СМЕНА ЯЗЫКА ---
     const setLanguage = (lang) => {
         localStorage.setItem('language', lang);
         document.querySelectorAll('[data-lang-key]').forEach(elem => {
@@ -64,182 +79,151 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    langSubmenu.addEventListener('click', (e) => {
-        e.preventDefault();
-        const selectedLang = e.target.dataset.lang;
-        if (selectedLang) {
-            setLanguage(selectedLang);
-            mainMenu.classList.add('hidden');
-            langSubmenu.classList.add('hidden');
-        }
-    });
+    if(langSubmenu) {
+        langSubmenu.addEventListener('click', (e) => {
+            if(e.target.tagName === 'A') {
+                e.preventDefault();
+                const selectedLang = e.target.dataset.lang;
+                setLanguage(selectedLang);
+                mainMenu.classList.add('hidden'); // Закрываем все
+            }
+        });
+    }
     setLanguage(localStorage.getItem('language') || 'ru');
 
     // --- ЗАГРУЗКА ТОВАРОВ ---
     const grid = document.getElementById('products-grid');
-    fetch('db.json').then(res => res.json()).then(data => {
-        grid.innerHTML = '';
-        data.forEach(product => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            let videoHTML = product.video ? `<div class="video-container"><video controls muted><source src="${product.video}" type="video/mp4"></video></div>` : '';
-            card.innerHTML = `<img src="${product.image}" alt="${product.title}"><div class="card-content"><h3>${product.title}</h3><p>${product.description}</p><button class="price-button">${product.price}</button>${videoHTML}</div>`;
-            grid.appendChild(card);
-        });
-    }).catch(err => console.error(err));
+    if(grid) {
+        fetch('db.json')
+            .then(res => res.json())
+            .then(data => {
+                grid.innerHTML = '';
+                data.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    let videoHTML = product.video ? `<div class="video-container"><video controls muted><source src="${product.video}" type="video/mp4"></video></div>` : '';
+                    card.innerHTML = `<img src="${product.image}" alt="${product.title}"><div class="card-content"><h3>${product.title}</h3><p>${product.description}</p><button class="price-button">${product.price}</button>${videoHTML}</div>`;
+                    grid.appendChild(card);
+                });
+            })
+            .catch(err => {
+                grid.innerHTML = '<p style="color:red">Ошибка db.json</p>';
+                console.error(err);
+            });
+    }
 
-    // --- СИСТЕМА АВТОРИЗАЦИИ ---
-    const authModal = document.getElementById('authModal');
-    const regModal = document.getElementById('regModal');
-    const closeBtns = document.querySelectorAll('.close, .close-reg');
-    
-    // Формы
-    const loginForm = document.getElementById('loginForm');
-    const regFormRequest = document.getElementById('regFormRequest');
-    
-    // UI профиля
-    const userProfile = document.getElementById('userProfile');
-    const userNameSpan = document.getElementById('userName');
-    const logoutBtn = document.getElementById('logoutBtn');
+    // --- МОДАЛЬНЫЕ ОКНА ---
+    function closeModal() {
+        if(authModal) authModal.classList.add('hidden');
+        if(regModal) regModal.classList.add('hidden');
+    }
 
-    // Открытие окон
-    if (menuLoginBtn) {
+    closeBtns.forEach(btn => btn.addEventListener('click', closeModal));
+
+    if(menuLoginBtn) {
         menuLoginBtn.addEventListener('click', () => {
-            if (authModal) authModal.classList.remove('hidden');
-            if (mainMenu) mainMenu.classList.add('hidden');
-            if (langSubmenu) langSubmenu.classList.add('hidden');
+            if(authModal) authModal.classList.remove('hidden');
+            if(mainMenu) mainMenu.classList.add('hidden');
         });
-    } else {
-        console.warn('Кнопка menuLoginBtn не найдена в HTML');
     }
 
-    // Функция для кнопки "Регистрация"
-    if (menuRegisterBtn) {
+    if(menuRegisterBtn) {
         menuRegisterBtn.addEventListener('click', () => {
-            if (regModal) regModal.classList.remove('hidden');
-            if (mainMenu) mainMenu.classList.add('hidden');
-            if (langSubmenu) langSubmenu.classList.add('hidden');
+            if(regModal) regModal.classList.remove('hidden');
+            if(mainMenu) mainMenu.classList.add('hidden');
         });
     }
 
-    // Функция для закрытия крестиками
-    closeBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (authModal) authModal.classList.add('hidden');
-            if (regModal) regModal.classList.add('hidden');
-        });
-    });
-
-    // === ЛОГИКА ВХОДА (ПРОВЕРКА ЧЕРЕЗ USERS.JSON) ===
-    if (loginForm) {
+    // --- ЛОГИКА ВХОДА ---
+    if(loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const emailInput = document.getElementById('loginEmail').value.trim();
             const passInput = document.getElementById('loginPass').value.trim();
             const btn = loginForm.querySelector('button');
-            const originalBtnText = btn.textContent;
+            const originalText = btn.textContent;
 
-            btn.textContent = 'Проверка...';
+            btn.textContent = '...';
             
             fetch('users.json')
-                .then(response => {
-                    if (!response.ok) throw new Error("Файл users.json не найден!");
-                    return response.json();
-                })
+                .then(r => r.json())
                 .then(users => {
-                    const userFound = users.find(u => u.login === emailInput && u.password === passInput);
-                    if (userFound) {
-                        localStorage.setItem('user', userFound.login);
-                        updateAuthUI(userFound.login);
-                        if(authModal) authModal.classList.add('hidden');
-                        alert(`Добро пожаловать, ${userFound.login}!`);
+                    const found = users.find(u => u.login === emailInput && u.password === passInput);
+                    if(found) {
+                        localStorage.setItem('user', found.login);
+                        updateAuthUI(found.login);
+                        closeModal();
+                        alert(`Добро пожаловать, ${found.login}!`);
                     } else {
-                        alert('Неверный логин или пароль.');
+                        alert('Неверный логин или пароль');
                     }
                 })
-                .catch(err => {
-                    console.error(err);
-                    alert('Ошибка: ' + err.message);
-                })
-                .finally(() => {
-                    btn.textContent = originalBtnText;
-                });
+                .catch(err => alert('Ошибка чтения users.json'))
+                .finally(() => btn.textContent = originalText);
         });
-    } else {
-        console.warn('Внимание: Форма входа (id="loginForm") не найдена в HTML!');
     }
 
-    // === БЕЗОПАСНАЯ ЛОГИКА РЕГИСТРАЦИИ ===
-    if (regFormRequest) {
+    // --- ЛОГИКА РЕГИСТРАЦИИ (TELEGRAM) ---
+    if(regFormRequest) {
         regFormRequest.addEventListener('submit', (e) => {
             e.preventDefault();
-            const newLogin = document.getElementById('newLogin').value;
-            const newPass = document.getElementById('newPass').value;
+            const login = document.getElementById('newLogin').value;
+            const pass = document.getElementById('newPass').value;
             const btn = regFormRequest.querySelector('button');
             
             btn.textContent = 'Отправка...';
             btn.disabled = true;
 
-            const message = `🚀 <b>НОВАЯ ЗАЯВКА</b>\n👤: <code>${newLogin}</code>\n🔑: <code>${newPass}</code>`;
+            const msg = `🚀 <b>НОВАЯ ЗАЯВКА</b>\n👤: <code>${login}</code>\n🔑: <code>${pass}</code>`;
 
             fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: TG_CHAT_ID,
-                    text: message,
-                    parse_mode: 'HTML'
-                })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg, parse_mode: 'HTML' })
             })
-            .then(res => {
-                if(res.ok) {
+            .then(r => {
+                if(r.ok) {
                     alert('Заявка отправлена!');
-                    if(regModal) regModal.classList.add('hidden');
+                    closeModal();
                     regFormRequest.reset();
                 } else {
                     alert('Ошибка Telegram API');
                 }
             })
-            .catch(err => alert('Ошибка сети'))
+            .catch(() => alert('Ошибка сети'))
             .finally(() => {
                 btn.textContent = 'Отправить заявку';
                 btn.disabled = false;
             });
         });
-    } else {
-        console.warn('Внимание: Форма регистрации (id="regFormRequest") не найдена в HTML!');
     }
 
-    // Выход
-    logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('user');
-        updateAuthUI(null);
-    });
+    // --- ВЫХОД ---
+    if(logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('user');
+            updateAuthUI(null);
+        });
+    }
 
     function updateAuthUI(user) {
-        const hamburgerContainer = document.querySelector('.menu-container');
-        if (user) {
-            hamburgerContainer.classList.add('hidden');
-            userProfile.classList.remove('hidden');
-            userProfile.style.display = 'flex';
-            userNameSpan.textContent = user;
+        const menuContainer = document.querySelector('.menu-container');
+        if(user) {
+            if(menuContainer) menuContainer.classList.add('hidden');
+            if(userProfile) {
+                userProfile.classList.remove('hidden');
+                userProfile.style.display = 'flex';
+                userNameSpan.textContent = user;
+            }
         } else {
-            hamburgerContainer.classList.remove('hidden');
-            userProfile.classList.add('hidden');
+            if(menuContainer) menuContainer.classList.remove('hidden');
+            if(userProfile) userProfile.classList.add('hidden');
         }
     }
 
     const savedUser = localStorage.getItem('user');
     updateAuthUI(savedUser);
+
+    // ДИАГНОСТИКА
+    console.log('Script loaded. Forms check:', loginForm ? 'OK' : 'FAIL', regFormRequest ? 'OK' : 'FAIL');
 });
-console.log('--- ПРОВЕРКА ЭЛЕМЕНТОВ ---');
-console.log('Кнопка входа в меню:', document.getElementById('menuLoginBtn') ? 'OK' : 'НЕ НАЙДЕНА (Проверьте HTML)');
-console.log('Окно входа:', document.getElementById('authModal') ? 'OK' : 'НЕ НАЙДЕНО');
-console.log('Форма входа:', document.getElementById('loginForm') ? 'OK' : 'НЕ НАЙДЕНА');
-console.log('Файл users.json:', 'Проверяется при входе...');
-
-
-
-
-
-
