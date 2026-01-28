@@ -1,30 +1,21 @@
 :root {
     --primary: #1e293b;
-    --dark: #1e293b;
+    --dark: #0f172a;
     --light: #f8fafc;
     --white: #ffffff;
+    --green: #4ade80;
 }
 
 body {
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
-    
-    /* ВОТ ЭТА СТРОЧКА ОТВЕЧАЕТ ЗА ФОН */
-    /* Замени nazvanie_foto.jpg на точное имя твоего файла */
-    background-image: url('Pins.png');
-    
-    /* Настройки, чтобы было красиво */
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
-    
-    color: white; /* Делаем текст белым, чтобы его было видно на фоне */
+    background-color: var(--dark);
+    color: var(--light);
 }
 
 /* Header */
 header {
-    background: var(--white);
+    background: var(--primary);
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
@@ -38,88 +29,105 @@ header {
 .logo {
     font-weight: bold;
     font-size: 1.5rem;
-    color: var(--primary);
+    color: var(--light);
 }
 
 .btn-login {
-    background: var(--primary);
-    color: white;
+    background: var(--green);
+    color: var(--dark);
     border: none;
     padding: 8px 20px;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+.btn-login:hover {
+    transform: scale(1.05);
 }
 
 /* Hero */
 .hero {
-    text-align: left;
+    text-align: center;
     padding: 4rem 1rem;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    color: white;
 }
 
 /* Grid */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-}
-
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 2rem;
+    perspective: 1000px;
 }
 
 /* Карточка товара */
 .card {
-    background: white;
+    background: var(--primary);
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    transition: transform 0.2s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.3s;
+    transform-style: preserve-3d;
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateZ(20px);
 }
 
 .card img {
-    width: 0%;
+    width: 100%;
     height: 200px;
     object-fit: cover;
 }
 
 .card-content {
-    padding: 20px; /* Возвращаем отступы для текста */
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Центрируем всё (включая кнопку) по горизонтали */
-    flex-grow: 1; /* Растягивает блок, чтобы кнопки были на одном уровне */
+    padding: 20px;
     text-align: center;
-}
-
-.tool-card h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.tool-card p {
-    color: #666;
-    font-size: 0.9em;
-    margin-bottom: 20px;
-    flex-grow: 1; /* Текст толкает кнопку вниз */
 }
 
 .card h3 {
     margin-top: 0;
+    color: var(--light);
 }
 
-.video-container video {
-    width: 100%;
+.card p {
+    color: var(--light);
+    opacity: 0.8;
+}
+
+.price-button {
+    background: var(--green);
+    color: var(--dark);
+    border: none;
+    padding: 12px 24px;
     border-radius: 5px;
-    margin-top: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.price-button:hover {
+    transform: scale(1.05);
+}
+
+.price-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    transition: left 0.5s;
+}
+
+.price-button:hover::after {
+    left: 100%;
 }
 
 /* Модальное окно */
@@ -127,7 +135,7 @@ header {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.7);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -135,7 +143,7 @@ header {
 }
 
 .modal-content {
-    background: white;
+    background: var(--primary);
     padding: 2rem;
     border-radius: 10px;
     width: 300px;
@@ -149,6 +157,7 @@ header {
     right: 15px; top: 10px;
     cursor: pointer;
     font-size: 1.5rem;
+    color: var(--light);
 }
 
 input {
@@ -156,104 +165,54 @@ input {
     padding: 10px;
     margin: 10px 0;
     box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid var(--dark);
 }
 
 button[type="submit"] {
     width: 100%;
     padding: 10px;
-    background: var(--primary);
-    color: white;
+    background: var(--green);
+    color: var(--dark);
     border: none;
     cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
 }
 
-.card-price {
-    font-size: 1.8rem; /* Крупный размер шрифта */
-    font-weight: bold;  /* Жирный шрифт */
-    color: #4ade80;     /* Яркий зеленый цвет */
-    text-align: right;  /* Выравнивание по правому краю */
-}
-
-/* Стили для секции с главным видео */
+/* Секция с видео */
 .video-section {
-    text-align: center; /* Центрируем заголовок */
+    text-align: center;
     padding: 40px 20px;
-    background-color: #0f172a; /* Темный фон для контраста */
 }
 
 .video-section h2 {
-    margin-bottom: 20px; /* Отступ под заголовком */
+    margin-bottom: 20px;
     font-size: 2rem;
-    color: white;
 }
 
-/* Обертка для видео, чтобы задать ему ширину */
 .video-wrapper {
-    max-width: 800px; /* Максимальная ширина видео-плеера */
-    margin: 0 auto;   /* Центрирование самого блока */
+    max-width: 800px;
+    margin: 0 auto;
     border-radius: 10px;
-    overflow: hidden; /* Скрываем все, что выходит за скругленные углы */
+    overflow: hidden;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transform-style: preserve-3d;
+    transition: transform 0.3s;
+}
+
+.video-wrapper:hover {
+    transform: translateZ(20px);
 }
 
 .video-wrapper video {
-    width: 100%;      /* Видео растягивается на всю ширину обертки */
-    display: block;   /* Убирает лишний отступ под видео */
+    width: 100%;
+    display: block;
 }
 
-/* Стили для кнопки с ценой */
-.price-button {
-    width: 100%; /* Кнопка на всю ширину карточки */
-    padding: 12px;
-    margin-top: 15px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: white;
-    background-color: #2563eb; /* Синий цвет */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer; /* Курсор в виде руки при наведении */
-    transition: background-color 0.2s, transform 0.2s; /* Плавные переходы */
+footer {
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+    background: var(--primary);
 }
-
-/* Стили для значка со сроком лицензии поверх картинки */
-.card-term-badge {
-    position: absolute; /* <-- Главное свойство для позиционирования */
-    top: 240px;          /* Отступ 10px от верхнего края карточки */
-    left: 0px;        /* Отступ 10px от правого края карточки */
-    
-    background-color: rgba(0, 0, 0, 0.7); /* Полупрозрачный черный фон */
-    color: white;
-    padding: 5px 10px; /* Внутренние отступы (вертикальный и горизонтальный) */
-    border-radius: 5px;
-    font-size: 0.8rem; /* Маленький шрифт */
-    font-weight: bold;
-    z-index: 1; /* Гарантирует, что значок будет НАД картинкой */
-}
-
-/* Эффект при наведении мыши */
-.price-button:hover {
-    background-color: #1d4ed8; /* Более темный синий */
-    transform: scale(1.03);   /* Слегка увеличить кнопку */
-}
-
-.tool-btn {
-    display: inline-block;
-    padding: 10px 24px;
-    background-color: #007bff; /* Цвет кнопки */
-    color: white;
-    text-decoration: none;
-    border-radius: 50px; /* Овальная кнопка */
-    font-weight: 500;
-    transition: background 0.3s;
-    margin-top: auto; /* Прижимает кнопку к низу, если карточки разной высоты */
-}
-
-.tool-btn:hover {
-    background-color: #0056b3;
-}
-
-
-
-
-
