@@ -29,7 +29,27 @@ header {
 .logo {
     font-weight: bold;
     font-size: 1.5rem;
-    color: var(--light);
+    /* УДАЛЯЕМ 'color' и добавляем код ниже */
+
+    /* --- Код для эффекта радуги --- */
+    background: linear-gradient(to right, 
+        #66ff66, /* Салатовый */
+        #00ffff, /* Бирюзовый */
+        #7d26cd, /* Фиолетовый */
+        #ff00ff, /* Пурпурный */
+        #ff3366, /* Розовый */
+        #ffff66, /* Желтый */
+        #66ff66  /* Возвращаемся к салатовому для плавного цикла */
+    );
+    background-size: 200% auto; /* Делаем фон градиента шире самого текста */
+
+    /* Магия, которая обрезает фон по форме текста */
+    color: transparent; /* Делаем сам текст прозрачным */
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    /* Подключаем анимацию */
+    animation: rainbow-animation 4s ease-in-out infinite;
 }
 
 .btn-login {
@@ -311,3 +331,15 @@ footer {
     }
 }
 
+/* --- Ключевые кадры для анимации градиента на логотипе --- */
+@keyframes rainbow-animation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
