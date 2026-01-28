@@ -217,6 +217,33 @@ footer {
     background: var(--primary);
 }
 
+footer {
+    padding: 2rem 1rem; 
+}
+
+.telegram-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px; 
+    background-color: #2AABEE; 
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 1rem; 
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.telegram-btn:hover {
+    transform: scale(1.05);
+    background-color: #1e87b9; 
+}
+
+.telegram-btn .fab {
+    font-size: 1.2rem; 
+}
+
 /* --- Мобильная оптимизация --- */
 @media (max-width: 768px) {
     /* Уменьшаем отступы для экономии места */
@@ -259,3 +286,4 @@ footer {
         padding: 6px 16px;
     }
 }
+
