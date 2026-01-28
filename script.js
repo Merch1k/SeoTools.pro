@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="card-content">
                         <h3>${product.title}</h3>
                         <p>${product.description}</p>
+                        <button class="price-button">${product.price}</button>
                         ${videoHTML}
                     </div>
                 `;
