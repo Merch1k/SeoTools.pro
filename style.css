@@ -268,7 +268,76 @@ footer {
     font-size: 1.2rem; 
 }
 
-/* --- Мобильная оптимизация --- */
+/* --- Стили для нового меню-бургера --- */
+
+.header-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.menu-container {
+    position: relative;
+}
+
+.hamburger-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Расстояние между полосками */
+}
+
+.hamburger-btn span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: var(--green); /* Зеленый цвет */
+    border-radius: 3px;
+    transition: all 0.3s;
+}
+
+/* Стили для выпадающего меню */
+.main-menu {
+    position: absolute;
+    top: calc(100% + 10px); /* Позиция под кнопкой */
+    right: 0;
+    background: var(--primary);
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    z-index: 1000;
+    overflow: hidden; /* Чтобы внутренние элементы не вылезали за скругленные углы */
+}
+
+.main-menu a {
+    display: block;
+    padding: 12px 25px;
+    color: var(--light);
+    text-decoration: none;
+    white-space: nowrap; /* Чтобы текст не переносился */
+    transition: background-color 0.2s;
+}
+
+.main-menu a:hover {
+    background-color: var(--dark);
+}
+
+/* Контейнер для вложенного меню */
+.submenu-container {
+    position: relative;
+}
+
+.lang-submenu {
+    position: absolute;
+    top: 0;
+    right: 100%; /* Появляется слева от основного меню */
+    background: var(--primary);
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    border: 1px solid var(--dark);
+}
 /* --- Мобильная оптимизация --- */
 @media (max-width: 768px) {
     /* Уменьшаем отступы для экономии места */
@@ -347,5 +416,6 @@ footer {
         background-position: 0% 50%;
     }
 }
+
 
 
