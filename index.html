@@ -73,18 +73,22 @@
         </div>
     </main>
     <!-- Модальное окно авторизации -->
-    <div id="authModal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 data-lang-key="authTitle">Авторизация</h2>
-            <form id="loginForm">
-               <input type="text" id="loginEmail" placeholder="Email" required>
-               <input type="password" id="loginPass" placeholder="Пароль" required data-lang-placeholder="passwordPlaceholder">
-                <button type="submit" data-lang-key="authBtn">Войти</button>
-            </form>
-           <p class="small-text" data-lang-key="demoMode">Демо режим: введите любые данные</p>
-        </div>
+<!-- Модальное окно Регистрации (Отправка заявки) -->
+<div id="regModal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close-reg">&times;</span>
+        <h2 data-lang-key="registerTitle">Регистрация</h2>
+        <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">
+            Придумайте логин и пароль. После отправки администратор активирует ваш доступ.
+        </p>
+        
+        <form id="regFormRequest">
+            <input type="text" id="newLogin" placeholder="Придумайте Логин" required>
+            <input type="text" id="newPass" placeholder="Придумайте Пароль" required>
+            <button type="submit" data-lang-key="sendRequestBtn">Отправить заявку</button>
+        </form>
     </div>
+</div>
 
     <footer>
         <p>&copy; SEO TOOLS. <span data-lang-key="developedIn">Разработан в 2026.</span></p>
@@ -96,6 +100,7 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
