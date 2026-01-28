@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- НАСТРОЙКИ TELEGRAM (ВСТАВЬТЕ СВОИ ДАННЫЕ!) ---
-    const TG_BOT_TOKEN = 'AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; // Пример: '712345678:AAH...'
+    const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; // Пример: '712345678:AAH...'
     const TG_CHAT_ID = '5683927471';             // Пример: '123456789'
 
     // --- СЛОВАРЬ ПЕРЕВОДОВ ---
@@ -219,5 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedUser = localStorage.getItem('user');
     updateAuthUI(savedUser);
 });
+
 
 
