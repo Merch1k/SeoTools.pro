@@ -3,14 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- СЛОВАРЬ ПЕРЕВОДОВ ---
     const translations = {
         ru: {
-            languageBtn: "Язык", headerTitle: "SEO Утилита", loginBtn: "Войти", logoutBtn: "Выйти",
+            languageBtn: "Язык", headerTitle: "Мультитул для SEO задачь", loginBtn: "Войти", logoutBtn: "Выйти",
             videoTitle: "Посмотрите наш продукт в действии", multitoolTitle: "SEO Мультитул",
             multitoolDesc: "Наш инструмент анализирует ключевые слова, отслеживает позиции и помогает вам обойти конкурентов. Посмотрите, как легко управлять вашей SEO-стратегией.",
             loading: "Загрузка товаров...", authTitle: "Авторизация", passwordPlaceholder: "Пароль", authBtn: "Войти",
             demoMode: "Демо режим: введите любые данные", developedIn: "Разработан в 2026.", telegramBtn: "Наш Telegram канал"
         },
         en: {
-            languageBtn: "Language", headerTitle: "SEO Utility", loginBtn: "Login", logoutBtn: "Logout",
+            languageBtn: "Language", headerTitle: "Multitool for SEO tasks", loginBtn: "Login", logoutBtn: "Logout",
             videoTitle: "See our product in action", multitoolTitle: "SEO Multitool",
             multitoolDesc: "Our tool analyzes keywords, tracks rankings, and helps you outperform competitors. See how easy it is to manage your SEO strategy.",
             loading: "Loading products...", authTitle: "Authorization", passwordPlaceholder: "Password", authBtn: "Login",
@@ -141,3 +141,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedUser = localStorage.getItem('user');
     updateAuthUI(savedUser);
 });
+
