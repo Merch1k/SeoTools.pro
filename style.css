@@ -163,7 +163,7 @@ header {
 
 .card-img-wrapper img {
     width: 100%; height: 100%; object-fit: cover; display: block;
-    object-fit: contain; /* <-- ВОТ ИЗМЕНЕНИЕ */
+    object-position: top; /* <-- ВОТ ИЗМЕНЕНИЕ */
 }
 
 /* --- БЛОК 2: ИНФОРМАЦИЯ --- */
@@ -307,5 +307,6 @@ footer { text-align: center; padding: 2rem 1rem; background: var(--primary); mar
     /* На очень узких можно 1 колонку, или оставить 2 если влезает */
     /* .grid { grid-template-columns: 1fr; } */
 }
+
 
 
