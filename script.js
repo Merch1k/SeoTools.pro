@@ -34,13 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const guestNav = document.getElementById('guestNav');
     const userNav = document.getElementById('userNav');
     
-    // Кнопки
+    // Элементы профиля в меню
+    const menuUserName = document.getElementById('menuUserName');
+    
+    // Кнопки меню
     const menuLoginBtn = document.getElementById('menuLoginBtn');
     const menuRegisterBtn = document.getElementById('menuRegisterBtn');
     const menuLogoutBtn = document.getElementById('menuLogoutBtn');
-    const menuCartBtn = document.getElementById('menuCartBtn');
-    const menuUserName = document.getElementById('menuUserName');
-
     const menuLangBtn = document.getElementById('menuLangBtn');
     const langSubmenu = document.getElementById('langSubmenu');
 
@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         hamburgerBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             mainMenu.classList.toggle('hidden');
+            // Если открываем меню, закрываем подменю языка
             if (!mainMenu.classList.contains('hidden')) {
                 if(langSubmenu) langSubmenu.classList.add('hidden');
             }
@@ -81,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Закрытие при клике вне
     document.addEventListener('click', (e) => {
         if (mainMenu && !mainMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
             mainMenu.classList.add('hidden');
@@ -112,24 +114,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.forEach(product => {
                     const card = document.createElement('div');
                     card.className = 'card';
-                    
                     let videoHTML = product.video ? `<div class="video-container"><video controls muted><source src="${product.video}" type="video/mp4"></video></div>` : '';
 
-                    // !!! ВАЖНО: Разделяем на 3 блока !!!
                     card.innerHTML = `
-                        <!-- 1. Картинка -->
                         <div class="card-img-wrapper">
                             <img src="${product.image}" alt="${product.title}">
                             ${videoHTML}
                         </div>
-                        
-                        <!-- 2. Инфо -->
                         <div class="card-info-block">
                             <h3>${product.title}</h3>
                             <p>${product.description}</p>
                         </div>
-                        
-                        <!-- 3. Кнопка -->
                         <button class="price-button">${product.price}</button>
                     `;
                     grid.appendChild(card);
@@ -163,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ЛОГИКА ВХОДА ---
+    // --- ЛОГИКА ВХОДА (Чтение users.json) ---
     if(loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -175,19 +170,27 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = '...';
             
             fetch('users.json')
-                .then(r => r.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(users => {
                     const found = users.find(u => u.login === emailInput && u.password === passInput);
                     if(found) {
                         localStorage.setItem('user', found.login);
-                        updateAuthUI(found.login);
+                        updateAuthUI(found.login); // Обновляем меню
                         closeModal();
                         alert(`Добро пожаловать, ${found.login}!`);
                     } else {
                         alert('Неверный логин или пароль');
                     }
                 })
-                .catch(err => alert('Ошибка чтения users.json'))
+                .catch(err => {
+                    console.error('Ошибка:', err);
+                    alert('Ошибка чтения users.json. Проверьте консоль (F12).');
+                })
                 .finally(() => btn.textContent = originalText);
         });
     }
@@ -228,30 +231,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- ВЫХОД ---
-    if(logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
+    if(menuLogoutBtn) {
+        menuLogoutBtn.addEventListener('click', () => {
             localStorage.removeItem('user');
             updateAuthUI(null);
+            // Закрываем меню после выхода
+            mainMenu.classList.add('hidden');
         });
     }
 
+    // --- ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ИНТЕРФЕЙСА (ГОСТЬ / ПОЛЬЗОВАТЕЛЬ) ---
     function updateAuthUI(user) {
-        const menuContainer = document.querySelector('.menu-container');
         if(user) {
-            if(menuContainer) menuContainer.classList.add('hidden');
-            if(userProfile) {
-                userProfile.classList.remove('hidden');
-                userProfile.style.display = 'flex';
-                userNameSpan.textContent = user;
-            }
+            // Если вошли:
+            if(guestNav) guestNav.classList.add('hidden'); // Скрываем "Войти/Рега"
+            if(userNav) userNav.classList.remove('hidden'); // Показываем "Профиль/Выход"
+            if(menuUserName) menuUserName.textContent = user; // Пишем имя
         } else {
-            if(menuContainer) menuContainer.classList.remove('hidden');
-            if(userProfile) userProfile.classList.add('hidden');
+            // Если не вошли:
+            if(guestNav) guestNav.classList.remove('hidden'); // Показываем "Войти/Рега"
+            if(userNav) userNav.classList.add('hidden'); // Скрываем "Профиль"
         }
     }
 
+    // Проверка при загрузке
     const savedUser = localStorage.getItem('user');
     updateAuthUI(savedUser);
 });
-
-
