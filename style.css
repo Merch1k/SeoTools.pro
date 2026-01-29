@@ -267,6 +267,43 @@ footer { text-align: center; padding: 2rem 1rem; background: var(--primary); mar
 }
 .telegram-btn:hover { transform: scale(1.05); }
 
+/* --- Стили профиля ВНУТРИ меню --- */
+.menu-profile-header {
+    padding: 15px 20px;
+    color: var(--green);
+    font-weight: bold;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05); /* Чуть выделяем фон */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 5px;
+}
+
+.menu-profile-header i {
+    font-size: 1.4rem;
+}
+
+/* Иконки в пунктах меню (Корзина, Выход) */
+.main-menu a i {
+    margin-right: 10px;
+    width: 20px; /* Чтобы текст ровно стоял */
+    text-align: center;
+    color: var(--green);
+}
+
+.menu-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 5px 0;
+}
+
+/* Скрываем блоки через класс hidden (убедимся, что он работает правильно) */
+.hidden {
+    display: none !important;
+}
+
 /* --- МОБИЛЬНАЯ ОПТИМИЗАЦИЯ --- */
 @media (max-width: 768px) {
     header { padding: 0.8rem 1rem; }
@@ -307,6 +344,7 @@ footer { text-align: center; padding: 2rem 1rem; background: var(--primary); mar
     /* На очень узких можно 1 колонку, или оставить 2 если влезает */
     /* .grid { grid-template-columns: 1fr; } */
 }
+
 
 
 
