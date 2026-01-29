@@ -157,6 +157,7 @@ header {
     position: relative;
     border-radius: 15px;
     overflow: hidden;
+    object-fit: contain; /* <-- ВОТ ИЗМЕНЕНИЕ */
     height: 200px;
     background: var(--primary);
 }
@@ -306,3 +307,4 @@ footer { text-align: center; padding: 2rem 1rem; background: var(--primary); mar
     /* На очень узких можно 1 колонку, или оставить 2 если влезает */
     /* .grid { grid-template-columns: 1fr; } */
 }
+
