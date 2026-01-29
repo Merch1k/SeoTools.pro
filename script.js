@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- СЛОВАРЬ ПЕРЕВОДОВ ---
     const translations = {
         ru: {
-            languageBtn: "Язык", headerTitle: "SEO Утилита", loginBtn: "Войти", logoutBtn: "Выйти",
+            languageBtn: "Язык", headerTitle: "SEO Мультитул", loginBtn: "Войти", logoutBtn: "Выйти",
             registerBtn: "Регистрация", registerTitle: "Регистрация", sendRequestBtn: "Отправить заявку",
             videoTitle: "Посмотрите наш продукт в действии", multitoolTitle: "SEO Мультитул",
             multitoolDesc: "Наш инструмент анализирует ключевые слова, отслеживает позиции и помогает вам обойти конкурентов.",
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             demoMode: "Введите данные для входа", developedIn: "Разработан в 2026.", telegramBtn: "Наш Telegram канал"
         },
         en: {
-            languageBtn: "Language", headerTitle: "SEO Utility", loginBtn: "Login", logoutBtn: "Logout",
+            languageBtn: "Language", headerTitle: "SEO Multitool", loginBtn: "Login", logoutBtn: "Logout",
             registerBtn: "Registration", registerTitle: "Registration", sendRequestBtn: "Send Request",
             videoTitle: "See our product in action", multitoolTitle: "SEO Multitool",
             multitoolDesc: "Our tool analyzes keywords, tracks rankings, and helps you outperform competitors.",
@@ -250,3 +250,4 @@ document.addEventListener('DOMContentLoaded', () => {
     updateAuthUI(savedUser);
 
 });
+
