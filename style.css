@@ -23,29 +23,15 @@ header {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
-    z-index: 2000; /* Очень высокий Z-Index, чтобы меню было поверх всего */
+    z-index: 2000;
 }
 
-.header-left, .header-right {
-    flex: 1;
-}
-.header-center {
-    flex-grow: 1;
-    text-align: center;
-}
-.header-right {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
+.header-left, .header-right { flex: 1; }
+.header-center { flex-grow: 1; text-align: center; }
+.header-right { display: flex; justify-content: flex-end; align-items: center; }
 
-.header-title {
-    margin: 0;
-    font-size: 1rem; /* Уменьшенный шрифт */
-    color: var(--light);
-}
+.header-title { margin: 0; font-size: 1rem; color: var(--light); }
 
-/* Логотип с радужной анимацией */
 .logo {
     font-weight: bold;
     font-size: 2rem;
@@ -65,27 +51,16 @@ header {
 }
 
 /* Меню-бургер */
-.menu-container {
-    position: relative;
-}
+.menu-container { position: relative; }
 
 .hamburger-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+    background: none; border: none; cursor: pointer;
+    padding: 10px; display: flex; flex-direction: column; gap: 5px;
 }
 
 .hamburger-btn span {
-    display: block;
-    width: 25px;
-    height: 3px;
-    background-color: var(--green);
-    border-radius: 3px;
-    transition: all 0.3s;
+    display: block; width: 25px; height: 3px;
+    background-color: var(--green); border-radius: 3px; transition: all 0.3s;
 }
 
 /* Выпадающее меню */
@@ -98,323 +73,236 @@ header {
     box-shadow: 0 5px 20px rgba(0,0,0,0.5);
     z-index: 3000;
     min-width: 160px;
-    /* Убрали overflow: hidden, чтобы подменю работало корректно */
 }
 
 .main-menu a {
-    display: block;
-    padding: 12px 20px;
-    color: var(--light);
-    text-decoration: none;
-    white-space: nowrap;
-    transition: background 0.2s;
+    display: block; padding: 12px 20px; color: var(--light);
+    text-decoration: none; white-space: nowrap; transition: background 0.2s;
     border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-.main-menu a:hover {
-    background-color: var(--dark);
-    color: var(--green);
-}
+.main-menu a:hover { background-color: var(--dark); color: var(--green); }
 
-.submenu-container {
-    position: relative; 
-    width: 100%; /* Чтобы занимал всю ширину строки */
-}
+/* Контейнер языка (relative) */
+.submenu-container { position: relative; width: 100%; }
 
-/* Подменю языка (аккордеон) */
+/* Меню языка (выезжает ВЛЕВО) */
 .lang-submenu {
     position: absolute;
-    top: 0;             /* Ровно по верхнему краю кнопки */
-    right: 100%;        /* Сдвигаем влево на 100% */
-    
+    top: 0; right: 100%; /* Влево */
     background: var(--primary);
     min-width: 140px;
-    
-    border-radius: 8px 0 0 8px; /* Скругляем левые углы */
+    border-radius: 8px 0 0 8px;
     box-shadow: -5px 5px 20px rgba(0,0,0,0.3);
-    
-    /* Скрываем/Показываем */
-    display: flex;
-    flex-direction: column;
-    z-index: 3001;
-    
-    /* Небольшой отступ справа, чтобы не прилипало */
-    margin-right: 5px; 
+    display: flex; flex-direction: column; z-index: 3001;
+    margin-right: 5px;
 }
 
-.lang-submenu a {
-    padding-left: 30px; /* Отступ для вложенности */
-    font-size: 0.9em;
-}
+.lang-submenu a { padding-left: 20px; font-size: 0.9em; }
 
-/* Профиль пользователя */
-#userProfile {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
+/* Профиль */
+#userProfile { display: flex; align-items: center; gap: 15px; }
 #userProfile button {
-    background: var(--primary);
-    border: 1px solid var(--green);
-    color: var(--light);
-    padding: 5px 15px;
-    cursor: pointer;
-    border-radius: 5px;
+    background: var(--primary); border: 1px solid var(--green);
+    color: var(--light); padding: 5px 15px; cursor: pointer; border-radius: 5px;
 }
 
 /* Контент */
-.hero {
-    text-align: center;
-    padding: 2rem 1rem;
-}
+.hero { text-align: center; padding: 2rem 1rem; }
+.container { max-width: 1200px; margin: 0 auto; }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Сетка товаров */
+/* --- НОВАЯ СЕТКА (GRID) --- */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
+    /* На ПК строго 3 колонки */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 3rem; /* Большой отступ между карточками */
     perspective: 1000px;
+    padding-bottom: 50px;
 }
 
-/* Карточка товара (исправленная) */
+/* МАГИЯ: Ставим 4-й элемент (Безлимит) по центру во втором ряду */
+.card:last-child {
+    grid-column: 2; /* Занять вторую (центральную) колонку */
+}
+
+/* --- СТИЛЬ КАРТОЧКИ (ПРОЗРАЧНЫЙ КОНТЕЙНЕР) --- */
 .card {
-    background: var(--primary);
-    border-radius: 10px;
-    overflow: hidden; /* Картинка не вылезает */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    transition: transform 0.3s;
-    transform-style: preserve-3d;
-    display: flex;
-    flex-direction: column; /* Вертикальная структура */
-    height: 100%;
-}
-
-.card:hover {
-    transform: translateZ(20px);
-}
-
-.card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    display: block;
-}
-
-.card-content {
-    padding: 20px;
-    text-align: center;
+    background: transparent; /* Без фона */
+    box-shadow: none;        /* Без общей тени */
+    border-radius: 0;
+    overflow: visible;       
     display: flex;
     flex-direction: column;
-    flex-grow: 1; /* Растягивается на всю высоту */
+    gap: 15px; /* Разрыв между блоками */
+    height: auto;
 }
 
-.card h3 {
-    margin-top: 0;
-    color: var(--light);
+/* Эффект парения для всех частей (Картинка, Текст, Кнопка) */
+.card-img-wrapper, 
+.card-info-block, 
+.price-button {
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5); /* Глубокая тень */
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s;
 }
 
-.card p {
-    color: var(--light);
-    opacity: 0.8;
-    margin-bottom: 20px;
+/* !!! ЭФФЕКТ СВЯЗНОСТИ: Наводим на карточку (или кнопку) -> Двигается ВСЁ !!! */
+.card:hover .card-img-wrapper { transform: translateY(-7px); }
+.card:hover .card-info-block { transform: translateY(-4px); border-color: rgba(74, 222, 128, 0.3); } /* Подсветка рамки */
+.card:hover .price-button { transform: translateY(-7px) scale(1.02); }
+
+
+/* --- БЛОК 1: КАРТИНКА --- */
+.card-img-wrapper {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 200px;
+    background: var(--primary);
 }
 
-.video-container video {
-    width: 100%;
-    border-radius: 5px;
-    margin-top: 10px;
+.card-img-wrapper img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
 }
 
-/* Кнопка цены */
+/* --- БЛОК 2: ИНФОРМАЦИЯ --- */
+.card-info-block {
+    background: var(--primary);
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    flex-grow: 1; 
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.card-info-block h3 {
+    margin-top: 0; color: var(--white); font-size: 1.3rem; margin-bottom: 10px;
+}
+
+.card-info-block p {
+    color: #cbd5e1; font-size: 0.95rem; margin: 0;
+}
+
+/* --- БЛОК 3: КНОПКА (ОТДЕЛЬНО) --- */
 .price-button {
     background: var(--green);
     color: var(--dark);
     border: none;
-    padding: 12px 24px;
-    border-radius: 5px;
-    cursor: pointer;
+    padding: 15px;
+    border-radius: 15px;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    cursor: pointer;
+    margin-top: auto;
     position: relative;
     overflow: hidden;
-    transition: transform 0.2s;
-    
-    margin-top: auto; /* Прижимаем к низу */
-    margin-bottom: 5px; /* Отступ от дна */
-}
-
-.price-button:hover {
-    transform: scale(1.05);
 }
 
 .price-button::after {
     content: '';
     position: absolute;
     top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
     transition: left 0.5s;
 }
 .price-button:hover::after { left: 100%; }
 
-/* Видео секция */
-.video-section {
-    text-align: center;
-    padding: 40px 20px;
-}
+/* Видео внутри карточки */
+.video-container video { width: 100%; height: 100%; object-fit: cover; }
+
+
+/* Видео секция (Верхняя) */
+.video-section { text-align: center; padding: 40px 20px; }
 .video-wrapper {
-    max-width: 800px;
-    margin: 0 auto;
-    border-radius: 10px;
-    overflow: hidden;
+    max-width: 800px; margin: 0 auto;
+    border-radius: 10px; overflow: hidden;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 .video-wrapper video { width: 100%; display: block; }
 
 /* Модальные окна */
 .modal {
-    position: fixed;
-    top: 0; left: 0;
+    position: fixed; top: 0; left: 0;
     width: 100%; height: 100%;
     background: rgba(0,0,0,0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: flex; justify-content: center; align-items: center;
     z-index: 5000;
 }
 
 .modal-content {
-    background: var(--primary);
-    padding: 2rem;
-    border-radius: 10px;
-    width: 320px;
-    position: relative;
-    border: 1px solid var(--green);
-    text-align: center;
+    background: var(--primary); padding: 2rem;
+    border-radius: 10px; width: 320px; position: relative;
+    border: 1px solid var(--green); text-align: center;
 }
 
 .hidden { display: none !important; }
 
 .close, .close-reg {
-    position: absolute;
-    right: 15px; top: 10px;
-    cursor: pointer;
-    font-size: 1.5rem;
-    color: var(--light);
+    position: absolute; right: 15px; top: 10px;
+    cursor: pointer; font-size: 1.5rem; color: var(--light);
 }
 
 input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    box-sizing: border-box;
-    border-radius: 5px;
-    border: 1px solid #444;
-    background: var(--dark);
-    color: white;
+    width: 100%; padding: 12px; margin: 10px 0;
+    box-sizing: border-box; border-radius: 5px;
+    border: 1px solid #444; background: var(--dark); color: white;
 }
 
 button[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background: var(--green);
-    color: var(--dark);
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 5px;
-    margin-top: 10px;
+    width: 100%; padding: 12px;
+    background: var(--green); color: var(--dark);
+    border: none; cursor: pointer; font-weight: bold;
+    border-radius: 5px; margin-top: 10px;
 }
 
-/* Footer & Telegram */
-footer {
-    text-align: center;
-    padding: 2rem 1rem;
-    background: var(--primary);
-    margin-top: 2rem;
-}
+/* Footer */
+footer { text-align: center; padding: 2rem 1rem; background: var(--primary); margin-top: 2rem; }
 
 .telegram-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background-color: #2AABEE;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: bold;
-    margin-top: 1rem;
-    transition: transform 0.2s;
+    display: inline-flex; align-items: center; gap: 10px;
+    background-color: #2AABEE; color: white; padding: 10px 20px;
+    border-radius: 5px; text-decoration: none; font-weight: bold;
+    margin-top: 1rem; transition: transform 0.2s;
 }
 .telegram-btn:hover { transform: scale(1.05); }
 
 /* --- МОБИЛЬНАЯ ОПТИМИЗАЦИЯ --- */
 @media (max-width: 768px) {
-    /* Настройка общих отступов */
     header { padding: 0.8rem 1rem; }
-    .hero { padding: 1rem 0.5rem; } /* Уменьшаем боковые поля */
-    .logo { font-size: 1.5rem;}
-    
-    /* 1. Сетка: Две колонки */
+    .hero { padding: 1rem 0.5rem; }
+    .logo { font-size: 1.5rem; }
+
+    /* Сброс сетки для телефона */
     .grid {
-        grid-template-columns: repeat(2, 1fr); /* Строго 2 колонки */
-        gap: 0.8rem; /* Маленькое расстояние между карточками */
+        grid-template-columns: repeat(2, 1fr); /* 2 колонки */
+        gap: 0.8rem;
     }
+    
+    /* ОТМЕНЯЕМ центрирование последней карточки на телефоне */
+    .card:last-child { grid-column: auto; }
 
-    /* 2. Картинка: Меньше высоты */
-    .card img {
-        height: 110px; /* Компактная высота фото */
-    }
-
-    /* 3. Контент: Меньше отступов */
-    .card-content {
-        padding: 10px; /* Внутренний отступ */
-    }
-
-    /* 4. Текст: Уменьшаем шрифты */
-    .card h3 {
-        font-size: 0.95rem; /* Заголовок товара */
-        margin-bottom: 5px;
-        line-height: 1.2;
-    }
-
+    /* Уменьшаем блоки на телефоне */
+    .card-img-wrapper { height: 110px; border-radius: 10px; }
+    .card-info-block { padding: 10px; border-radius: 10px; }
+    .card h3 { font-size: 0.95rem; margin-bottom: 5px; line-height: 1.2; }
     .card p {
-        font-size: 0.75rem; /* Описание */
-        line-height: 1.3;
-        margin-bottom: 10px;
-        
-        /* Обрезаем текст, если он слишком длинный (опционально) */
-        display: -webkit-box;
-        -webkit-line-clamp: 4; /* Показать только 4 строки */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        font-size: 0.75rem; line-height: 1.3; margin-bottom: 5px;
+        display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
     }
 
-    /* 5. Кнопка: Компактная */
+    /* Кнопка на телефоне */
     .price-button {
-        font-size: 0.85rem;
-        padding: 8px 0; /* Отступы сверху/снизу */
-        width: 100%; /* На всю ширину */
-        margin-top: auto;
+        padding: 8px 0; font-size: 0.9rem; border-radius: 10px;
     }
     
-    /* Уменьшаем заголовок видео-секции */
-    .video-section h2 { 
-        font-size: 1.3rem; 
-        padding: 0 10px;
-    }
-    
-    /* Уменьшаем модальные окна */
-    .modal-content {
-        width: 85%;
-        padding: 1.5rem;
-    }
+    /* Уменьшаем gap на телефоне, чтобы влезло */
+    .card { gap: 8px; }
+
+    .video-section h2 { font-size: 1.3rem; padding: 0 10px; }
+    .modal-content { width: 85%; padding: 1.5rem; }
 }
 
-
-
+@media (max-width: 480px) {
+    /* На очень узких можно 1 колонку, или оставить 2 если влезает */
+    /* .grid { grid-template-columns: 1fr; } */
+}
