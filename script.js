@@ -7,13 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const TG_CHAT_ID = '5683927471'; 
 
     // --- СЛОВАРЬ ПЕРЕВОДОВ ---
-document.addEventListener('DOMContentLoaded', () => {
-
-    // --- НАСТРОЙКИ TELEGRAM ---
-    const TG_BOT_TOKEN = 'ВАШ_ТОКЕН'; 
-    const TG_CHAT_ID = 'ВАШ_ID';      
-
-    // --- СЛОВАРЬ ПЕРЕВОДОВ ---
     const translations = {
         ru: {
             languageBtn: "Язык", headerTitle: "SEO Утилита", loginBtn: "Войти", logoutBtn: "Выйти",
@@ -33,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- ЭЛЕМЕНТЫ DOM (Поиск элементов в HTML) ---
+    // --- ЭЛЕМЕНТЫ DOM ---
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mainMenu = document.getElementById('mainMenu');
     
@@ -45,9 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Кнопки
     const menuLoginBtn = document.getElementById('menuLoginBtn');
     const menuRegisterBtn = document.getElementById('menuRegisterBtn');
-    
-    // ВАЖНО: Мы ищем кнопку выхода именно по ID 'menuLogoutBtn'
-    const menuLogoutBtn = document.getElementById('menuLogoutBtn'); 
+    const menuLogoutBtn = document.getElementById('menuLogoutBtn');
     
     const menuLangBtn = document.getElementById('menuLangBtn');
     const langSubmenu = document.getElementById('langSubmenu');
@@ -231,28 +222,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ВЫХОД (ИСПРАВЛЕННАЯ ЧАСТЬ) ---
+    // --- ВЫХОД ---
     if(menuLogoutBtn) {
         menuLogoutBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Остановить переход по ссылке #
+            e.preventDefault();
             localStorage.removeItem('user');
             updateAuthUI(null);
             mainMenu.classList.add('hidden');
         });
-    } else {
-        // Если кнопки нет в HTML (например, забыли вставить новый header)
-        console.warn('Кнопка выхода (menuLogoutBtn) не найдена в HTML');
     }
 
     // --- ПЕРЕКЛЮЧЕНИЕ ИНТЕРФЕЙСА ---
     function updateAuthUI(user) {
         if(user) {
-            // Пользователь вошел
+            // Вошли
             if(guestNav) guestNav.classList.add('hidden');
             if(userNav) userNav.classList.remove('hidden');
             if(menuUserName) menuUserName.textContent = user;
         } else {
-            // Гость
+            // Не вошли
             if(guestNav) guestNav.classList.remove('hidden');
             if(userNav) userNav.classList.add('hidden');
         }
@@ -260,4 +248,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const savedUser = localStorage.getItem('user');
     updateAuthUI(savedUser);
+
 });
