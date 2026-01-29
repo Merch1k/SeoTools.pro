@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-
-    <!-- Шапка -->
+    
+<!-- Шапка -->
     <header>
         <div class="header-left">
             <h1 class="header-title" data-lang-key="headerTitle">SEO Утилита</h1>
@@ -20,7 +20,7 @@
             <div class="logo">ACUS</div>
         </div>
         <div class="header-right">
-            <!-- Меню-бургер -->
+            <!-- Меню-бургер (ВСЕГДА ВИДНО) -->
             <div class="menu-container">
                 <button id="hamburgerBtn" class="hamburger-btn">
                     <span></span>
@@ -30,10 +30,35 @@
                 
                 <!-- Выпадающее меню -->
                 <div id="mainMenu" class="main-menu hidden">
-                    <a href="#" id="menuLoginBtn" data-lang-key="loginBtn">Войти</a>
-                    <a href="#" id="menuRegisterBtn" data-lang-key="registerBtn">Регистрация</a>
                     
-                    <!-- Пункт выбора языка -->
+                    <!-- БЛОК ДЛЯ ГОСТЯ (По умолчанию виден) -->
+                    <div id="guestNav">
+                        <a href="#" id="menuLoginBtn" data-lang-key="loginBtn">Войти</a>
+                        <a href="#" id="menuRegisterBtn" data-lang-key="registerBtn">Регистрация</a>
+                    </div>
+
+                    <!-- БЛОК ДЛЯ ПОЛЬЗОВАТЕЛЯ (Скрыт по умолчанию) -->
+                    <div id="userNav" class="hidden">
+                        <!-- Шапка профиля в меню -->
+                        <div class="menu-profile-header">
+                            <i class="fa fa-user-circle"></i>
+                            <span id="menuUserName">User</span>
+                        </div>
+                        
+                        <!-- Корзина -->
+                        <a href="#" id="menuCartBtn">
+                            <i class="fa fa-shopping-cart"></i> Корзина
+                        </a>
+
+                        <!-- Выход -->
+                        <a href="#" id="menuLogoutBtn" data-lang-key="logoutBtn">
+                            <i class="fa fa-sign-out-alt"></i> Выход
+                        </a>
+                        
+                        <div class="menu-divider"></div>
+                    </div>
+                    
+                    <!-- Язык (Виден всем) -->
                     <div class="submenu-container">
                         <a href="#" id="menuLangBtn" data-lang-key="languageBtn">Язык</a>
                         <div id="langSubmenu" class="lang-submenu hidden">
@@ -42,12 +67,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Профиль пользователя (появляется после входа) -->
-            <div id="userProfile" class="hidden">
-                <span id="userName">User</span>
-                <button id="logoutBtn" data-lang-key="logoutBtn">Выйти</button>
             </div>
         </div>
     </header>
@@ -123,6 +142,7 @@
 
 </body>
 </html>
+
 
 
 
