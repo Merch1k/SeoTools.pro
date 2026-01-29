@@ -7,6 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const TG_CHAT_ID = '5683927471'; 
 
     // --- СЛОВАРЬ ПЕРЕВОДОВ ---
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- НАСТРОЙКИ TELEGRAM ---
+    const TG_BOT_TOKEN = 'ВАШ_ТОКЕН'; 
+    const TG_CHAT_ID = 'ВАШ_ID';      
+
+    // --- СЛОВАРЬ ПЕРЕВОДОВ ---
     const translations = {
         ru: {
             languageBtn: "Язык", headerTitle: "SEO Утилита", loginBtn: "Войти", logoutBtn: "Выйти",
@@ -26,21 +33,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- ЭЛЕМЕНТЫ DOM ---
+    // --- ЭЛЕМЕНТЫ DOM (Поиск элементов в HTML) ---
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mainMenu = document.getElementById('mainMenu');
     
-    // Блоки навигации внутри меню
+    // Внутренние блоки меню
     const guestNav = document.getElementById('guestNav');
     const userNav = document.getElementById('userNav');
-    
-    // Элементы профиля в меню
     const menuUserName = document.getElementById('menuUserName');
     
-    // Кнопки меню
+    // Кнопки
     const menuLoginBtn = document.getElementById('menuLoginBtn');
     const menuRegisterBtn = document.getElementById('menuRegisterBtn');
-    const menuLogoutBtn = document.getElementById('menuLogoutBtn');
+    
+    // ВАЖНО: Мы ищем кнопку выхода именно по ID 'menuLogoutBtn'
+    const menuLogoutBtn = document.getElementById('menuLogoutBtn'); 
+    
     const menuLangBtn = document.getElementById('menuLangBtn');
     const langSubmenu = document.getElementById('langSubmenu');
 
@@ -56,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
         hamburgerBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             mainMenu.classList.toggle('hidden');
-            // Если открываем меню, закрываем подменю языка
             if (!mainMenu.classList.contains('hidden')) {
                 if(langSubmenu) langSubmenu.classList.add('hidden');
             }
@@ -82,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Закрытие при клике вне
     document.addEventListener('click', (e) => {
         if (mainMenu && !mainMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
             mainMenu.classList.add('hidden');
@@ -104,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     setLanguage(localStorage.getItem('language') || 'ru');
 
-    // --- ЗАГРУЗКА ТОВАРОВ (НОВАЯ СТРУКТУРА) ---
+    // --- ЗАГРУЗКА ТОВАРОВ ---
     const grid = document.getElementById('products-grid');
     if(grid) {
         fetch('db.json')
@@ -158,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ЛОГИКА ВХОДА (Чтение users.json) ---
+    // --- ЛОГИКА ВХОДА (users.json) ---
     if(loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -170,17 +176,12 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = '...';
             
             fetch('users.json')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
+                .then(r => r.json())
                 .then(users => {
                     const found = users.find(u => u.login === emailInput && u.password === passInput);
                     if(found) {
                         localStorage.setItem('user', found.login);
-                        updateAuthUI(found.login); // Обновляем меню
+                        updateAuthUI(found.login);
                         closeModal();
                         alert(`Добро пожаловать, ${found.login}!`);
                     } else {
@@ -188,8 +189,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 })
                 .catch(err => {
-                    console.error('Ошибка:', err);
-                    alert('Ошибка чтения users.json. Проверьте консоль (F12).');
+                    console.error(err);
+                    alert('Ошибка чтения users.json');
                 })
                 .finally(() => btn.textContent = originalText);
         });
@@ -230,31 +231,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ВЫХОД ---
+    // --- ВЫХОД (ИСПРАВЛЕННАЯ ЧАСТЬ) ---
     if(menuLogoutBtn) {
-        menuLogoutBtn.addEventListener('click', () => {
+        menuLogoutBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Остановить переход по ссылке #
             localStorage.removeItem('user');
             updateAuthUI(null);
-            // Закрываем меню после выхода
             mainMenu.classList.add('hidden');
         });
+    } else {
+        // Если кнопки нет в HTML (например, забыли вставить новый header)
+        console.warn('Кнопка выхода (menuLogoutBtn) не найдена в HTML');
     }
 
-    // --- ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ИНТЕРФЕЙСА (ГОСТЬ / ПОЛЬЗОВАТЕЛЬ) ---
+    // --- ПЕРЕКЛЮЧЕНИЕ ИНТЕРФЕЙСА ---
     function updateAuthUI(user) {
         if(user) {
-            // Если вошли:
-            if(guestNav) guestNav.classList.add('hidden'); // Скрываем "Войти/Рега"
-            if(userNav) userNav.classList.remove('hidden'); // Показываем "Профиль/Выход"
-            if(menuUserName) menuUserName.textContent = user; // Пишем имя
+            // Пользователь вошел
+            if(guestNav) guestNav.classList.add('hidden');
+            if(userNav) userNav.classList.remove('hidden');
+            if(menuUserName) menuUserName.textContent = user;
         } else {
-            // Если не вошли:
-            if(guestNav) guestNav.classList.remove('hidden'); // Показываем "Войти/Рега"
-            if(userNav) userNav.classList.add('hidden'); // Скрываем "Профиль"
+            // Гость
+            if(guestNav) guestNav.classList.remove('hidden');
+            if(userNav) userNav.classList.add('hidden');
         }
     }
 
-    // Проверка при загрузке
     const savedUser = localStorage.getItem('user');
     updateAuthUI(savedUser);
 });
