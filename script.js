@@ -48,21 +48,44 @@ document.addEventListener('DOMContentLoaded', () => {
         hamburgerBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             mainMenu.classList.toggle('hidden');
+            
+            // ФИКС: Если мы открываем главное меню, подменю языка должно быть ЗАКРЫТО
+            if (!mainMenu.classList.contains('hidden')) {
+                if(langSubmenu) langSubmenu.classList.add('hidden');
+            }
         });
     }
 
+    // 2. Открытие/Закрытие подменю языка
     if(menuLangBtn) {
         menuLangBtn.addEventListener('click', (e) => {
             e.preventDefault(); e.stopPropagation();
-            langSubmenu.classList.toggle('hidden');
+            if(langSubmenu) langSubmenu.classList.toggle('hidden');
         });
     }
 
-    // Закрытие меню при клике вне
+    // 3. Логика клика по выбору языка
+    if(langSubmenu) {
+        langSubmenu.addEventListener('click', (e) => {
+            if(e.target.tagName === 'A') {
+                e.preventDefault();
+                const selectedLang = e.target.dataset.lang;
+                
+                // Устанавливаем язык
+                setLanguage(selectedLang);
+                
+                // ФИКС: Закрываем ВСЕ меню сразу
+                mainMenu.classList.add('hidden');
+                langSubmenu.classList.add('hidden'); // <-- Вот этой строчки не хватало
+            }
+        });
+    }
+
+    // 4. Закрытие при клике вне меню
     document.addEventListener('click', (e) => {
         if (mainMenu && !mainMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
             mainMenu.classList.add('hidden');
-            if(langSubmenu) langSubmenu.classList.add('hidden');
+            if(langSubmenu) langSubmenu.classList.add('hidden'); // И это тоже закрываем
         }
     });
 
@@ -231,6 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ДИАГНОСТИКА
     console.log('Script loaded. Forms check:', loginForm ? 'OK' : 'FAIL', regFormRequest ? 'OK' : 'FAIL');
 });
+
 
 
 
