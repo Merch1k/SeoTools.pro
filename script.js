@@ -1,241 +1,253 @@
-// === КОНФИГУРАЦИЯ И ДАННЫЕ ===
-const products = [
-    {
-        id: 1,
-        title: "SEO Parser Pro",
-        desc: "Автоматический сбор данных и анализ конкурентов.",
-        price: 2500,
-        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&q=80",
-        file: "parser_pro_setup.exe"
-    },
-    {
-        id: 2,
-        title: "Rank Tracker AI",
-        desc: "Мониторинг позиций с использованием нейросетей.",
-        price: 3900,
-        image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=500&q=80",
-        file: "rank_tracker_v2.zip"
-    },
-    {
-        id: 3,
-        title: "Backlink Manager",
-        desc: "Управление ссылочной массой и аудит.",
-        price: 1990,
-        image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80",
-        file: "backlink_manager.dmg"
-    },
-    {
-        id: 4,
-        title: "Complete Suite",
-        desc: "Полный доступ ко всем инструментам (VIP).",
-        price: 7500,
-        image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=500&q=80",
-        file: "nexus_suite_full.rar"
-    }
-];
-
-// Глобальное состояние
-let state = {
-    user: localStorage.getItem('nexus_user') || null,
-    library: JSON.parse(localStorage.getItem('nexus_library')) || [] // Массив ID купленных товаров
-};
-
-// === ИНИЦИАЛИЗАЦИЯ ===
 document.addEventListener('DOMContentLoaded', () => {
-    updateAuthUI();
-    renderProducts();
-    renderLibrary();
-});
 
-// === РЕНДЕРИНГ ТОВАРОВ ===
-function renderProducts() {
-    const grid = document.getElementById('productsGrid');
-    grid.innerHTML = '';
+    // --- !!! НАСТРОЙКИ TELEGRAM !!! ---
+    // Вставьте сюда токен, который дал @BotFather
+    const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; 
+    // Вставьте сюда цифры вашего ID (от @userinfobot)
+    const TG_CHAT_ID = '5683927471'; 
 
-    products.forEach(product => {
-        const isOwned = state.library.includes(product.id);
-        
-        const card = document.createElement('div');
-        card.classList.add('card');
-        card.innerHTML = `
-            <div class="card-img">
-                <img src="${product.image}" alt="${product.title}">
-            </div>
-            <div class="card-info">
-                <h3>${product.title}</h3>
-                <p>${product.desc}</p>
-                ${getButtonHtml(product, isOwned)}
-            </div>
-        `;
-        grid.appendChild(card);
-    });
-}
+    // --- СЛОВАРЬ ПЕРЕВОДОВ ---
+    const translations = {
+        ru: {
+            languageBtn: "Язык", headerTitle: "SEO Мультитул", loginBtn: "Войти", logoutBtn: "Выйти",
+            registerBtn: "Регистрация", registerTitle: "Регистрация", sendRequestBtn: "Отправить заявку",
+            videoTitle: "Посмотрите наш продукт в действии", multitoolTitle: "SEO Мультитул",
+            multitoolDesc: "Наш инструмент анализирует ключевые слова, отслеживает позиции и помогает вам обойти конкурентов.",
+            loading: "Загрузка товаров...", authTitle: "Авторизация", passwordPlaceholder: "Пароль", authBtn: "Войти",
+            demoMode: "Введите данные для входа", developedIn: "Разработан в 2026.", telegramBtn: "Наш Telegram канал"
+        },
+        en: {
+            languageBtn: "Language", headerTitle: "SEO Multitool", loginBtn: "Login", logoutBtn: "Logout",
+            registerBtn: "Registration", registerTitle: "Registration", sendRequestBtn: "Send Request",
+            videoTitle: "See our product in action", multitoolTitle: "SEO Multitool",
+            multitoolDesc: "Our tool analyzes keywords, tracks rankings, and helps you outperform competitors.",
+            loading: "Loading products...", authTitle: "Authorization", passwordPlaceholder: "Password", authBtn: "Login",
+            demoMode: "Enter login credentials", developedIn: "Developed in 2026.", telegramBtn: "Our Telegram channel"
+        }
+    };
 
-function getButtonHtml(product, isOwned) {
-    if (isOwned) {
-        return `<button class="price-btn download" onclick="downloadFile('${product.file}')">
-                    <i class="fa fa-download"></i> Скачать
-                </button>`;
-    } else {
-        return `<button class="price-btn" onclick="initiatePurchase(${product.id})">
-                    Купить за ${product.price} ₽
-                </button>`;
-    }
-}
-
-// === ЛОГИКА АВТОРИЗАЦИИ ===
-const loginForm = document.getElementById('loginForm');
-
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const username = document.getElementById('loginUser').value;
+    // --- ЭЛЕМЕНТЫ DOM ---
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mainMenu = document.getElementById('mainMenu');
     
-    // Имитация входа
-    state.user = username;
-    localStorage.setItem('nexus_user', username);
+    // Внутренние блоки меню
+    const guestNav = document.getElementById('guestNav');
+    const userNav = document.getElementById('userNav');
+    const menuUserName = document.getElementById('menuUserName');
     
-    closeModal('loginModal');
-    updateAuthUI();
-    showToast(`Добро пожаловать, ${username}`);
-});
+    // Кнопки
+    const menuLoginBtn = document.getElementById('menuLoginBtn');
+    const menuRegisterBtn = document.getElementById('menuRegisterBtn');
+    const menuLogoutBtn = document.getElementById('menuLogoutBtn');
+    
+    const menuLangBtn = document.getElementById('menuLangBtn');
+    const langSubmenu = document.getElementById('langSubmenu');
 
-function logout() {
-    state.user = null;
-    localStorage.removeItem('nexus_user');
-    updateAuthUI();
-    showToast('Вы вышли из системы');
-}
+    // Модальные окна
+    const authModal = document.getElementById('authModal');
+    const regModal = document.getElementById('regModal');
+    const loginForm = document.getElementById('loginForm');
+    const regFormRequest = document.getElementById('regFormRequest');
+    const closeBtns = document.querySelectorAll('.close, .close-reg');
 
-function updateAuthUI() {
-    const authBtns = document.getElementById('authButtons');
-    const userBtns = document.getElementById('userButtons');
-    const libSection = document.getElementById('librarySection');
-    const usernameDisplay = document.getElementById('displayUsername');
-
-    if (state.user) {
-        authBtns.classList.add('hidden');
-        userBtns.classList.remove('hidden');
-        libSection.classList.remove('hidden');
-        usernameDisplay.textContent = state.user;
-    } else {
-        authBtns.classList.remove('hidden');
-        userBtns.classList.add('hidden');
-        libSection.classList.add('hidden');
-    }
-}
-
-// === ЛОГИКА ПОКУПКИ ===
-let currentProcessingId = null;
-
-function initiatePurchase(id) {
-    if (!state.user) {
-        openModal('loginModal');
-        showToast('Сначала войдите в аккаунт');
-        return;
+    // --- УПРАВЛЕНИЕ МЕНЮ ---
+    if(hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mainMenu.classList.toggle('hidden');
+            if (!mainMenu.classList.contains('hidden')) {
+                if(langSubmenu) langSubmenu.classList.add('hidden');
+            }
+        });
     }
 
-    currentProcessingId = id;
-    const product = products.find(p => p.id === id);
-    
-    // Заполняем модалку оплаты
-    document.getElementById('paymentItemName').textContent = `Товар: ${product.title}`;
-    document.getElementById('paymentItemPrice').textContent = `${product.price} ₽`;
-    
-    openModal('paymentModal');
-}
-
-// Обработка формы оплаты
-document.getElementById('paymentForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const btnText = document.getElementById('payBtnText');
-    const spinner = document.getElementById('paySpinner');
-    
-    // Анимация загрузки
-    btnText.classList.add('hidden');
-    spinner.classList.remove('hidden');
-    
-    setTimeout(() => {
-        // Успешная оплата
-        completePurchase();
-        
-        // Сброс кнопки
-        btnText.classList.remove('hidden');
-        spinner.classList.add('hidden');
-        closeModal('paymentModal');
-        document.getElementById('paymentForm').reset();
-    }, 2000); // 2 секунды задержка
-});
-
-function completePurchase() {
-    if (!state.library.includes(currentProcessingId)) {
-        state.library.push(currentProcessingId);
-        localStorage.setItem('nexus_library', JSON.stringify(state.library));
-        
-        renderProducts(); // Обновить кнопки на "Скачать"
-        renderLibrary();  // Добавить в список
-        showToast('Оплата прошла успешно!');
-        scrollToLibrary();
-    }
-}
-
-// === ЛИЧНЫЙ КАБИНЕТ (БИБЛИОТЕКА) ===
-function renderLibrary() {
-    const libGrid = document.getElementById('libraryGrid');
-    libGrid.innerHTML = '';
-
-    if (state.library.length === 0) {
-        libGrid.innerHTML = '<p class="empty-text" style="color:#666">Библиотека пуста.</p>';
-        return;
+    if(menuLangBtn) {
+        menuLangBtn.addEventListener('click', (e) => {
+            e.preventDefault(); e.stopPropagation();
+            if(langSubmenu) langSubmenu.classList.toggle('hidden');
+        });
     }
 
-    state.library.forEach(id => {
-        const product = products.find(p => p.id === id);
-        if (product) {
-            const item = document.createElement('div');
-            item.className = 'lib-item';
-            item.innerHTML = `
-                <div>
-                    <strong style="color:white">${product.title}</strong>
-                    <div style="font-size:0.8rem; color:#666">Лицензия активна</div>
-                </div>
-                <a href="#" class="download-link" onclick="downloadFile('${product.file}')">
-                    <i class="fa fa-cloud-download-alt"></i> Скачать
-                </a>
-            `;
-            libGrid.appendChild(item);
+    if(langSubmenu) {
+        langSubmenu.addEventListener('click', (e) => {
+            if(e.target.tagName === 'A') {
+                e.preventDefault();
+                const selectedLang = e.target.dataset.lang;
+                setLanguage(selectedLang);
+                mainMenu.classList.add('hidden');
+                langSubmenu.classList.add('hidden');
+            }
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        if (mainMenu && !mainMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+            mainMenu.classList.add('hidden');
+            if(langSubmenu) langSubmenu.classList.add('hidden');
         }
     });
-}
 
-// === УТИЛИТЫ ===
-function openModal(id) {
-    document.getElementById(id).classList.remove('hidden');
-}
+    // --- СМЕНА ЯЗЫКА ---
+    const setLanguage = (lang) => {
+        localStorage.setItem('language', lang);
+        document.querySelectorAll('[data-lang-key]').forEach(elem => {
+            const key = elem.dataset.langKey;
+            if (translations[lang][key]) elem.textContent = translations[lang][key];
+        });
+        document.querySelectorAll('[data-lang-placeholder]').forEach(elem => {
+            const key = elem.dataset.langPlaceholder;
+            if (translations[lang][key]) elem.placeholder = translations[lang][key];
+        });
+    };
+    setLanguage(localStorage.getItem('language') || 'ru');
 
-function closeModal(id) {
-    document.getElementById(id).classList.add('hidden');
-}
+    // --- ЗАГРУЗКА ТОВАРОВ ---
+    const grid = document.getElementById('products-grid');
+    if(grid) {
+        fetch('db.json')
+            .then(res => res.json())
+            .then(data => {
+                grid.innerHTML = '';
+                data.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    let videoHTML = product.video ? `<div class="video-container"><video controls muted><source src="${product.video}" type="video/mp4"></video></div>` : '';
 
-function showToast(msg) {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.classList.remove('hidden');
-    setTimeout(() => toast.classList.add('hidden'), 3000);
-}
-
-function scrollToLibrary() {
-    document.getElementById('librarySection').scrollIntoView({ behavior: 'smooth' });
-}
-
-function downloadFile(filename) {
-    showToast(`Началась загрузка: ${filename}`);
-    // Здесь реальная логика скачивания, для демо просто алерт
-}
-
-// Закрытие по клику вне окна
-window.onclick = function(event) {
-    if (event.target.classList.contains('modal')) {
-        event.target.classList.add('hidden');
+                    card.innerHTML = `
+                        <div class="card-img-wrapper">
+                            <img src="${product.image}" alt="${product.title}">
+                            ${videoHTML}
+                        </div>
+                        <div class="card-info-block">
+                            <h3>${product.title}</h3>
+                            <p>${product.description}</p>
+                        </div>
+                        <button class="price-button">${product.price}</button>
+                    `;
+                    grid.appendChild(card);
+                });
+            })
+            .catch(err => {
+                grid.innerHTML = '<p style="color:red">Ошибка db.json</p>';
+                console.error(err);
+            });
     }
-}
+
+    // --- МОДАЛЬНЫЕ ОКНА ---
+    function closeModal() {
+        if(authModal) authModal.classList.add('hidden');
+        if(regModal) regModal.classList.add('hidden');
+    }
+
+    closeBtns.forEach(btn => btn.addEventListener('click', closeModal));
+
+    if(menuLoginBtn) {
+        menuLoginBtn.addEventListener('click', () => {
+            if(authModal) authModal.classList.remove('hidden');
+            if(mainMenu) mainMenu.classList.add('hidden');
+        });
+    }
+
+    if(menuRegisterBtn) {
+        menuRegisterBtn.addEventListener('click', () => {
+            if(regModal) regModal.classList.remove('hidden');
+            if(mainMenu) mainMenu.classList.add('hidden');
+        });
+    }
+
+    // --- ЛОГИКА ВХОДА (users.json) ---
+    if(loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('loginEmail').value.trim();
+            const passInput = document.getElementById('loginPass').value.trim();
+            const btn = loginForm.querySelector('button');
+            const originalText = btn.textContent;
+
+            btn.textContent = '...';
+            
+            fetch('users.json')
+                .then(r => r.json())
+                .then(users => {
+                    const found = users.find(u => u.login === emailInput && u.password === passInput);
+                    if(found) {
+                        localStorage.setItem('user', found.login);
+                        updateAuthUI(found.login);
+                        closeModal();
+                        alert(`Добро пожаловать, ${found.login}!`);
+                    } else {
+                        alert('Неверный логин или пароль');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Ошибка чтения users.json');
+                })
+                .finally(() => btn.textContent = originalText);
+        });
+    }
+
+    // --- ЛОГИКА РЕГИСТРАЦИИ (TELEGRAM) ---
+    if(regFormRequest) {
+        regFormRequest.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const login = document.getElementById('newLogin').value;
+            const pass = document.getElementById('newPass').value;
+            const btn = regFormRequest.querySelector('button');
+            
+            btn.textContent = 'Отправка...';
+            btn.disabled = true;
+
+            const msg = `🚀 <b>НОВАЯ ЗАЯВКА</b>\n👤: <code>${login}</code>\n🔑: <code>${pass}</code>`;
+
+            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg, parse_mode: 'HTML' })
+            })
+            .then(r => {
+                if(r.ok) {
+                    alert('Заявка отправлена!');
+                    closeModal();
+                    regFormRequest.reset();
+                } else {
+                    alert('Ошибка Telegram API');
+                }
+            })
+            .catch(() => alert('Ошибка сети'))
+            .finally(() => {
+                btn.textContent = 'Отправить заявку';
+                btn.disabled = false;
+            });
+        });
+    }
+
+    // --- ВЫХОД ---
+    if(menuLogoutBtn) {
+        menuLogoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('user');
+            updateAuthUI(null);
+            mainMenu.classList.add('hidden');
+        });
+    }
+
+    // --- ПЕРЕКЛЮЧЕНИЕ ИНТЕРФЕЙСА ---
+    function updateAuthUI(user) {
+        if(user) {
+            // Вошли
+            if(guestNav) guestNav.classList.add('hidden');
+            if(userNav) userNav.classList.remove('hidden');
+            if(menuUserName) menuUserName.textContent = user;
+        } else {
+            // Не вошли
+            if(guestNav) guestNav.classList.remove('hidden');
+            if(userNav) userNav.classList.add('hidden');
+        }
+    }
+
+    const savedUser = localStorage.getItem('user');
+    updateAuthUI(savedUser);
+
+});
+
