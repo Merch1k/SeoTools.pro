@@ -121,28 +121,28 @@
         </div>
     </div>
 
-    <!-- ОПЛАТА (АВТОМАТИЗИРОВАННАЯ) -->
+<!-- ОПЛАТА (БЕСПЛАТНАЯ АВТОМАТИКА) -->
     <div id="paymentModal" class="modal hidden">
-        <div class="modal-content payment-style" style="border: 1px solid var(--green);">
+        <div class="modal-content payment-style" style="border: 1px solid #4ade80; width: 360px;">
             <span class="close-payment">&times;</span>
-            <h2 style="color: var(--green); margin-bottom: 5px;">Оплата TON</h2>
-            <p id="payName" style="font-weight: bold;">...</p>
-            <div id="payAmount" style="font-size: 2.2rem; margin-bottom: 20px; font-weight: 800;">0 TON</div>
+            <h2 style="color: #4ade80; margin-bottom: 5px;">Оплата TON</h2>
+            <p id="payName" style="font-weight: bold; font-size: 1rem;">...</p>
+            <div id="payAmount" style="font-size: 2rem; margin-bottom: 20px; font-weight: 800; color: #fff;">0 TON</div>
             
-            <div style="text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; border: 1px solid var(--glass-border);">
+            <div style="text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px;">
                 <label style="font-size: 0.7rem; color: #94a3b8;">АДРЕС КОШЕЛЬКА:</label>
-                <input type="text" id="walletAddr" readonly style="font-size: 0.8rem; margin-bottom: 15px;">
+                <input type="text" id="walletAddr" readonly style="font-size: 0.75rem; margin-bottom: 15px; background: #0f172a; border: 1px solid #334155;">
                 
-                <label style="font-size: 0.7rem; color: #ffcc00; font-weight: bold;">КОММЕНТАРИЙ К ПЛАТЕЖУ (ОБЯЗАТЕЛЬНО):</label>
-                <input type="text" id="payMemo" readonly style="font-size: 1.4rem; font-weight: 800; color: var(--green); border: 2px solid var(--green); text-align: center;">
+                <label style="font-size: 0.7rem; color: #ffcc00; font-weight: bold;">КОММЕНТАРИЙ (ОБЯЗАТЕЛЬНО):</label>
+                <input type="text" id="payMemo" readonly style="font-size: 1.4rem; font-weight: 800; color: #4ade80; border: 2px solid #4ade80; text-align: center; background: #0f172a;">
                 
-                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 15px; line-height: 1.4;">
-                    Отправьте указанную сумму с <b>точным</b> комментарием. Доступ откроется автоматически сразу после подтверждения транзакции сетью (обычно 10-20 сек).
+                <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 15px; line-height: 1.4;">
+                    Отправьте TON с этим комментарием. Система проверяет блокчейн каждые 15 сек. Как только деньги придут, доступ откроется.
                 </p>
             </div>
 
-            <div style="margin-top: 20px; color: var(--green); font-size: 0.9rem;">
-                <i class="fa fa-sync fa-spin"></i> Ожидание транзакции в блокчейне...
+            <div style="margin-top: 20px; color: #4ade80; font-size: 0.8rem;">
+                <i class="fa fa-circle-notch fa-spin"></i> Ожидание транзакции...
             </div>
         </div>
     </div>
@@ -158,3 +158,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
