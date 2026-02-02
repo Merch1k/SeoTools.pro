@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
 
 :root {
-    --bg: #000000;
-    --card-surface: #070708;
-    --accent: #00ff8f;
-    --accent-glow: rgba(0, 255, 143, 0.2);
-    --border: rgba(255, 255, 255, 0.05);
-    --text-silver: #f1f5f9;
+    --bg: #010101;
+    --surface: #0a0a0b;
+    --accent: #ffffff; /* Чистая платина */
+    --accent-dim: #00ff8f; /* Элемент доверия */
+    --border: rgba(255, 255, 255, 0.06);
+    --text-muted: #66666e;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
@@ -15,147 +15,113 @@ html { scroll-behavior: smooth; background: #000; }
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg);
-    color: var(--text-silver);
+    color: #fff;
     overflow-x: hidden;
+    user-select: none;
 }
 
 /* --- 🌌 ГЛУБОКАЯ АТМОСФЕРА --- */
-.vfx-layer { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
-.vfx-grain {
-    position: absolute; inset: 0; opacity: 0.02;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+.vfx-ambient { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+.vfx-ambient::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% -10%, #151515 0%, #000 100%);
 }
-.vfx-aurora {
-    position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
-    width: 60vw; height: 40vh; background: radial-gradient(circle, rgba(0, 255, 143, 0.07) 0%, transparent 70%);
+.vfx-noise {
+    position: absolute; inset: 0; opacity: 0.02;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* --- 💎 ARCHITECTURAL HEADER --- */
 header {
     position: sticky; top: 0; z-index: 2000;
-    background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(40px);
+    background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(40px);
     border-bottom: 0.5px solid var(--border);
 }
 .header-wrap {
-    max-width: 1500px; margin: 0 auto; padding: 25px 40px;
+    max-width: 1500px; margin: 0 auto; padding: 20px 40px;
     display: flex; justify-content: space-between; align-items: center;
 }
-.logo { font-size: 1.8rem; font-weight: 900; letter-spacing: -3px; color: #fff; text-transform: uppercase; }
-
-.nav-btn { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 8px; }
-.nav-btn span { width: 32px; height: 1px; background: #fff; transition: 0.4s; }
-
-/* --- 📦 THE MONOLITH GRID --- */
-.container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
-.hero-header { padding: 120px 0 60px; }
-.hero-header h1 {
-    font-size: clamp(3.5rem, 8vw, 6rem); font-weight: 900; letter-spacing: -6px;
-    line-height: 0.85; margin-bottom: 25px; color: #fff;
+.logo {
+    font-size: 2rem; font-weight: 900; letter-spacing: -3px; color: #fff;
+    background: linear-gradient(to right, #fff, #555); -webkit-background-clip: text; color: transparent;
 }
-.hero-dash { width: 80px; height: 1px; background: var(--accent); box-shadow: 0 0 20px var(--accent); }
 
-.premium-grid {
+.menu-trigger { background: none; border: none; cursor: pointer; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.menu-trigger span { width: 32px; height: 1px; background: #fff; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* --- 📦 THE IMPERIAL GRID --- */
+.container { max-width: 1300px; margin: 0 auto; padding: 0 40px; }
+.hero-sec { padding: 100px 0 60px; text-align: left; }
+.hero-sec h1 {
+    font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; letter-spacing: -6px;
+    line-height: 0.85; margin-bottom: 30px; color: #fff;
+}
+.hero-sec p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; }
+
+.main-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 45px;
+    gap: 40px;
     padding-bottom: 100px;
 }
 
-/* --- 💎 THE CARD (HYPER-LUXURY) --- */
-.card-scene { perspective: 2000px; }
-.card {
-    position: relative; background: var(--card-surface); border-radius: 40px;
+/* --- 💎 THE CARD (QUANTUM DESIGN) --- */
+.card-unit {
+    position: relative; background: var(--surface); border-radius: 40px;
     border: 0.5px solid var(--border); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex; flex-direction: column; height: 100%; overflow: hidden;
     transform-style: preserve-3d;
 }
-.card:hover { transform: translateY(-15px) rotateX(2deg); border-color: rgba(255,255,255,0.2); }
-
-/* Эффект "Laser Edge" */
-.card::after {
-    content: ''; position: absolute; inset: -1px; border-radius: 41px;
-    background: conic-gradient(from var(--a), transparent 75%, var(--accent), transparent);
-    animation: laser 4s linear infinite; opacity: 0; transition: 0.5s; z-index: -1;
+.card-unit:hover {
+    transform: translateY(-15px) scale(1.02);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.9);
 }
-.card:hover::after { opacity: 1; }
-@property --a { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
-@keyframes laser { to { --a: 360deg; } }
 
-.card-body { padding: 40px; display: flex; flex-direction: column; height: 100%; }
+/* Adaptive Light Ray (Свет следует за мышкой) */
+.card-unit::before {
+    content: ''; position: absolute; inset: 0; border-radius: 40px;
+    background: radial-gradient(circle at var(--x) var(--y), rgba(255,255,255,0.15) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.4s; pointer-events: none;
+}
+.card-unit:hover::before { opacity: 1; }
+
+.card-inner { padding: 35px; display: flex; flex-direction: column; height: 100%; }
 .card-media {
     width: 100%; aspect-ratio: 16/10; border-radius: 20px; overflow: hidden;
     margin-bottom: 30px; border: 0.5px solid var(--border); background: #000;
 }
 .card-media img {
-    width: 100%; height: 100%; object-fit: cover; opacity: 0.5; grayscale: 1;
-    transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 100%; height: 100%; object-fit: cover; opacity: 0.6; grayscale: 1;
+    transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.card:hover .card-media img { transform: scale(1.1); opacity: 1; grayscale: 0; }
+.card-unit:hover .card-media img { transform: scale(1.1); opacity: 1; grayscale: 0; }
 
-.card-title { font-size: 1.7rem; font-weight: 800; margin-bottom: 15px; letter-spacing: -1.5px; color: #fff; transform: translateZ(30px); }
-.card-desc { color: #555; font-size: 0.95rem; line-height: 1.6; margin-bottom: 35px; flex-grow: 1; transform: translateZ(20px); }
+.card-title { font-size: 1.7rem; font-weight: 800; margin-bottom: 15px; letter-spacing: -1.5px; color: #fff; }
+.card-desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 35px; flex-grow: 1; }
 
 .btn-premium {
     width: 100%; padding: 22px; border-radius: 18px; border: none;
     background: #fff; color: #000; font-weight: 900; font-size: 0.85rem;
     cursor: pointer; text-transform: uppercase; letter-spacing: 3px;
-    transition: 0.4s; transform: translateZ(40px);
+    transition: 0.4s;
 }
-.btn-premium:hover { background: var(--accent); transform: translateZ(60px) scale(1.05); }
+.btn-premium:hover { background: var(--accent-dim); transform: scale(1.03); box-shadow: 0 0 40px rgba(0, 255, 143, 0.2); }
 .btn-premium.owned { background: #111; color: #444; border: 0.5px solid var(--border); cursor: default; }
 
-/* --- 📱 MOBILE 2-COLUMN OPTIMIZATION --- */
+/* --- 📱 MOBILE ADAPTATION (PERFECTION) --- */
 @media (max-width: 1100px) {
-    .premium-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-    .container { padding: 0 15px; }
-    .hero-header { padding: 80px 0 40px; }
-    .card { border-radius: 28px; }
-    .card-body { padding: 15px; }
-    .card-media { border-radius: 14px; margin-bottom: 15px; aspect-ratio: 1/1; }
-    .card-title { font-size: 1rem; margin-bottom: 5px; }
-    .card-desc { font-size: 0.75rem; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 15px; }
+    .main-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .container { padding: 0 12px; }
+    .hero-sec { padding: 60px 0 30px; }
+    .card-unit { border-radius: 24px; }
+    .card-inner { padding: 15px; }
+    .card-media { border-radius: 14px; margin-bottom: 12px; aspect-ratio: 1/1; }
+    .card-title { font-size: 1rem; margin-bottom: 6px; }
+    .card-desc { font-size: 0.75rem; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; }
     .btn-premium { padding: 12px; font-size: 0.7rem; border-radius: 10px; }
 }
 
 /* --- 🎥 CINEMATIC VIDEO --- */
-.video-theatre { margin-bottom: 100px; border-radius: 50px; overflow: hidden; border: 0.5px solid var(--border); box-shadow: 0 100px 200px #000; }
-.video-theatre video { width: 100%; display: block; aspect-ratio: 21/9; object-fit: cover; }
-
-/* --- 📂 VAULT NAVIGATION --- */
-.nav-vault { position: fixed; inset: 0; z-index: 3000; display: none; }
-.nav-vault.active { display: flex; }
-.vault-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(60px); }
-.vault-panel {
-    position: absolute; right: 0; top: 0; bottom: 0; width: 380px;
-    background: #000; border-left: 0.5px solid var(--border);
-    padding: 100px 50px; transform: translateX(100%); transition: 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.nav-vault.active .vault-panel { transform: translateX(0); }
-.nav-link { 
-    display: flex; align-items: center; gap: 20px; padding: 25px; 
-    color: #fff; text-decoration: none; font-size: 1.4rem; font-weight: 800;
-    border-radius: 25px; transition: 0.3s;
-}
-.nav-link:hover { background: #08080a; color: var(--accent); transform: translateX(-15px); }
-
-/* --- 💳 SOVEREIGN PAYMENT --- */
-.modal-wrap { position: fixed; inset: 0; z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
-.modal-wrap.active { display: flex; }
-.vault-card {
-    background: #050505; border: 0.5px solid var(--border); border-radius: 50px;
-    padding: 60px; width: 100%; max-width: 500px; text-align: center;
-    box-shadow: 0 100px 200px rgba(0,0,0,1); position: relative;
-}
-.vault-header { font-size: 0.7rem; letter-spacing: 6px; color: #444; text-transform: uppercase; margin-bottom: 40px; }
-.vault-price { font-size: 4rem; font-weight: 900; color: #fff; margin-bottom: 40px; letter-spacing: -5px; }
-.vault-address {
-    background: #000; border: 0.5px solid var(--border); padding: 25px;
-    border-radius: 25px; margin-bottom: 30px; cursor: pointer; transition: 0.3s;
-}
-.vault-address:hover { border-color: var(--accent); }
-.vault-address code { color: var(--accent); font-family: monospace; font-size: 1.1rem; }
-.btn-verify { width: 100%; padding: 25px; background: #fff; color: #000; border-radius: 25px; border: none; font-weight: 900; font-size: 1.1rem; cursor: pointer; letter-spacing: 2px; }
-input { width: 100%; padding: 25px; margin-top: 15px; background: #000; border: 0.5px solid var(--border); border-radius: 20px; color: #fff; text-align: center; font-size: 1.1rem; outline: none; }
-input:focus { border-color: #fff; }
-.close-btn { position: absolute; top: 40px; right: 40px; font-size: 3rem; color: #fff; cursor: pointer; font-weight: 100; }
-.hidden { display: none !important; }
+.video-theatre { margin-bottom: 80px; border-radius: 40px; overflow: hidden; border: 0.5px solid var(--border); box-shadow: 0 60px 120px #000; }
+.video-theatre video { width: 100%; dis
