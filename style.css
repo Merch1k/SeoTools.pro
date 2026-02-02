@@ -113,7 +113,10 @@ header {
 /* Меню языка */
 .lang-submenu {
     position: absolute;
-    top: 0; right: 100%; 
+    /* На ПК выпадает слева */
+    top: 0; 
+    right: 100%; 
+    
     background: rgba(30, 41, 59, 0.95);
     backdrop-filter: blur(15px);
     border: 1px solid var(--glass-border);
@@ -426,14 +429,17 @@ footer {
 }
 
 @media (max-width: 768px) {
-    header { padding: 0.8rem 1rem; }
-    .hero { padding: 1.5rem 1rem; }
-    .logo { font-size: 1.6rem; }
-
-    /* Сетка для телефона */
-    .grid {
-        grid-template-columns: repeat(2, 1fr); 
-        gap: 1rem;
+    .lang-submenu {
+        /* На телефоне выпадает вниз под кнопкой */
+        top: 100%;
+        right: 0;
+        margin-right: 0;
+        margin-top: 5px;
+        border-radius: 12px;
+        position: relative; /* Чтобы не перекрывало другие элементы криво */
+        width: 100%;
+        box-shadow: none;
+        background: rgba(0, 0, 0, 0.2);
     }
     
     .card:last-child { grid-column: auto; }
@@ -465,3 +471,4 @@ footer {
     .grid { gap: 0.8rem; }
     .logo { font-size: 1.4rem; }
 }
+
