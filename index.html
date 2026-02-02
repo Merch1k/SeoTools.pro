@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ACUS — High Sovereign Access</title>
+    <title>ACUS — Sovereign Premium Access</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="vfx-core">
+    <div class="vfx-layer">
         <div class="vfx-grain"></div>
+        <div class="vfx-aurora"></div>
     </div>
 
     <header>
         <div class="header-wrap">
             <div class="logo">ACUS</div>
-            <button id="openVault" class="nav-toggle">
+            <button id="navOpen" class="nav-btn">
                 <span></span>
                 <span></span>
             </button>
@@ -24,70 +25,77 @@
     </header>
 
     <!-- NAVIGATION VAULT -->
-    <div id="vaultNav" class="vault-nav">
-        <div class="vault-blur"></div>
+    <div id="navVault" class="nav-vault">
+        <div class="vault-overlay"></div>
         <div class="vault-panel">
-            <span class="close-vault" id="closeVault">&times;</span>
+            <span class="close-btn" id="navClose">&times;</span>
             
-            <div id="authGuest">
-                <a href="#" id="actLogin" class="nav-link"><i class="fa fa-unlock-alt"></i> <span data-lang-key="loginBtn">Вход</span></a>
+            <div id="guestBox">
+                <a href="#" id="actLogin" class="nav-link"><i class="fa fa-shield-alt"></i> <span data-lang-key="loginBtn">Войти</span></a>
                 <a href="#" id="actReg" class="nav-link"><i class="fa fa-plus-circle"></i> <span data-lang-key="registerBtn">Регистрация</span></a>
             </div>
 
-            <div id="authUser" class="hidden">
-                <div style="font-size: 3rem; font-weight: 900; color: #fff; margin-bottom: 50px;" id="userName">User</div>
-                <a href="#" id="actLib" class="nav-link"><i class="fa fa-hdd"></i> <span data-lang-key="myPurchases">Арсенал</span></a>
+            <div id="userBox" class="hidden">
+                <div style="font-size: 2.5rem; font-weight: 900; margin-bottom: 40px; color: #fff;" id="userName">User</div>
+                <a href="#" id="actLib" class="nav-link"><i class="fa fa-layer-group"></i> <span data-lang-key="myPurchases">Арсенал</span></a>
                 <a href="#" id="actLogout" class="nav-link"><i class="fa fa-power-off"></i> <span data-lang-key="logoutBtn">Выход</span></a>
             </div>
 
-            <div class="lang-wrap">
-                <button data-lang="ru" class="l-node active">RU</button>
-                <button data-lang="en" class="l-node">EN</button>
+            <div style="margin-top: auto; display: flex; gap: 20px;">
+                <button data-lang="ru" class="node-lang active">RU</button>
+                <button data-lang="en" class="node-lang">EN</button>
             </div>
         </div>
     </div>
 
     <main class="container">
         <div class="hero-header">
-            <div class="hero-status">Status: Sovereign Ready</div>
-            <h1 data-lang-key="headerTitle">Premium Ecosystem</h1>
+            <h1 data-lang-key="headerTitle">Elite Systems</h1>
+            <div class="hero-dash"></div>
         </div>
 
+        <!-- VIDEO THEATRE -->
+        <section class="video-theatre">
+            <video controls muted poster="Pins.png">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            </video>
+        </section>
+
         <!-- PRODUCT GRID -->
-        <div id="monolithGrid" class="main-grid">
+        <div id="monolithGrid" class="premium-grid">
             <!-- JS Inject -->
         </div>
     </main>
 
-    <!-- LOGIN MODAL -->
-    <div id="authModal" class="modal-overlay">
-        <div class="vault-blur"></div>
-        <div class="modal-box">
-            <span class="close-vault" id="authClose">&times;</span>
-            <div class="modal-header">Identity Verification</div>
+    <!-- AUTH MODAL -->
+    <div id="authModal" class="modal-wrap">
+        <div class="vault-overlay"></div>
+        <div class="vault-card">
+            <span class="close-btn" id="authClose">&times;</span>
+            <div class="vault-header">Identity Verification</div>
             <form id="authForm">
                 <input type="text" id="inpUser" placeholder="ACCESS_ID" required>
-                <input type="password" id="inpPass" placeholder="SECURITY_KEY" required>
-                <button type="submit" class="btn-confirm" data-lang-key="authBtn">Authenticate</button>
+                <input type="password" id="inpPass" placeholder="SECURE_KEY" required>
+                <button type="submit" class="btn-verify" data-lang-key="authBtn">Authenticate</button>
             </form>
         </div>
     </div>
 
     <!-- PAYMENT MODAL -->
-    <div id="payModal" class="modal-overlay">
-        <div class="vault-blur"></div>
-        <div class="modal-box">
-            <span class="close-vault" id="payClose">&times;</span>
-            <div class="modal-header" id="pTitle">System Activation</div>
-            <div id="pAmount" class="modal-price">0 ADI</div>
+    <div id="payModal" class="modal-wrap">
+        <div class="vault-overlay"></div>
+        <div class="vault-card">
+            <span class="close-btn" id="payClose">&times;</span>
+            <div class="vault-header" id="pTitle">System Asset Transfer</div>
+            <div id="pAmount" class="vault-price">0 ADI</div>
             
-            <div class="wallet-plate" id="copyAddr">
+            <div class="vault-address" id="copyAddr">
                 <code>UQBK...3xL9</code>
             </div>
 
             <form id="payForm">
                 <input type="text" id="txHash" placeholder="TRANSACTION_HASH" required>
-                <button type="submit" class="btn-confirm" data-lang-key="checkBtn">Verify Asset Transfer</button>
+                <button type="submit" class="btn-verify" data-lang-key="checkBtn">Verify Transfer</button>
             </form>
         </div>
     </div>
