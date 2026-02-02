@@ -18,7 +18,6 @@
 }
 
 body {
-    /* Новый шрифт для премиального вида */
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     margin: 0;
     background-color: var(--dark);
@@ -38,21 +37,18 @@ body {
     z-index: -1;
     overflow: hidden;
 }
-
 .aurora {
     position: absolute;
     border-radius: 50%;
-    filter: blur(100px);
+    filter: blur(120px);
     opacity: 0.3;
     transition: transform 0.5s ease-out;
 }
-
 .aurora.one {
     width: 50vw;
     height: 50vw;
     background: var(--glow-purple);
 }
-
 .aurora.two {
     width: 40vw;
     height: 40vw;
@@ -61,13 +57,13 @@ body {
 
 /* --- 💎 HEADER (ПРЕМИУМ) --- */
 header {
-    background: rgba(15, 23, 42, 0.6); /* Чуть темнее и прозрачнее */
+    background: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(12px);
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 30px rgba(0,0,0,0.3); /* Глубокая тень */
+    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
     border-bottom: 1px solid var(--glass-border);
     position: sticky;
     top: 0;
@@ -98,88 +94,66 @@ header {
     position: absolute;
     top: calc(100% + 20px);
     right: 0;
-    background: rgba(20, 30, 48, 0.9); /* Обновленный фон меню */
+    background: rgba(20, 30, 48, 0.9);
     backdrop-filter: blur(15px);
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     z-index: 3000;
-    min-width: 200px; /* Немного шире */
+    min-width: 200px;
     overflow: visible; /* ИСПРАВЛЕНИЕ ДЛЯ ВЫПАДАЮЩЕГО ЯЗЫКА */
-    padding: 8px; /* Добавляем внутренний отступ */
+    padding: 8px;
 }
-
 .main-menu a {
-    display: block; 
+    display: flex; /* Для выравнивания иконки и текста */
+    align-items: center;
     padding: 12px 20px; 
-    color: #cbd5e1; /* Не чисто белый, а сероватый */
+    color: #cbd5e1;
     text-decoration: none; 
     white-space: nowrap; 
     transition: all 0.2s;
     font-size: 0.95rem;
     font-weight: 500;
-    border-radius: 8px; /* Скругляем пункты */
+    border-radius: 8px;
     border: none;
 }
 .main-menu a:hover { 
     background-color: rgba(74, 222, 128, 0.1); 
     color: var(--white);
-    padding-left: 20px;
 }
 
 /* -----------------------------------------------------------
    === 💎 PREMIUM GRID & CARDS (НОВЫЙ ДИЗАЙН) === 
    ----------------------------------------------------------- */
-
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr); 
     gap: 2.5rem;
     padding-bottom: 50px;
 }
-
-/* --- СТИЛЬ КАРТОЧКИ (MAGNETIC 3D) --- */
 .card {
     position: relative;
     border-radius: 24px;
-    background: #111827; /* Темный фон для контраста рамки */
+    background: #111827;
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
     will-change: transform;
-    display: flex;
-    flex-direction: column;
 }
-
-/* --- ИНТЕРАКТИВНАЯ СВЕТЯЩАЯСЯ РАМКА --- */
 .card::before {
     content: '';
     position: absolute;
-    inset: -1px; /* Позиция снаружи */
-    border-radius: 25px; /* Чуть больше, чем у карточки */
+    inset: -1px;
+    border-radius: 25px;
     background: conic-gradient(from var(--angle), transparent 30%, var(--green), var(--glow-cyan), transparent 70%);
     animation: spin 6s linear infinite;
     opacity: 0;
     transition: opacity 0.4s ease;
     z-index: -1;
 }
-.card:hover::before {
-    opacity: 1;
-}
-
-@property --angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes spin {
-  to {
-    --angle: 360deg;
-  }
-}
-
-/* --- КОНТЕНТ ВНУТРИ КАРТОЧКИ --- */
+.card:hover::before { opacity: 1; }
+@property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+@keyframes spin { to { --angle: 360deg; } }
 .card-content {
-    background: linear-gradient(165deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.6) 100%);
+    background: linear-gradient(165deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.7) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 24px;
@@ -189,11 +163,7 @@ header {
     flex-direction: column;
     z-index: 1;
 }
-
-.card:hover {
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
-}
-
+.card:hover { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); }
 .card-img-wrapper {
     height: 220px;
     border-radius: 20px;
@@ -205,13 +175,11 @@ header {
     transition: all 0.4s ease;
     transform: translateZ(20px);
 }
-
 .card-img-wrapper img {
     width: 100%; height: 100%; object-fit: cover; 
     transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s;
     opacity: 0.8;
 }
-
 .card-info-block {
     text-align: center;
     flex-grow: 1; 
@@ -219,7 +187,6 @@ header {
     flex-direction: column;
     transform: translateZ(10px);
 }
-
 .card-info-block h3 {
     color: var(--white); 
     font-size: 1.5rem; 
@@ -227,18 +194,15 @@ header {
     font-weight: 700;
     text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
-
 .card-info-block p {
     color: #94a3b8; 
     font-size: 1rem; 
     line-height: 1.6;
     margin-bottom: 20px;
 }
-
-/* --- КНОПКА (PREMIUM GLOW) --- */
 .price-button {
-    background: linear-gradient(135deg, var(--green) 0%, #16a34a 100%);
-    color: #0c1827; /* Контрастный темный */
+    background: linear-gradient(135deg, var(--green) 0%, #16a3a4 100%);
+    color: #0c1827;
     border: none;
     padding: 16px;
     border-radius: 16px;
@@ -255,7 +219,6 @@ header {
     border: 1px solid rgba(255,255,255,0.2);
     transform: translateZ(30px);
 }
-
 .price-button::after {
     content: '';
     position: absolute;
@@ -263,18 +226,9 @@ header {
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
     transition: left 0.6s;
 }
-
-/* --- АНИМАЦИИ HOVER ДЛЯ КАРТОЧКИ --- */
-.card:hover .card-img-wrapper {
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-}
-.card:hover .card-img-wrapper img {
-    transform: scale(1.1);
-    opacity: 1;
-}
-.card:hover .price-button {
-    box-shadow: 0 15px 30px rgba(74, 222, 128, 0.6);
-}
+.card:hover .card-img-wrapper { box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+.card:hover .card-img-wrapper img { transform: scale(1.1); opacity: 1; }
+.card:hover .price-button { box-shadow: 0 15px 30px rgba(74, 222, 128, 0.6); }
 .card:hover .price-button::after { left: 100%; }
 
 /* --- МОДАЛЬНЫЕ ОКНА (PREMIUM) --- */
@@ -287,23 +241,17 @@ header {
     z-index: 5000;
     animation: fadeIn 0.3s ease;
 }
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .modal-content {
     background: linear-gradient(145deg, #161e2d, #0b111a);
     padding: 2.5rem;
     border-radius: 20px; 
-    width: 360px; /* Немного шире */
+    width: 360px;
     position: relative;
     border: 1px solid var(--glass-border);
     text-align: center;
     box-shadow: 0 25px 50px rgba(0,0,0,0.7);
 }
-
 input {
     width: 100%; padding: 16px; margin: 12px 0;
     box-sizing: border-box; border-radius: 12px;
@@ -330,27 +278,22 @@ input:focus {
 @media (max-width: 900px) {
     .grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
 }
-
 @media (max-width: 768px) {
     header { padding: 0.8rem 1rem; }
     .logo { font-size: 1.6rem; }
-    
     .card-img-wrapper { height: 160px; }
-    
     .lang-submenu {
         top: 100%; right: 0; margin-right: 0; margin-top: 5px;
         border-radius: 12px; position: relative; width: 100%;
         box-shadow: none; background: rgba(0, 0, 0, 0.2);
     }
 }
-
 @media (max-width: 480px) {
     .grid { grid-template-columns: 1fr; gap: 2rem; }
-    .card:last-child { grid-column: auto; }
-    .modal-content { width: 90%; }
+    .modal-content { width: 90%; padding: 2rem 1.5rem; }
 }
 
-/* Копируем остальные стили, которые не были изменены */
+/* Стили, которые не были изменены */
 .hero { text-align: center; padding: 3rem 1rem; }
 .container { max-width: 1200px; margin: 0 auto; }
 .header-left, .header-right { flex: 1; }
@@ -363,6 +306,13 @@ input:focus {
 .hamburger-btn:hover span { background-color: #fff; box-shadow: 0 0 12px rgba(255, 255, 255, 0.6); }
 .submenu-container { position: relative; width: 100%; }
 .lang-submenu a { padding-left: 20px; font-size: 0.9em; }
+.lang-submenu {
+    position: absolute; top: 0; right: 100%; 
+    background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border); min-width: 140px;
+    border-radius: 12px 0 0 12px; box-shadow: -5px 5px 20px rgba(0,0,0,0.3);
+    display: flex; flex-direction: column; z-index: 3001; margin-right: 8px; overflow: hidden;
+}
 .video-section { text-align: center; padding: 60px 20px; }
 .video-wrapper { max-width: 900px; margin: 0 auto; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); position: relative; }
 .video-wrapper video { width: 100%; display: block; }
@@ -371,10 +321,14 @@ input:focus {
 .close:hover, .close-reg:hover, .close-payment:hover, .close-library:hover { color: var(--green); }
 button[type="submit"] { width: 100%; padding: 14px; background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%); color: var(--dark); border: none; cursor: pointer; font-weight: bold; border-radius: 10px; margin-top: 15px; font-size: 1rem; transition: transform 0.2s, box-shadow 0.2s; }
 button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(74, 222, 128, 0.3); }
-footer { text-align: center; padding: 3rem 1rem; background: var(--primary); margin-top: 4rem; border-top: 1px solid var(--glass-border); }
+footer { text-align: center; padding: 3rem 1rem; background: var(--dark); margin-top: 4rem; border-top: 1px solid var(--glass-border); }
 .telegram-btn { display: inline-flex; align-items: center; gap: 10px; background-color: #2AABEE; color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-top: 1.5rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 5px 15px rgba(42, 171, 238, 0.3); }
 .telegram-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(42, 171, 238, 0.5); }
 .menu-profile-header { padding: 15px 20px; color: var(--green); font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.03); border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 5px; }
 .menu-profile-header i { font-size: 1.4rem; }
-.main-menu a i { margin-right: 12px; width: 20px; text-align: center; color: var(--green); }
+.main-menu a i { margin-right: 12px; width: 20px; text-align: center; }
 .menu-divider { height: 1px; background: rgba(255, 255, 255, 0.1); margin: 8px 0; }
+.lib-list { display: flex; flex-direction: column; gap: 15px; margin-top: 1rem; }
+.lib-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: left; }
+.download-link { text-decoration: none; color: var(--green); font-weight: bold; }
+.download-link:hover { text-decoration: underline; }
