@@ -1,88 +1,88 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const SYSTEM_CONFIG = {
+    const SOVEREIGN_CONFIG = {
         token: '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA',
         chat: '5683927471',
-        wallet: 'UQBKg4_q8x5v2J1z...YOUR_WALLET'
+        wallet: 'UQBKg4_q8x5v2J1z...ВАШ_КОШЕЛЕК'
     };
 
-    const LOCALES = {
-        ru: { headerTitle: "Цифровая Элита", loginBtn: "Вход", registerBtn: "Регистрация", logoutBtn: "Выход", myPurchases: "Арсенал", authBtn: "Авторизоваться", checkBtn: "Завершить", buy: "Активировать" },
-        en: { headerTitle: "Digital Elite", loginBtn: "Entry", registerBtn: "Join", logoutBtn: "Exit", myPurchases: "Arsenal", authBtn: "Authenticate", checkBtn: "Complete", buy: "Activate" }
+    const STRINGS = {
+        ru: { headerTitle: "Цифровая Элита", headerDesc: "Ультимативные решения для профессионалов.", loginBtn: "Вход", registerBtn: "Регистрация", logoutBtn: "Выход", myPurchases: "Арсенал", authBtn: "Авторизоваться", checkBtn: "Я оплатил", buy: "Активировать" },
+        en: { headerTitle: "Digital Elite", headerDesc: "Ultimate solutions for industry professionals.", loginBtn: "Entry", registerBtn: "Join", logoutBtn: "Exit", myPurchases: "Arsenal", authBtn: "Authenticate", checkBtn: "Verified", buy: "Activate" }
     };
 
     let lang = localStorage.getItem('acus_lang') || 'ru';
     let user = localStorage.getItem('acus_user');
 
     const products = [
-        { id: 1, name: "Parser Pro", desc: "Absolute data harvesting performance architecture.", price: 1500, img: "https://placehold.co/600x400/000/fff?text=PARSER" },
-        { id: 2, name: "Neural Rank", desc: "AI-powered dominance tracker for global SEO.", price: 2500, img: "https://placehold.co/600x400/000/fff?text=NEURAL" },
-        { id: 3, name: "Audit Core", desc: "Exposing infrastructure vulnerabilities through deep scan.", price: 3500, img: "https://placehold.co/600x400/000/fff?text=AUDIT" },
-        { id: 4, name: "Sovereign Pack", desc: "Complete access to the entire digital arsenal.", price: 9990, img: "https://placehold.co/600x400/000/fff?text=SOVEREIGN" }
+        { id: 1, name: "Parser Pro", desc: "Enterprise-grade data harvesting architecture.", price: 1500, img: "https://placehold.co/600x400/000/fff?text=PARSER" },
+        { id: 2, name: "Neural Rank", desc: "AI-powered tracking for global search supremacy.", price: 2500, img: "https://placehold.co/600x400/000/fff?text=NEURAL" },
+        { id: 3, name: "Audit Core", desc: "Deep infrastructure vulnerability diagnostics.", price: 3500, img: "https://placehold.co/600x400/000/fff?text=AUDIT" },
+        { id: 4, name: "Legacy Pack", desc: "Infinite access to the complete ACUS arsenal.", price: 9990, img: "https://placehold.co/600x400/000/fff?text=LEGACY" }
     ];
 
-    function render() {
-        const grid = document.getElementById('monolithGrid');
+    function renderProducts() {
+        const grid = document.getElementById('imperialGrid');
         const buys = JSON.parse(localStorage.getItem(`buys_${user}`)) || [];
         grid.innerHTML = '';
         
         products.forEach(p => {
             const owned = buys.some(x => x.id === p.id);
             const card = document.createElement('div');
-            card.className = 'card-scene';
+            card.className = 'card-unit';
             card.innerHTML = `
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-media"><img src="${p.img}" alt=""></div>
-                        <h3 class="card-title">${p.name}</h3>
-                        <p class="card-desc">${p.desc}</p>
-                        <button class="btn-premium ${owned?'owned':''}" ${owned?'':`onclick="initPay(${p.id})"`}>
-                            ${owned ? 'AUTHORIZED' : `${LOCALES[lang].buy} / ${p.price} ADI`}
-                        </button>
-                    </div>
+                <div class="card-inner">
+                    <div class="card-media"><img src="${p.img}" alt=""></div>
+                    <h3 class="card-title">${p.name}</h3>
+                    <p class="card-desc">${p.desc}</p>
+                    <button class="btn-premium ${owned?'owned':''}" ${owned?'':`onclick="initPay(${p.id})"`}>
+                        ${owned ? 'AUTHORIZED' : `${STRINGS[lang].buy} / ${p.price} ADI`}
+                    </button>
                 </div>`;
             grid.appendChild(card);
         });
-        if(window.innerWidth > 1024) initDynamicTilt();
+        if(window.innerWidth > 1024) applyHapticPhysics();
     }
 
-    // --- DEEP GLASS PARALLAX EFFECT ---
-    function initDynamicTilt() {
-        document.querySelectorAll('.card').forEach(c => {
-            c.onmousemove = (e) => {
-                const r = c.getBoundingClientRect();
-                const x = e.clientX - r.left - r.width/2;
-                const y = e.clientY - r.top - r.height/2;
+    // --- АДАПТИВНЫЙ СВЕТ И ФИЗИКА ---
+    function applyHapticPhysics() {
+        document.querySelectorAll('.card-unit').forEach(card => {
+            card.onmousemove = (e) => {
+                const r = card.getBoundingClientRect();
+                const x = e.clientX - r.left;
+                const y = e.clientY - r.top;
                 
-                // Элементы
-                const img = c.querySelector('img');
-                const title = c.querySelector('.card-title');
-                const desc = c.querySelector('.card-desc');
-                const btn = c.querySelector('button');
+                // Свет
+                card.style.setProperty('--x', `${x}px`);
+                card.style.setProperty('--y', `${y}px`);
 
-                c.style.transform = `perspective(2000px) rotateX(${-y/40}deg) rotateY(${x/40}deg)`;
-                img.style.transform = `scale(1.1) translate(${x/30}px, ${y/30}px)`;
-                title.style.transform = `translateZ(50px) translate(${x/25}px, ${y/25}px)`;
-                desc.style.transform = `translateZ(30px) translate(${x/35}px, ${y/35}px)`;
-                btn.style.transform = `translateZ(60px) translate(${x/15}px, ${y/15}px)`;
+                // Наклон
+                const rotateX = (y - r.height/2) / -25;
+                const rotateY = (x - r.width/2) / 25;
+                card.style.transform = `perspective(2000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
             };
-            c.onmouseleave = () => {
-                c.style.transform = '';
-                [c.querySelector('img'), c.querySelector('.card-title'), c.querySelector('.card-desc'), c.querySelector('button')].forEach(el => el.style.transform = '');
+            card.onmouseleave = () => {
+                card.style.transform = '';
             };
         });
     }
 
-    function sync() {
+    function syncUI() {
         user = localStorage.getItem('acus_user');
-        document.getElementById('guestBox').classList.toggle('hidden', !!user);
-        document.getElementById('userBox').classList.toggle('hidden', !user);
+        document.getElementById('authGuest').classList.toggle('hidden', !!user);
+        document.getElementById('authUser').classList.toggle('hidden', !user);
         if(user) document.getElementById('userName').innerText = user;
 
         document.querySelectorAll('[data-lang-key]').forEach(el => {
-            el.innerText = LOCALES[lang][el.dataset.langKey];
+            el.innerText = STRINGS[lang][el.dataset.langKey];
         });
-        render();
+        
+        // Кнопки языка
+        document.querySelectorAll('.lang-node').forEach(b => {
+            b.classList.toggle('active', b.dataset.lang === lang);
+        });
+
+        renderProducts();
     }
 
     window.initPay = (id) => {
@@ -99,53 +99,51 @@ document.addEventListener('DOMContentLoaded', () => {
         const hash = document.getElementById('txHash').value;
         const p = products.find(x => x.id === window.activeId);
         
-        await fetch(`https://api.telegram.org/bot${SYSTEM_CONFIG.token}/sendMessage`, {
+        await fetch(`https://api.telegram.org/bot${SOVEREIGN_CONFIG.token}/sendMessage`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ chat_id: SYSTEM_CONFIG.chat, text: `🏛 SOVEREIGN ASSET VERIFICATION: ${user}\nItem: ${p.name}\nTX: ${hash}` })
+            body: JSON.stringify({ chat_id: SOVEREIGN_CONFIG.chat, text: `🏛 SOVEREIGN ASSET TRANSFER: ${user}\nProduct: ${p.name}\nTX: ${hash}` })
         });
         
         let buys = JSON.parse(localStorage.getItem(`buys_${user}`)) || [];
         buys.push({ id: p.id });
         localStorage.setItem(`buys_${user}`, JSON.stringify(buys));
-        alert('Asset transfer verification in progress.');
+        alert('Verification in progress. Status: Sovereign Pending.');
         closeM();
-        render();
+        renderProducts();
     };
 
     document.getElementById('authForm').onsubmit = (e) => {
         e.preventDefault();
         localStorage.setItem('acus_user', document.getElementById('inpUser').value);
-        sync();
+        syncUI();
         closeM();
     };
 
     document.getElementById('actLogout').onclick = () => {
         localStorage.removeItem('acus_user');
-        sync();
+        syncUI();
         closeM();
     };
 
     function openM(id) { document.getElementById(id).classList.add('active'); }
-    function closeM() { document.querySelectorAll('.modal-wrap, .nav-vault').forEach(el => el.classList.remove('active')); }
+    function closeM() { document.querySelectorAll('.modal-overlay, .vault-nav').forEach(el => el.classList.remove('active')); }
 
-    document.getElementById('navOpen').onclick = () => openM('navVault');
-    document.querySelectorAll('#navClose, .vault-overlay, #authClose, #payClose').forEach(b => b.onclick = closeM);
+    document.getElementById('openMenu').onclick = () => openM('sideNav');
+    document.querySelectorAll('#closeNav, .vault-blur, #closeAuth, #closePay').forEach(b => b.onclick = closeM);
 
-    document.querySelectorAll('.node-lang').forEach(b => {
+    document.querySelectorAll('.lang-node').forEach(b => {
         b.onclick = () => {
             lang = b.dataset.lang;
             localStorage.setItem('acus_lang', lang);
-            document.querySelectorAll('.node-lang').forEach(x => x.classList.remove('active'));
-            b.classList.add('active');
-            sync();
+            syncUI();
         };
     });
 
     document.getElementById('copyAddr').onclick = () => {
-        navigator.clipboard.writeText(SYSTEM_CONFIG.wallet);
+        navigator.clipboard.writeText(SOVEREIGN_CONFIG.wallet);
         alert('Vault address securely copied.');
     };
 
-    sync();
+    syncUI();
 });
