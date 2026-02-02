@@ -4,23 +4,31 @@
     --light: #f8fafc;
     --white: #ffffff;
     --green: #4ade80;
+    --accent-glow: rgba(74, 222, 128, 0.5);
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     margin: 0;
     background-color: var(--dark);
+    /* Добавляем тонкий фоновый градиент, чтобы стекло лучше смотрелось */
+    background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 60%);
     color: var(--light);
+    min-height: 100vh;
 }
 
 /* Header */
 header {
-    background: var(--primary);
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(10px); /* Размытие фона под шапкой */
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    border-bottom: 1px solid var(--glass-border);
     position: sticky;
     top: 0;
     z-index: 2000;
@@ -30,10 +38,10 @@ header {
 .header-center { flex-grow: 1; text-align: center; }
 .header-right { display: flex; justify-content: flex-end; align-items: center; }
 
-.header-title { margin: 0; font-size: 1rem; color: var(--light); }
+.header-title { margin: 0; font-size: 1rem; color: var(--light); opacity: 0.8; }
 
 .logo {
-    font-weight: bold;
+    font-weight: 800;
     font-size: 2rem;
     background: linear-gradient(to right, #66ff66, #00ffff, #7d26cd, #ff00ff, #ff3366, #ffff66, #66ff66);
     background-size: 200% auto;
@@ -42,6 +50,7 @@ header {
     background-clip: text;
     animation: rainbow-animation 4s ease-in-out infinite;
     cursor: default;
+    filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
 }
 
 @keyframes rainbow-animation {
@@ -55,217 +64,331 @@ header {
 
 .hamburger-btn {
     background: none; border: none; cursor: pointer;
-    padding: 10px; display: flex; flex-direction: column; gap: 5px;
+    padding: 10px; display: flex; flex-direction: column; gap: 6px;
 }
 
 .hamburger-btn span {
-    display: block; width: 25px; height: 3px;
-    background-color: var(--green); border-radius: 3px; transition: all 0.3s;
+    display: block; width: 28px; height: 3px;
+    background-color: var(--green); border-radius: 3px; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+}
+
+.hamburger-btn:hover span {
+    background-color: #fff;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
 }
 
 /* Выпадающее меню */
 .main-menu {
     position: absolute;
-    top: calc(100% + 15px);
+    top: calc(100% + 20px);
     right: 0;
-    background: var(--primary);
-    border-radius: 8px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     z-index: 3000;
-    min-width: 160px;
+    min-width: 180px;
+    overflow: hidden;
 }
 
 .main-menu a {
-    display: block; padding: 12px 20px; color: var(--light);
-    text-decoration: none; white-space: nowrap; transition: background 0.2s;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: block; padding: 14px 24px; color: var(--light);
+    text-decoration: none; white-space: nowrap; transition: all 0.2s;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 0.95rem;
 }
 
-.main-menu a:hover { background-color: var(--dark); color: var(--green); }
+.main-menu a:hover { 
+    background-color: rgba(74, 222, 128, 0.1); 
+    color: var(--green); 
+    padding-left: 28px; /* Небольшой сдвиг при наведении */
+}
 
-/* Контейнер языка (relative) */
+/* Контейнер языка */
 .submenu-container { position: relative; width: 100%; }
 
-/* Меню языка (выезжает ВЛЕВО) */
+/* Меню языка */
 .lang-submenu {
     position: absolute;
-    top: 0; right: 100%; /* Влево */
-    background: var(--primary);
+    top: 0; right: 100%; 
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
     min-width: 140px;
-    border-radius: 8px 0 0 8px;
+    border-radius: 12px 0 0 12px;
     box-shadow: -5px 5px 20px rgba(0,0,0,0.3);
     display: flex; flex-direction: column; z-index: 3001;
-    margin-right: 5px;
+    margin-right: 8px;
+    overflow: hidden;
 }
 
 .lang-submenu a { padding-left: 20px; font-size: 0.9em; }
 
-/* Профиль */
-#userProfile { display: flex; align-items: center; gap: 15px; }
-#userProfile button {
-    background: var(--primary); border: 1px solid var(--green);
-    color: var(--light); padding: 5px 15px; cursor: pointer; border-radius: 5px;
-}
-
 /* Контент */
-.hero { text-align: center; padding: 2rem 1rem; }
+.hero { text-align: center; padding: 3rem 1rem; }
 .container { max-width: 1200px; margin: 0 auto; }
 
-/* --- НОВАЯ СЕТКА (GRID) --- */
+/* -----------------------------------------------------------
+   === PREMIUM GRID & CARDS (ОБНОВЛЕННЫЙ ДИЗАЙН) === 
+   ----------------------------------------------------------- */
+
 .grid {
     display: grid;
-    /* На ПК строго 3 колонки */
     grid-template-columns: repeat(3, 1fr); 
-    gap: 3rem; /* Большой отступ между карточками */
+    gap: 2.5rem; 
     perspective: 1000px;
     padding-bottom: 50px;
 }
 
-/* МАГИЯ: Ставим 4-й элемент (Безлимит) по центру во втором ряду */
+/* Центрирование последнего элемента */
 .card:last-child {
-    grid-column: 2; /* Занять вторую (центральную) колонку */
+    grid-column: 2; 
 }
 
-/* --- СТИЛЬ КАРТОЧКИ (ПРОЗРАЧНЫЙ КОНТЕЙНЕР) --- */
+/* --- СТИЛЬ КАРТОЧКИ (PREMIUM GLASS) --- */
 .card {
-    background: transparent; /* Без фона */
-    box-shadow: none;        /* Без общей тени */
-    border-radius: 0;
-    overflow: visible;       
+    position: relative;
+    background: transparent;
+    border-radius: 24px;
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Разрыв между блоками */
-    height: auto;
+    gap: 0; /* Убираем gap, используем паддинги */
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 1;
 }
 
-/* Эффект парения для всех частей (Картинка, Текст, Кнопка) */
-.card-img-wrapper, 
-.card-info-block, 
-.price-button {
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5); /* Глубокая тень */
-    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s;
+/* Эффект при наведении на всю карточку */
+.card:hover {
+    z-index: 10;
+    transform: translateY(-10px);
 }
 
-/* !!! ЭФФЕКТ СВЯЗНОСТИ: Наводим на карточку (или кнопку) -> Двигается ВСЁ !!! */
-.card:hover .card-img-wrapper { transform: translateY(-7px); }
-.card:hover .card-info-block { transform: translateY(-4px); border-color: rgba(74, 222, 128, 0.3); } /* Подсветка рамки */
-.card:hover .price-button { transform: translateY(-7px) scale(1.02); }
-
-
-/* --- БЛОК 1: КАРТИНКА --- */
+/* --- БЛОК 1: КАРТИНКА (ЭКРАН) --- */
 .card-img-wrapper {
     position: relative;
-    border-radius: 15px;
+    height: 220px;
+    border-radius: 20px;
     overflow: hidden;
-    height: 200px;
-    background: var(--primary);
+    margin-bottom: -20px; /* Наложение на блок с текстом */
+    z-index: 2; /* Картинка выше текста */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.05);
+    background: #000;
+    transition: all 0.4s ease;
 }
 
 .card-img-wrapper img {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-    object-position: top; /* <-- ВОТ ИЗМЕНЕНИЕ */
+    width: 100%; height: 100%; object-fit: cover; 
+    object-position: top;
+    transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+    opacity: 0.9;
 }
 
-/* --- БЛОК 2: ИНФОРМАЦИЯ --- */
+/* Глянцевый блик поверх картинки */
+.card-img-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.4) 100%);
+    pointer-events: none;
+}
+
+/* --- БЛОК 2: ИНФОРМАЦИЯ (FROSTED GLASS) --- */
 .card-info-block {
-    background: var(--primary);
-    padding: 20px;
-    border-radius: 15px;
+    background: linear-gradient(165deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.6) 100%);
+    backdrop-filter: blur(20px); /* Сильное размытие */
+    -webkit-backdrop-filter: blur(20px);
+    
+    padding: 40px 25px 25px 25px; /* Верхний отступ больше из-за наложения картинки */
+    border-radius: 24px;
     text-align: center;
     flex-grow: 1; 
-    border: 1px solid rgba(255,255,255,0.05);
+    
+    /* Тонкие границы для объема */
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    border-right: 1px solid rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .card-info-block h3 {
-    margin-top: 0; color: var(--white); font-size: 1.3rem; margin-bottom: 10px;
+    margin-top: 5px; 
+    color: var(--white); 
+    font-size: 1.4rem; 
+    margin-bottom: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
 .card-info-block p {
-    color: #cbd5e1; font-size: 0.95rem; margin: 0;
+    color: #94a3b8; 
+    font-size: 0.95rem; 
+    margin: 0; 
+    line-height: 1.6;
+    margin-bottom: 20px;
 }
 
-/* --- БЛОК 3: КНОПКА (ОТДЕЛЬНО) --- */
+/* --- БЛОК 3: КНОПКА (PREMIUM GLOW) --- */
 .price-button {
-    background: var(--green);
-    color: var(--dark);
+    background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+    color: #fff;
     border: none;
-    padding: 15px;
-    border-radius: 15px;
-    font-weight: bold;
-    font-size: 1.3rem;
+    padding: 16px;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 1.1rem;
     cursor: pointer;
     margin-top: auto;
     position: relative;
     overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 10px 20px -5px rgba(74, 222, 128, 0.4); /* Зеленое свечение */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
 .price-button::after {
     content: '';
     position: absolute;
     top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transition: left 0.5s;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    transition: left 0.6s;
 }
-.price-button:hover::after { left: 100%; }
+
+/* --- АНИМАЦИИ HOVER --- */
+
+.card:hover .card-img-wrapper {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    border-color: rgba(74, 222, 128, 0.3);
+}
+
+.card:hover .card-img-wrapper img {
+    transform: scale(1.1); /* Zoom effect */
+    opacity: 1;
+}
+
+.card:hover .card-info-block {
+    background: linear-gradient(165deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.8) 100%);
+    border-top-color: rgba(74, 222, 128, 0.2);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.card:hover .price-button {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(74, 222, 128, 0.6);
+}
+
+.card:hover .price-button::after { left: 100%; }
+
+/* -----------------------------------------------------------
+   === ОСТАЛЬНОЙ CSS (ВИДЕО, МОДАЛКИ, ФУТЕР) === 
+   ----------------------------------------------------------- */
 
 /* Видео внутри карточки */
 .video-container video { width: 100%; height: 100%; object-fit: cover; }
 
-
 /* Видео секция (Верхняя) */
-.video-section { text-align: center; padding: 40px 20px; }
+.video-section { text-align: center; padding: 60px 20px; }
 .video-wrapper {
-    max-width: 800px; margin: 0 auto;
-    border-radius: 10px; overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    max-width: 900px; margin: 0 auto;
+    border-radius: 20px; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
 }
 .video-wrapper video { width: 100%; display: block; }
+
+.video-description {
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.8);
+}
 
 /* Модальные окна */
 .modal {
     position: fixed; top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
     display: flex; justify-content: center; align-items: center;
     z-index: 5000;
 }
 
 .modal-content {
-    background: var(--primary); padding: 2rem;
-    border-radius: 10px; width: 320px; position: relative;
-    border: 1px solid var(--green); text-align: center;
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+    padding: 2.5rem;
+    border-radius: 20px; width: 340px; position: relative;
+    border: 1px solid rgba(74, 222, 128, 0.3); 
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
 }
 
 .hidden { display: none !important; }
 
 .close, .close-reg {
-    position: absolute; right: 15px; top: 10px;
-    cursor: pointer; font-size: 1.5rem; color: var(--light);
+    position: absolute; right: 20px; top: 15px;
+    cursor: pointer; font-size: 1.8rem; color: #94a3b8;
+    transition: color 0.3s;
 }
+.close:hover, .close-reg:hover { color: var(--green); }
 
 input {
-    width: 100%; padding: 12px; margin: 10px 0;
-    box-sizing: border-box; border-radius: 5px;
-    border: 1px solid #444; background: var(--dark); color: white;
+    width: 100%; padding: 14px; margin: 12px 0;
+    box-sizing: border-box; border-radius: 10px;
+    border: 1px solid #334155; 
+    background: rgba(15, 23, 42, 0.6); 
+    color: white;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2);
 }
 
 button[type="submit"] {
-    width: 100%; padding: 12px;
-    background: var(--green); color: var(--dark);
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+    color: var(--dark);
     border: none; cursor: pointer; font-weight: bold;
-    border-radius: 5px; margin-top: 10px;
+    border-radius: 10px; margin-top: 15px;
+    font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(74, 222, 128, 0.3);
 }
 
 /* Footer */
-footer { text-align: center; padding: 2rem 1rem; background: var(--primary); margin-top: 2rem; }
+footer { 
+    text-align: center; padding: 3rem 1rem; 
+    background: var(--primary); 
+    margin-top: 4rem; 
+    border-top: 1px solid var(--glass-border);
+}
 
 .telegram-btn {
     display: inline-flex; align-items: center; gap: 10px;
-    background-color: #2AABEE; color: white; padding: 10px 20px;
-    border-radius: 5px; text-decoration: none; font-weight: bold;
-    margin-top: 1rem; transition: transform 0.2s;
+    background-color: #2AABEE; color: white; padding: 12px 24px;
+    border-radius: 12px; text-decoration: none; font-weight: bold;
+    margin-top: 1.5rem; transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 5px 15px rgba(42, 171, 238, 0.3);
 }
-.telegram-btn:hover { transform: scale(1.05); }
+.telegram-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(42, 171, 238, 0.5); }
 
 /* --- Стили профиля ВНУТРИ меню --- */
 .menu-profile-header {
@@ -276,19 +399,17 @@ footer { text-align: center; padding: 2rem 1rem; background: var(--primary); mar
     display: flex;
     align-items: center;
     gap: 10px;
-    background: rgba(255, 255, 255, 0.05); /* Чуть выделяем фон */
+    background: rgba(255, 255, 255, 0.03); 
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     margin-bottom: 5px;
 }
 
-.menu-profile-header i {
-    font-size: 1.4rem;
-}
+.menu-profile-header i { font-size: 1.4rem; }
 
-/* Иконки в пунктах меню (Корзина, Выход) */
+/* Иконки в пунктах меню */
 .main-menu a i {
-    margin-right: 10px;
-    width: 20px; /* Чтобы текст ровно стоял */
+    margin-right: 12px;
+    width: 20px; 
     text-align: center;
     color: var(--green);
 }
@@ -296,55 +417,51 @@ footer { text-align: center; padding: 2rem 1rem; background: var(--primary); mar
 .menu-divider {
     height: 1px;
     background: rgba(255, 255, 255, 0.1);
-    margin: 5px 0;
-}
-
-/* Скрываем блоки через класс hidden (убедимся, что он работает правильно) */
-.hidden {
-    display: none !important;
+    margin: 8px 0;
 }
 
 /* --- МОБИЛЬНАЯ ОПТИМИЗАЦИЯ --- */
+@media (max-width: 900px) {
+    .grid { gap: 1.5rem; }
+}
+
 @media (max-width: 768px) {
     header { padding: 0.8rem 1rem; }
-    .hero { padding: 1rem 0.5rem; }
-    .logo { font-size: 1.5rem; }
+    .hero { padding: 1.5rem 1rem; }
+    .logo { font-size: 1.6rem; }
 
-    /* Сброс сетки для телефона */
+    /* Сетка для телефона */
     .grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 колонки */
-        gap: 0.8rem;
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 1rem;
     }
     
-    /* ОТМЕНЯЕМ центрирование последней карточки на телефоне */
     .card:last-child { grid-column: auto; }
 
     /* Уменьшаем блоки на телефоне */
-    .card-img-wrapper { height: 110px; border-radius: 10px; }
-    .card-info-block { padding: 10px; border-radius: 10px; }
-    .card h3 { font-size: 0.95rem; margin-bottom: 5px; line-height: 1.2; }
-    .card p {
-        font-size: 0.75rem; line-height: 1.3; margin-bottom: 5px;
+    .card-img-wrapper { height: 140px; border-radius: 16px; margin-bottom: -15px; }
+    
+    .card-info-block { 
+        padding: 30px 15px 15px 15px; 
+        border-radius: 16px; 
+    }
+    
+    .card-info-block h3 { font-size: 1.1rem; margin-bottom: 8px; }
+    .card-info-block p {
+        font-size: 0.8rem; margin-bottom: 12px;
         display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
     }
 
-    /* Кнопка на телефоне */
-    .price-button {
-        padding: 8px 0; font-size: 0.9rem; border-radius: 10px;
-    }
+    .price-button { padding: 12px; font-size: 0.95rem; border-radius: 12px; }
     
-    /* Уменьшаем gap на телефоне, чтобы влезло */
-    .card { gap: 8px; }
-
     .video-section h2 { font-size: 1.3rem; padding: 0 10px; }
-    .modal-content { width: 85%; padding: 1.5rem; }
+    .modal-content { width: 85%; padding: 2rem 1.5rem; }
 }
 
 @media (max-width: 480px) {
-    /* На очень узких можно 1 колонку, или оставить 2 если влезает */
-    /* .grid { grid-template-columns: 1fr; } */
+    /* На очень узких экранах можно оставить 2 колонки, но уменьшить отступы,
+       или сделать 1 колонку, если контент слишком сжат.
+       Здесь оставляем 2, как было в запросе пользователя на адаптивность ранее. */
+    .grid { gap: 0.8rem; }
+    .logo { font-size: 1.4rem; }
 }
-
-
-
-
