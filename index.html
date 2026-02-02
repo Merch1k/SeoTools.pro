@@ -4,164 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ACUS — Premium Tools</title>
-    <link rel="icon" type="image/png" href="Logoito.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- 🌌 ГИБРИДНЫЙ ФОН (AURORA + NOISE) -->
-    <div class="background-wrapper">
-        <div class="noise-overlay"></div>
-        <div class="aurora-blob purple"></div>
-        <div class="aurora-blob green"></div>
-        <div class="aurora-blob blue"></div>
+    <!-- АНИМИРОВАННЫЙ ФОН "АВРОРА" -->
+    <div class="background-glow">
+        <div class="aurora one"></div>
+        <div class="aurora two"></div>
     </div>
-    
-    <!-- HEADER -->
+
+    <!-- HEADER С РАДУЖНЫМ ЛОГО -->
     <header>
-        <div class="header-inner">
-            <!-- Радужный логотип из старого дизайна -->
-            <div class="logo-wrapper">
-                <div class="logo">ACUS</div>
-                <div class="logo-badge">PRO</div>
-            </div>
-            
-            <button id="hamburgerBtn" class="hamburger-btn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
+        <div class="logo">ACUS</div>
+        <button id="hamburgerBtn" class="hamburger-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </header>
 
-    <!-- PREMIUM SIDEBAR MENU -->
+    <!-- НОВОЕ БОКОВОЕ МЕНЮ С ЯЗЫКАМИ -->
     <div id="mainMenu" class="menu-overlay">
         <div class="menu-backdrop"></div>
-        <div class="menu-panel glass-morphism">
+        <div class="menu-panel">
             <div class="menu-header">
                 <span class="menu-title">ACUS MENU</span>
                 <button class="close-menu"><i class="fa fa-times"></i></button>
             </div>
             
+            <!-- Для гостей -->
             <div id="guestNav">
-                <a href="#" id="menuLoginBtn" class="menu-item"><i class="fa fa-sign-in-alt"></i> Войти</a>
-                <a href="#" id="menuRegisterBtn" class="menu-item"><i class="fa fa-user-plus"></i> Регистрация</a>
+                <a href="#" id="menuLoginBtn" class="menu-item" data-lang-key="loginBtn"><i class="fa fa-sign-in-alt"></i> Войти</a>
+                <a href="#" id="menuRegisterBtn" class="menu-item" data-lang-key="registerBtn"><i class="fa fa-user-plus"></i> Регистрация</a>
             </div>
 
+            <!-- Для пользователя -->
             <div id="userNav" class="hidden">
-                <div class="user-profile-card">
-                    <div class="avatar-glow"><i class="fa fa-user-astronaut"></i></div>
-                    <div class="user-details">
-                        <span id="menuUserName">User</span>
-                        <span class="status-text">Premium Member</span>
-                    </div>
+                 <div class="menu-profile-header">
+                    <i class="fa fa-user-circle"></i>
+                    <span id="menuUserName">User</span>
                 </div>
-                <div class="menu-divider"></div>
-                <a href="#" id="menuLibraryBtn" class="menu-item active-glow">
-                    <i class="fa fa-cloud-download-alt"></i> Библиотека
+                <a href="#" id="menuLibraryBtn" class="menu-item active-glow" data-lang-key="myPurchases">
+                    <i class="fa fa-download"></i> Мои покупки
                 </a>
-                <a href="#" id="menuLogoutBtn" class="menu-item">
-                    <i class="fa fa-power-off"></i> Выход
+                <a href="#" id="menuLogoutBtn" class="menu-item" data-lang-key="logoutBtn">
+                    <i class="fa fa-sign-out-alt"></i> Выход
                 </a>
+            </div>
+            
+            <div class="menu-divider"></div>
+            
+            <!-- Переключатель языков -->
+            <div class="lang-switcher">
+                <span data-lang-key="languageBtn">Язык</span>
+                <div class="lang-options">
+                    <button data-lang="ru" class="active">RU</button>
+                    <button data-lang="en">EN</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <main class="hero-section">
+    <!-- Сетка товаров -->
+    <main class="hero">
         <div class="container">
-            <div class="hero-header">
-                <h1 class="gradient-title">Ultimate SEO Tools</h1>
-                <p>Профессиональные решения для доминирования в поиске.</p>
-            </div>
-
-            <!-- Сетка товаров -->
-            <div id="products-grid" class="grid-container">
-                <!-- JS рендер -->
+            <div id="products-grid" class="grid">
+                <!-- Товары рендерятся тут -->
+                <div class="loading" data-lang-key="loading">Загрузка товаров...</div>
             </div>
         </div>
     </main>
 
     <!-- FOOTER -->
     <footer>
-        <p>&copy; 2026 ACUS. Designed for Winners.</p>
+        <p>&copy; 2026 ACUS TOOLS. <span data-lang-key="developedIn">Разработано для лучших.</span></p>
     </footer>
 
-    <!-- === МОДАЛЬНЫЕ ОКНА === -->
-    
-    <!-- ОПЛАТА КРИПТОЙ (ADI) -->
+    <!-- МОДАЛЬНЫЕ ОКНА (Новый стиль) -->
+    <!-- Оплата -->
     <div id="paymentModal" class="modal hidden">
-        <div class="modal-wrapper">
-            <div class="modal-content glass-card payment-style">
-                <span class="close-modal">&times;</span>
-                <div class="pay-icon-glow"><i class="fa-brands fa-bitcoin"></i></div>
-                <h3>Crypto Payment</h3>
-                
-                <div class="bill-info">
-                    <span id="payName" class="bill-item">Товар</span>
-                    <span id="payAmount" class="bill-price">0 ADI</span>
-                </div>
-
-                <div class="wallet-section">
-                    <p>Отправьте ADI (TON) на кошелек:</p>
-                    <div class="wallet-address-box" id="walletCopyBtn">
-                        <span id="walletAddress">...</span>
+        <div class="modal-content payment-style">
+            <span class="close-modal">&times;</span>
+            <h3>Оплата Crypto</h3>
+            <p id="payName" class="pay-item-name">...</p>
+            <div id="payAmount" class="pay-item-price">0 ADI</div>
+            <form id="cryptoCheckForm">
+                <div class="wallet-info">
+                    <p>Отправьте точную сумму на кошелек:</p>
+                    <div id="walletCopyBtn" class="wallet-address">
+                        <span id="walletAddress">UQBK...3xL9</span>
                         <i class="fa fa-copy"></i>
                     </div>
-                    <div class="pulse-text">Ожидание транзакции...</div>
                 </div>
-
-                <form id="cryptoCheckForm">
-                    <input type="text" id="txHash" placeholder="Вставьте Hash (TXID) транзакции" required>
-                    <button type="submit" class="neon-btn full-width">
-                        <i class="fa fa-check"></i> Я ОПЛАТИЛ
-                    </button>
-                </form>
-            </div>
+                <input type="text" id="txHash" placeholder="Вставьте Hash (TXID)" required>
+                <button type="submit" class="cta-button" data-lang-key="checkBtn">Я Оплатил</button>
+            </form>
         </div>
     </div>
 
-    <!-- Auth Modal -->
+    <!-- Другие модалки -->
     <div id="authModal" class="modal hidden">
-        <div class="modal-wrapper">
-            <div class="modal-content glass-card">
-                <span class="close-modal">&times;</span>
-                <h2>Вход</h2>
-                <form id="loginForm">
-                    <input type="text" id="loginEmail" placeholder="Логин" required>
-                    <input type="password" id="loginPass" placeholder="Пароль" required>
-                    <button type="submit" class="neon-btn full-width">Войти</button>
-                </form>
-            </div>
-        </div>
+        <div class="modal-content"><span class="close-modal">&times;</span><h2 data-lang-key="authTitle">Авторизация</h2><form id="loginForm"><input type="text" id="loginEmail" placeholder="Логин" required><input type="password" id="loginPass" placeholder="Пароль" required><button type="submit" class="cta-button" data-lang-key="authBtn">Войти</button></form></div>
     </div>
-
-    <!-- Reg Modal -->
     <div id="regModal" class="modal hidden">
-        <div class="modal-wrapper">
-            <div class="modal-content glass-card">
-                <span class="close-modal">&times;</span>
-                <h2>Регистрация</h2>
-                <form id="regFormRequest">
-                    <input type="text" id="newLogin" placeholder="Придумайте Логин" required>
-                    <input type="text" id="newPass" placeholder="Пароль" required>
-                    <button type="submit" class="neon-btn full-width">Отправить заявку</button>
-                </form>
-            </div>
-        </div>
+        <div class="modal-content"><span class="close-modal">&times;</span><h2 data-lang-key="registerTitle">Регистрация</h2><form id="regFormRequest"><input type="text" id="newLogin" placeholder="Логин" required><input type="text" id="newPass" placeholder="Пароль" required><button type="submit" class="cta-button" data-lang-key="sendRequestBtn">Отправить заявку</button></form></div>
     </div>
-
-    <!-- Library -->
     <div id="libraryModal" class="modal hidden">
-        <div class="modal-wrapper">
-            <div class="modal-content glass-card">
-                <span class="close-modal">&times;</span>
-                <h2>Мои программы</h2>
-                <div id="libraryList" class="lib-list"></div>
-            </div>
-        </div>
+        <div class="modal-content"><span class="close-modal">&times;</span><h2 data-lang-key="myPurchases">Мои программы</h2><div id="libraryList" class="lib-list"></div></div>
     </div>
 
     <script src="script.js"></script>
