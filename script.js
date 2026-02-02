@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA';
     const TG_CHAT_ID = '5683927471'; 
     
-    const MY_TON_ADDRESS = 'ВАШ_TON_КОШЕЛЕК'; // Твой адрес
-    const TON_API_KEY = 'ВАШ_КЛЮЧ_TONAPI_IO'; // Ключ с сайта tonapi.io
+    const MY_TON_ADDRESS = 'UQCiXX9tf5Uu8hvIqhowpYwjYDti7A5cTVqTVS1CHo5kTr64'; // Твой адрес
+    const TON_API_KEY = 'UQCiXX9tf5Uu8hvIqhowpYwjYDti7A5cTVqTVS1CHo5kTr64'; // Ключ с сайта tonapi.io
 
     const TON_EXCHANGE_RATE = 650; // Курс 1 TON = 650 RUB
     const SUBSCRIPTION_DURATION = 2592000000; // 30 дней в мс
@@ -207,3 +207,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateAuthUI();
 });
+
