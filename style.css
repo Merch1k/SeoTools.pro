@@ -340,10 +340,86 @@ footer { text-align: center; padding: 2rem 1rem; background: var(--primary); mar
     .modal-content { width: 85%; padding: 1.5rem; }
 }
 
+/* --- Вставьте этот код В КОНЕЦ вашего файла style.css --- */
+
+/* Стили для окна оплаты */
+.payment-content {
+    border: 1px solid var(--green);
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+    box-shadow: 0 0 20px rgba(74, 222, 128, 0.2);
+}
+
+.price-display {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--white);
+    margin: 10px 0 20px 0;
+}
+
+/* Стили для списка покупок (Библиотека) */
+.library-content {
+    width: 400px; /* Чуть шире стандартного */
+    max-width: 90%;
+}
+
+.library-list {
+    margin-top: 20px;
+    text-align: left;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.library-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 3px solid var(--green);
+}
+
+.library-item-title {
+    font-weight: bold;
+    color: var(--light);
+}
+
+.download-btn {
+    background: var(--green);
+    color: var(--dark);
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: transform 0.2s;
+}
+
+.download-btn:hover {
+    transform: scale(1.05);
+    background: #fff;
+}
+
+/* Изменяем кнопку на карточке, если товар куплен */
+.owned-btn {
+    background: #334155 !important;
+    color: #94a3b8 !important;
+    cursor: default !important;
+    border: 1px solid #475569 !important;
+}
+.owned-btn::after {
+    display: none; /* Убираем эффект блеска */
+}
+
 @media (max-width: 480px) {
     /* На очень узких можно 1 колонку, или оставить 2 если влезает */
     /* .grid { grid-template-columns: 1fr; } */
 }
+
 
 
 
