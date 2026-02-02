@@ -3,12 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEO Tools — Профессиональный софт</title>
+    <title>ACUS — Premium SEO Tools</title>
     <link rel="icon" type="image/png" href="Logoito.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+
+    <!-- АНИМИРОВАННЫЙ ФОН -->
+    <div class="background-glow">
+        <div class="aurora one"></div>
+        <div class="aurora two"></div>
+    </div>
     
     <!-- Шапка -->
     <header>
@@ -26,9 +32,7 @@
                     <span></span>
                 </button>
                 
-                <!-- Выпадающее меню -->
                 <div id="mainMenu" class="main-menu hidden">
-                    
                     <!-- ГОСТЬ -->
                     <div id="guestNav">
                         <a href="#" id="menuLoginBtn" data-lang-key="loginBtn">Войти</a>
@@ -41,20 +45,15 @@
                             <i class="fa fa-user-circle"></i>
                             <span id="menuUserName">User</span>
                         </div>
-                        
-                        <!-- НОВАЯ КНОПКА -->
                         <a href="#" id="menuLibraryBtn" style="color: #4ade80;">
-                            <i class="fa fa-download"></i> Мои покупки
+                            <i class="fa fa-download"></i> <span data-lang-key="myPurchases">Мои покупки</span>
                         </a>
-
                         <a href="#" id="menuCartBtn">
-                            <i class="fa fa-shopping-cart"></i> Корзина
+                            <i class="fa fa-shopping-cart"></i> <span data-lang-key="cart">Корзина</span>
                         </a>
-
                         <a href="#" id="menuLogoutBtn" data-lang-key="logoutBtn">
                             <i class="fa fa-sign-out-alt"></i> Выход
                         </a>
-                        
                         <div class="menu-divider"></div>
                     </div>
                     
@@ -105,7 +104,6 @@
     </footer>
 
     <!-- === МОДАЛЬНЫЕ ОКНА === -->
-
     <!-- Вход -->
     <div id="authModal" class="modal hidden">
         <div class="modal-content">
@@ -126,8 +124,8 @@
             <span class="close-reg">&times;</span>
             <h2 data-lang-key="registerTitle">Регистрация</h2>
             <form id="regFormRequest">
-                <input type="text" id="newLogin" placeholder="Login" required>
-                <input type="text" id="newPass" placeholder="Password" required>
+                <input type="text" id="newLogin" placeholder="Придумайте Логин" required>
+                <input type="text" id="newPass" placeholder="Придумайте Пароль" required>
                 <button type="submit" data-lang-key="sendRequestBtn">Отправить заявку</button>
             </form>
         </div>
@@ -166,6 +164,5 @@
     </div>
 
     <script src="script.js"></script>
-
 </body>
 </html>
