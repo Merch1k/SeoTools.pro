@@ -275,22 +275,52 @@ input:focus {
 /* -----------------------------------------------------------
    === АДАПТИВНОСТЬ (PREMIUM MOBILE) === 
    ----------------------------------------------------------- */
-@media (max-width: 900px) {
-    .grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-}
-@media (max-width: 768px) {
-    header { padding: 0.8rem 1rem; }
-    .logo { font-size: 1.6rem; }
-    .card-img-wrapper { height: 160px; }
-    .lang-submenu {
-        top: 100%; right: 0; margin-right: 0; margin-top: 5px;
-        border-radius: 12px; position: relative; width: 100%;
-        box-shadow: none; background: rgba(0, 0, 0, 0.2);
+@media (max-width: 1024px) {
+    /* Сбрасываем 3D эффекты */
+    .card, .card-content, .card-img-wrapper, .price-button { transform: none !important; }
+    .card::before { display: none; } /* Убираем тяжелую рамку */
+    
+    .grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 КОЛОНКИ */
+        gap: 12px; /* Уменьшаем отступ между карточками */
+        padding: 0 12px 50px;
     }
-}
-@media (max-width: 480px) {
-    .grid { grid-template-columns: 1fr; gap: 2rem; }
-    .modal-content { width: 90%; padding: 2rem 1.5rem; }
+    
+    .card { border-radius: 16px; }
+    .card-content {
+        padding: 12px; /* Меньше внутренний отступ */
+        border-radius: 16px;
+    }
+    
+    .card-img-wrapper {
+        height: 110px; /* Картинка меньше по высоте */
+        margin-bottom: 10px;
+        border-radius: 12px;
+    }
+    
+    .card-info-block h3 {
+        font-size: 0.95rem; /* Уменьшаем шрифт заголовка */
+        margin-bottom: 5px;
+    }
+    
+    .card-info-block p {
+        font-size: 0.75rem; /* Уменьшаем шрифт описания */
+        line-height: 1.3;
+        margin-bottom: 12px;
+        /* Обрезаем текст если длинный */
+        display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    
+    .price-button {
+        padding: 10px 0; /* Компактная кнопка */
+        font-size: 0.85rem;
+        border-radius: 10px;
+    }
+    
+    /* Шапка и модалки на телефоне */
+    header { padding: 0.8rem 1rem; }
+    .logo { font-size: 1.5rem; }
+    .modal-content { width: 85%; padding: 1.5rem; }
 }
 
 /* Стили, которые не были изменены */
@@ -332,3 +362,4 @@ footer { text-align: center; padding: 3rem 1rem; background: var(--dark); margin
 .lib-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: left; }
 .download-link { text-decoration: none; color: var(--green); font-weight: bold; }
 .download-link:hover { text-decoration: underline; }
+
