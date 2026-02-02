@@ -1,7 +1,67 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- НАСТРОЙКИ TELEGRAM (ВСТАВЬТЕ СВОИ ДАННЫЕ) ---
+    const TG_BOT_TOKEN = 'ВАШ_ТОКЕН_БОТА'; // Например: '123456789:AAHg...'
+    const TG_CHAT_ID = 'ВАШ_CHAT_ID';     // Например: '987654321'
+
+    // --- КОНФИГУРАЦИЯ ---
+    // ВРЕМЯ ЖИЗНИ ПОДПИСКИ (в миллисекундах)
+    // 60000 = 1 минута. Для месяца: 30 * 24 * 60 * 60 * 1000
+    const SUBSCRIPTION_DURATION = 60000; 
+
+    // --- СЛОВАРЬ ПЕРЕВОДОВ ---
+    const translations = {
+        ru: {
+            headerTitle: "SEO Утилита",
+            loginBtn: "Войти",
+            registerBtn: "Регистрация",
+            logoutBtn: "Выход",
+            languageBtn: "Язык",
+            videoTitle: "Посмотрите наш продукт в действии",
+            multitoolDesc: "Наш инструмент анализирует ключевые слова, отслеживает позиции и помогает вам обойти конкурентов.",
+            loading: "Загрузка товаров...",
+            developedIn: "Разработан в 2026.",
+            authTitle: "Авторизация",
+            authBtn: "Войти",
+            demoMode: "Демо: введите любые данные",
+            registerTitle: "Регистрация",
+            sendRequestBtn: "Отправить заявку",
+            buyPrefix: "Купить за",
+            inLibrary: "В библиотеке",
+            download: "Скачать",
+            myPurchases: "Мои покупки",
+            cart: "Корзина",
+            regSuccess: "Заявка отправлена администратору!",
+            regError: "Ошибка отправки. Попробуйте позже."
+        },
+        en: {
+            headerTitle: "SEO Utility",
+            loginBtn: "Log In",
+            registerBtn: "Sign Up",
+            logoutBtn: "Log Out",
+            languageBtn: "Language",
+            videoTitle: "See our product in action",
+            multitoolDesc: "Our tool analyzes keywords, tracks rankings, and helps you outrank competitors.",
+            loading: "Loading products...",
+            developedIn: "Developed in 2026.",
+            authTitle: "Authorization",
+            authBtn: "Log In",
+            demoMode: "Demo: enter any data",
+            registerTitle: "Registration",
+            sendRequestBtn: "Send Request",
+            buyPrefix: "Buy for",
+            inLibrary: "Owned",
+            download: "Download",
+            myPurchases: "My Library",
+            cart: "Cart",
+            regSuccess: "Request sent to admin!",
+            regError: "Sending error. Try again later."
+        }
+    };
+
+    let currentLang = 'ru'; 
+
     // --- ДАННЫЕ (4 ТОВАРА) ---
-    // Используем надежные ссылки для картинок (цвета в стиле ACUS)
     const products = [
         { 
             id: 1, 
@@ -38,11 +98,17 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     // --- СОСТОЯНИЕ (LOCALSTORAGE) ---
-    // Проверяем, кто зашел
     let currentUser = localStorage.getItem('acus_user');
-    // Загружаем покупки для этого пользователя
-    let userPurchases = currentUser ? JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [] : [];
+    let rawPurchases = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
     
+    // Миграция старых данных
+    let userPurchases = rawPurchases.map(item => {
+        if (typeof item === 'number') {
+            return { id: item, expires: Date.now() + SUBSCRIPTION_DURATION };
+        }
+        return item;
+    });
+
     let currentProductToBuy = null;
 
     // --- DOM ЭЛЕМЕНТЫ ---
@@ -50,36 +116,59 @@ document.addEventListener('DOMContentLoaded', () => {
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mainMenu = document.getElementById('mainMenu');
     
-    // Панели меню
     const guestNav = document.getElementById('guestNav');
     const userNav = document.getElementById('userNav');
     const menuUserName = document.getElementById('menuUserName');
     
-    // Кнопки меню
     const menuLoginBtn = document.getElementById('menuLoginBtn');
     const menuRegisterBtn = document.getElementById('menuRegisterBtn');
     const menuLogoutBtn = document.getElementById('menuLogoutBtn');
     const menuLibraryBtn = document.getElementById('menuLibraryBtn');
+    
+    const menuLangBtn = document.getElementById('menuLangBtn');
+    const langSubmenu = document.getElementById('langSubmenu');
+    const langLinks = document.querySelectorAll('.lang-submenu a');
 
-    // Модальные окна
     const authModal = document.getElementById('authModal');
     const regModal = document.getElementById('regModal');
     const paymentModal = document.getElementById('paymentModal');
     const libraryModal = document.getElementById('libraryModal');
 
-    // --- ФУНКЦИЯ ОТРИСОВКИ ТОВАРОВ ---
+    // --- ФУНКЦИИ ---
+
+    function checkExpirations() {
+        if (!currentUser) return;
+        const now = Date.now();
+        const initialCount = userPurchases.length;
+        userPurchases = userPurchases.filter(p => p.expires > now);
+        
+        if (userPurchases.length !== initialCount) {
+            localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
+        }
+    }
+
     function renderProducts() {
+        checkExpirations();
         grid.innerHTML = '';
         products.forEach(product => {
             const card = document.createElement('div');
             card.className = 'card';
             
-            // Проверка на покупку
-            const isOwned = userPurchases.includes(product.id);
+            const purchase = userPurchases.find(p => p.id === product.id);
+            const isOwned = !!purchase;
             
-            // Настройка кнопки
             let btnClass = isOwned ? 'price-button owned' : 'price-button';
-            let btnText = isOwned ? '<i class="fa fa-check"></i> В библиотеке' : `Купить за ${product.price} ₽`;
+            
+            let btnContent = '';
+            if (isOwned) {
+                const timeLeft = Math.max(0, Math.ceil((purchase.expires - Date.now()) / 60000));
+                const inLibText = translations[currentLang].inLibrary;
+                btnContent = `<i class="fa fa-check"></i> ${inLibText} <br><span style="font-size:0.7em; opacity:0.8">${timeLeft} min left</span>`;
+            } else {
+                const buyText = translations[currentLang].buyPrefix;
+                btnContent = `${buyText} ${product.price} ₽`;
+            }
+
             let clickAttr = isOwned ? '' : `onclick="buyProduct(${product.id})"`;
 
             card.innerHTML = `
@@ -91,18 +180,49 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p>${product.description}</p>
                 </div>
                 <button class="${btnClass}" ${clickAttr}>
-                    ${btnText}
+                    ${btnContent}
                 </button>
             `;
             grid.appendChild(card);
         });
     }
 
-    // --- ЛОГИКА ПОКУПКИ ---
-    // Глобальная функция, чтобы работала из HTML onclick
+    function setLanguage(lang) {
+        if (!translations[lang]) return;
+        currentLang = lang;
+        document.querySelectorAll('[data-lang-key]').forEach(el => {
+            const key = el.getAttribute('data-lang-key');
+            if (translations[lang][key]) el.textContent = translations[lang][key];
+        });
+        if(menuLibraryBtn) menuLibraryBtn.innerHTML = `<i class="fa fa-download"></i> ${translations[lang].myPurchases}`;
+        const cartBtn = document.getElementById('menuCartBtn');
+        if(cartBtn) cartBtn.innerHTML = `<i class="fa fa-shopping-cart"></i> ${translations[lang].cart}`;
+        renderProducts();
+        langSubmenu.classList.add('hidden');
+    }
+
+    // --- ОБРАБОТЧИКИ СОБЫТИЙ ---
+
+    // 1. Язык
+    if (menuLangBtn) {
+        menuLangBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            langSubmenu.classList.toggle('hidden');
+        });
+    }
+    langLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setLanguage(e.target.getAttribute('data-lang'));
+        });
+    });
+
+    // 2. Покупка
     window.buyProduct = (id) => {
         if (!currentUser) {
-            alert('Сначала войдите в аккаунт!');
+            alert(currentLang === 'ru' ? 'Сначала войдите в аккаунт!' : 'Please log in first!');
             authModal.classList.remove('hidden');
             return;
         }
@@ -114,32 +234,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Обработка формы оплаты
     document.getElementById('paymentForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const btn = e.target.querySelector('button');
         const originalText = btn.textContent;
-        
-        btn.textContent = 'Обработка...';
+        btn.textContent = '...';
         btn.disabled = true;
 
         setTimeout(() => {
-            // Сохраняем покупку
             if(currentProductToBuy) {
-                userPurchases.push(currentProductToBuy.id);
+                const purchaseData = {
+                    id: currentProductToBuy.id,
+                    expires: Date.now() + SUBSCRIPTION_DURATION
+                };
+                userPurchases.push(purchaseData);
                 localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
                 
-                alert('Оплата прошла успешно!');
+                alert(currentLang === 'ru' ? 'Оплата прошла успешно!' : 'Payment successful!');
                 paymentModal.classList.add('hidden');
                 e.target.reset();
-                renderProducts(); // Обновляем кнопки
+                renderProducts(); 
             }
             btn.textContent = originalText;
             btn.disabled = false;
         }, 1500);
     });
 
-    // --- БИБЛИОТЕКА ---
+    // 3. Библиотека
     if(menuLibraryBtn) {
         menuLibraryBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -150,19 +271,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderLibrary() {
+        checkExpirations();
         const list = document.getElementById('libraryList');
         list.innerHTML = '';
         if(userPurchases.length === 0) {
-            list.innerHTML = '<p style="color:#aaa">У вас пока нет купленных программ.</p>';
+            list.innerHTML = `<p style="color:#aaa">${currentLang === 'ru' ? 'У вас пока нет активных подписок.' : 'No active subscriptions.'}</p>`;
         } else {
-            userPurchases.forEach(id => {
-                const p = products.find(prod => prod.id === id);
+            userPurchases.forEach(purchase => {
+                const p = products.find(prod => prod.id === purchase.id);
                 if(p) {
+                    const dateEnd = new Date(purchase.expires).toLocaleString();
+                    const dlText = translations[currentLang].download;
                     list.innerHTML += `
                         <div class="lib-item">
-                            <span>${p.title}</span>
-                            <a href="#" class="download-link" onclick="alert('Скачивание файла: ${p.file}')">
-                                <i class="fa fa-download"></i> Скачать
+                            <div>
+                                <span style="font-weight:bold; display:block;">${p.title}</span>
+                                <span style="font-size:0.8em; color:#4ade80;">Expires: ${dateEnd}</span>
+                            </div>
+                            <a href="#" class="download-link" onclick="alert('${dlText}: ${p.file}')">
+                                <i class="fa fa-download"></i> ${dlText}
                             </a>
                         </div>
                     `;
@@ -171,17 +298,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- АВТОРИЗАЦИЯ ---
+    // 4. Авторизация
     function updateAuthUI() {
         if(currentUser) {
             guestNav.classList.add('hidden');
             userNav.classList.remove('hidden');
             menuUserName.textContent = currentUser;
+            checkExpirations();
         } else {
             guestNav.classList.remove('hidden');
             userNav.classList.add('hidden');
         }
-        renderProducts(); // Перерисовать, т.к. статус покупок зависит от юзера
+        renderProducts();
     }
 
     document.getElementById('loginForm').addEventListener('submit', (e) => {
@@ -190,12 +318,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if(login) {
             currentUser = login;
             localStorage.setItem('acus_user', login);
-            // Подгружаем покупки этого юзера
-            userPurchases = JSON.parse(localStorage.getItem(`purchases_${login}`)) || [];
-            
+            let loaded = JSON.parse(localStorage.getItem(`purchases_${login}`)) || [];
+            userPurchases = loaded.map(item => {
+                 if (typeof item === 'number') return { id: item, expires: Date.now() + SUBSCRIPTION_DURATION };
+                 return item;
+            });
             updateAuthUI();
             authModal.classList.add('hidden');
-            alert(`Добро пожаловать, ${login}!`);
+            alert(currentLang === 'ru' ? `Добро пожаловать, ${login}!` : `Welcome, ${login}!`);
         }
     });
 
@@ -210,7 +340,59 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- УПРАВЛЕНИЕ МЕНЮ И МОДАЛКАМИ ---
+    // 5. РЕГИСТРАЦИЯ (ОТПРАВКА В TELEGRAM)
+    const regForm = document.getElementById('regFormRequest');
+    if (regForm) {
+        regForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const login = document.getElementById('newLogin').value;
+            const pass = document.getElementById('newPass').value;
+            const btn = regForm.querySelector('button');
+            const originalText = btn.textContent;
+
+            // Проверка на заполнение
+            if(!login || !pass) return;
+
+            // Меняем кнопку на "Отправка..."
+            btn.disabled = true;
+            btn.textContent = '...';
+
+            // Формируем сообщение
+            const message = `🔔 <b>Новая заявка на регистрацию!</b>\n\n👤 <b>Логин:</b> ${login}\n🔑 <b>Пароль:</b> ${pass}`;
+
+            // Отправляем в Telegram
+            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: TG_CHAT_ID,
+                    text: message,
+                    parse_mode: 'HTML'
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert(translations[currentLang].regSuccess);
+                    regModal.classList.add('hidden');
+                    regForm.reset();
+                } else {
+                    alert(translations[currentLang].regError);
+                    console.error('Telegram Error:', response);
+                }
+            })
+            .catch(error => {
+                console.error('Fetch Error:', error);
+                alert(translations[currentLang].regError);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            });
+        });
+    }
+
+    // --- УПРАВЛЕНИЕ ИНТЕРФЕЙСОМ ---
     hamburgerBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         mainMenu.classList.toggle('hidden');
@@ -219,7 +401,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if(menuLoginBtn) menuLoginBtn.addEventListener('click', () => { authModal.classList.remove('hidden'); mainMenu.classList.add('hidden'); });
     if(menuRegisterBtn) menuRegisterBtn.addEventListener('click', () => { regModal.classList.remove('hidden'); mainMenu.classList.add('hidden'); });
 
-    // Закрытие (крестики)
     document.querySelectorAll('.close, .close-reg, .close-payment, .close-library').forEach(btn => {
         btn.addEventListener('click', () => {
             authModal.classList.add('hidden');
@@ -229,6 +410,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Инициализация
     updateAuthUI();
 });
