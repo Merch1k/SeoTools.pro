@@ -1,164 +1,153 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;0,900;1,400&display=swap');
 
 :root {
-    --bg: #000000;
-    --card-bg: #0a0a0b;
-    --accent: #00ffa3; /* Изумрудный неон */
-    --accent-glow: rgba(0, 255, 163, 0.3);
-    --purple: #7000ff;
-    --text: #ffffff;
-    --text-dim: #88888e;
-    --border: rgba(255, 255, 255, 0.06);
+    --obsidian: #000000;
+    --platinum: #e2e8f0;
+    --emerald: #00ff8f;
+    --emerald-glow: rgba(0, 255, 143, 0.2);
+    --card-matte: #080808;
+    --border: rgba(255, 255, 255, 0.04);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--obsidian); color: var(--platinum); overflow-x: hidden; }
 
-/* --- 🌌 ГЛУБОКИЙ ФОН --- */
-.luxury-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% -20%, #111, #000); }
-.glow-spot { position: absolute; width: 800px; height: 800px; border-radius: 50%; filter: blur(160px); opacity: 0.1; pointer-events: none; }
-.spot-1 { background: var(--purple); top: -200px; left: -200px; }
-.spot-2 { background: var(--accent); bottom: -200px; right: -200px; }
+/* --- 🌑 DEEP UNIVERSE BACKGROUND --- */
+.vfx-layer { position: fixed; inset: 0; z-index: -1; background: #000; }
+.vfx-layer::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+}
+.plasma-orb { position: absolute; width: 60vw; height: 60vw; border-radius: 50%; filter: blur(150px); opacity: 0.08; animation: move 20s infinite alternate; }
+.orb-1 { background: var(--emerald); top: -20%; left: -10%; }
+.orb-2 { background: #4f46e5; bottom: -10%; right: -10%; animation-delay: -5s; }
+@keyframes move { from { transform: translate(0,0); } to { transform: translate(10vw, 5vh); } }
 
-/* --- 💎 HEADER (JEWELRY STYLE) --- */
+/* --- 💎 ARCHITECTURAL HEADER --- */
 header { 
     position: sticky; top: 0; z-index: 1000; 
-    background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(30px) saturate(150%);
-    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(40px);
+    border-bottom: 0.5px solid var(--border);
 }
-.header-container { max-width: 1300px; margin: 0 auto; padding: 16px 30px; display: flex; justify-content: space-between; align-items: center; }
+.header-wrap { max-width: 1400px; margin: 0 auto; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
 .logo { 
-    font-size: 2.2rem; font-weight: 900; letter-spacing: -2px; 
-    background: linear-gradient(to right, #fff 20%, #444 40%, #fff 60%, #fff 80%);
-    background-size: 200% auto; -webkit-background-clip: text; color: transparent;
-    animation: shine-logo 6s linear infinite;
+    font-size: 2.4rem; font-weight: 900; letter-spacing: -3px; 
+    background: linear-gradient(135deg, #fff 0%, #444 100%);
+    -webkit-background-clip: text; color: transparent;
 }
-@keyframes shine-logo { to { background-position: 200% center; } }
+.burger-menu { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 8px; }
+.burger-menu span { width: 34px; height: 1px; background: #fff; transition: 0.4s; }
 
-.burger { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 8px; }
-.burger span { width: 32px; height: 1.5px; background: #fff; transition: 0.3s; }
+/* --- 📦 THE PERFECT GRID (MATHEMATICAL SYMMETRY) --- */
+.container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
+.hero-text { padding: 100px 0 60px; text-align: left; }
+.hero-text h1 { font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; letter-spacing: -5px; line-height: 0.85; margin-bottom: 20px; text-transform: lowercase; }
+.accent-dash { width: 100px; height: 1px; background: var(--emerald); box-shadow: 0 0 20px var(--emerald); }
 
-/* --- 📦 PREMIUM GRID SYSTEM --- */
-.container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
-.main-content { padding: 60px 0; }
-.section-header { margin-bottom: 50px; text-align: left; }
-.section-header h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900; letter-spacing: -3px; line-height: 1; margin-bottom: 15px; }
-.accent-bar { width: 80px; height: 5px; background: var(--accent); border-radius: 10px; box-shadow: 0 0 20px var(--accent-glow); }
-
-.premium-grid { 
+.main-grid { 
     display: grid; 
     grid-template-columns: repeat(3, 1fr); 
     gap: 40px; 
-    align-items: stretch;
+    margin-bottom: 100px;
 }
 
-/* --- 💎 THE CARD (MASTERPIECE) --- */
-.card-wrapper { perspective: 2000px; height: 100%; }
+/* --- 💎 TITAN CARD DESIGN --- */
+.card-outer { perspective: 2000px; }
 .card {
-    position: relative; height: 100%; background: var(--card-bg);
-    border-radius: 32px; border: 1px solid var(--border);
-    transition: all 0.5s cubic-bezier(0.15, 0.83, 0.66, 1);
-    display: flex; flex-direction: column; overflow: hidden;
-    z-index: 1;
+    position: relative; background: var(--card-matte); border-radius: 40px;
+    border: 0.5px solid var(--border); transition: all 0.6s cubic-bezier(0.2, 1, 0.2, 1);
+    display: flex; flex-direction: column; height: 100%; overflow: hidden;
 }
+.card:hover { transform: translateY(-10px); border-color: rgba(255,255,255,0.15); box-shadow: 0 40px 100px rgba(0,0,0,0.9); }
 
-/* Анимированная рамка (ультра-тонкая) */
+/* Эффект "Сканирующей нити" */
 .card::after {
-    content: ''; position: absolute; inset: -1px; border-radius: 33px;
-    background: conic-gradient(from var(--angle), transparent 70%, var(--accent), var(--purple), transparent);
-    animation: rotate 5s linear infinite; opacity: 0; transition: 0.4s; z-index: -1;
+    content: ''; position: absolute; inset: -1px; border-radius: 41px;
+    background: conic-gradient(from var(--a), transparent 80%, var(--emerald), transparent);
+    animation: scan 4s linear infinite; opacity: 0; transition: 0.5s; z-index: -1;
 }
 .card:hover::after { opacity: 1; }
-@property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
-@keyframes rotate { to { --angle: 360deg; } }
+@property --a { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+@keyframes scan { to { --a: 360deg; } }
 
-.card-content { padding: 30px; display: flex; flex-direction: column; height: 100%; }
-.card-image { 
-    width: 100%; aspect-ratio: 16/11; border-radius: 20px; overflow: hidden; 
-    margin-bottom: 25px; background: #000; border: 1px solid var(--border);
+.card-body { padding: 35px; display: flex; flex-direction: column; flex-grow: 1; }
+.card-media { width: 100%; aspect-ratio: 16/10; border-radius: 24px; overflow: hidden; margin-bottom: 30px; border: 0.5px solid var(--border); }
+.card-media img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; grayscale: 0.5; transition: 1s cubic-bezier(0.2, 1, 0.2, 1); }
+.card:hover .card-media img { transform: scale(1.05); opacity: 1; grayscale: 0; }
+
+.card-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 15px; letter-spacing: -1px; color: #fff; }
+.card-desc { color: #666; font-size: 1rem; line-height: 1.5; margin-bottom: 35px; }
+
+/* Кнопка "Executive" */
+.btn-premium {
+    width: 100%; padding: 22px; border-radius: 20px; border: none;
+    background: #fff; color: #000; font-weight: 900; font-size: 0.9rem;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 3px;
+    transition: 0.4s; margin-top: auto;
 }
-.card-image img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: 0.8s; }
-.card:hover .card-image img { transform: scale(1.1); opacity: 1; }
+.btn-premium:hover { background: var(--emerald); transform: scale(1.02); box-shadow: 0 0 50px var(--emerald-glow); }
+.btn-premium.owned { background: transparent; border: 1px solid var(--border); color: #444; cursor: default; }
 
-.card-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -1px; }
-.card-desc { color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; margin-bottom: 30px; -webkit-line-clamp: 3; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
-
-/* КНОПКА С ЭФФЕКТОМ СКАНИРОВАНИЯ */
-.buy-btn {
-    width: 100%; padding: 18px; border-radius: 16px; border: 1px solid var(--accent);
-    background: transparent; color: var(--accent); font-weight: 900; font-size: 0.9rem;
-    cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
-    position: relative; overflow: hidden; transition: 0.4s; margin-top: auto;
-}
-.buy-btn:hover { background: var(--accent); color: #000; box-shadow: 0 0 40px var(--accent-glow); }
-.buy-btn::before {
-    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: 0.5s;
-}
-.buy-btn:hover::before { left: 100%; }
-.buy-btn.owned { border-color: var(--border); color: var(--text-dim); cursor: default; }
-
-/* --- 📱 MOBILE OPTIMIZATION (THE 2-COLUMN MAGIC) --- */
+/* --- 📱 MOBILE PERFECTION (2 COLUMNS, NO OVERLAP) --- */
 @media (max-width: 1100px) {
-    .premium-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-    .container { padding: 0 15px; }
-    .card-content { padding: 15px; }
-    .card-image { height: 120px; border-radius: 14px; margin-bottom: 15px; }
-    .card-title { font-size: 1.1rem; margin-bottom: 6px; }
-    .card-desc { font-size: 0.8rem; -webkit-line-clamp: 2; margin-bottom: 15px; }
-    .buy-btn { padding: 12px; font-size: 0.75rem; border-radius: 12px; }
+    .main-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .container { padding: 0 12px; }
+    .hero-text { padding: 60px 0 30px; }
+    .card { border-radius: 24px; }
+    .card-body { padding: 15px; }
+    .card-media { height: 130px; border-radius: 16px; margin-bottom: 15px; }
+    .card-title { font-size: 1rem; margin-bottom: 5px; }
+    .card-desc { font-size: 0.75rem; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 15px; }
+    .btn-premium { padding: 15px; font-size: 0.7rem; border-radius: 12px; }
 }
 
-/* --- 🎥 VIDEO THEATRE --- */
-.video-block { margin-bottom: 80px; }
-.video-container { 
-    background: #000; border-radius: 40px; overflow: hidden; 
-    border: 1px solid var(--border); box-shadow: 0 0 100px rgba(0, 255, 163, 0.05);
+/* --- 🎥 CINEMATIC VIDEO --- */
+.video-theatre { margin-bottom: 80px; position: relative; }
+.video-wrap { 
+    background: #000; border-radius: 50px; overflow: hidden; 
+    border: 0.5px solid var(--border); box-shadow: 0 100px 200px rgba(0,0,0,0.8);
 }
-.video-container video { width: 100%; display: block; aspect-ratio: 16/9; }
+.video-wrap video { width: 100%; display: block; aspect-ratio: 21/9; object-fit: cover; }
 
-/* --- 💳 TITANIUM PAYMENT CARD --- */
-.payment-modal {
-    background: #0d0d0f; border: 1px solid var(--border); border-radius: 40px;
-    padding: 40px; width: 100%; max-width: 480px; position: relative;
-    box-shadow: 0 60px 120px rgba(0,0,0,0.9); text-align: center;
+/* --- 💳 BLACK DIAMOND PAYMENT --- */
+.payment-sheet {
+    background: #050505; border: 0.5px solid var(--border); border-radius: 50px;
+    padding: 50px; width: 100%; max-width: 500px; position: relative;
+    box-shadow: 0 100px 200px #000; text-align: center;
 }
-.card-chip { width: 55px; height: 42px; background: linear-gradient(135deg, #cc9b52, #7a5a2a); border-radius: 8px; margin: 0 auto 25px; }
-.amount-text { font-size: 3rem; font-weight: 900; color: #fff; margin: 20px 0; letter-spacing: -2px; }
-.wallet-address-wrapper {
-    background: #050505; border: 1px solid var(--border); padding: 18px;
-    border-radius: 20px; margin: 25px 0; cursor: pointer; transition: 0.3s;
+.sheet-chip { width: 60px; height: 45px; background: linear-gradient(135deg, #eee 0%, #888 100%); border-radius: 10px; margin: 0 auto 30px; opacity: 0.5; }
+.sheet-price { font-size: 4rem; font-weight: 900; color: #fff; margin: 20px 0; letter-spacing: -4px; }
+.wallet-plate {
+    background: #000; border: 0.5px solid var(--border); padding: 25px;
+    border-radius: 25px; margin: 30px 0; cursor: pointer; transition: 0.3s;
 }
-.wallet-address-wrapper:hover { border-color: var(--accent); }
-.wallet-address-wrapper code { color: var(--accent); font-family: monospace; font-size: 1.1rem; }
+.wallet-plate:hover { border-color: var(--emerald); background: #080808; }
+.wallet-plate code { color: var(--emerald); font-size: 1.1rem; letter-spacing: 1px; }
 
-/* --- 📂 SIDE MENU --- */
-.side-menu {
-    position: fixed; inset: 0; z-index: 2000; display: none;
+/* --- 📂 SLIDE NAVIGATION --- */
+.side-nav { position: fixed; inset: 0; z-index: 2000; display: none; }
+.side-nav.active { display: flex; }
+.side-blur { position: absolute; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(50px); }
+.side-panel {
+    position: absolute; right: 0; top: 0; bottom: 0; width: 400px;
+    background: #000; border-left: 0.5px solid var(--border);
+    padding: 80px 50px; transform: translateX(100%); transition: 0.6s cubic-bezier(0.2, 1, 0.2, 1);
 }
-.side-menu.active { display: flex; }
-.menu-blur { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); }
-.menu-panel {
-    position: absolute; right: 0; top: 0; bottom: 0; width: 340px;
-    background: var(--bg); border-left: 1px solid var(--border);
-    padding: 60px 40px; transform: translateX(100%); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+.side-nav.active .side-panel { transform: translateX(0); }
+.side-link { 
+    display: flex; align-items: center; gap: 25px; padding: 25px; 
+    color: #fff; text-decoration: none; font-size: 1.4rem; font-weight: 700;
+    border-radius: 25px; margin-bottom: 15px; transition: 0.3s;
 }
-.side-menu.active .menu-panel { transform: translateX(0); }
-.nav-link { 
-    display: flex; align-items: center; gap: 20px; padding: 20px; 
-    color: var(--text-white); text-decoration: none; font-size: 1.1rem; font-weight: 600;
-    border-radius: 20px; margin-bottom: 12px; transition: 0.3s;
-}
-.nav-link:hover { background: rgba(255,255,255,0.05); color: var(--accent); }
+.side-link:hover { background: #080808; color: var(--emerald); transform: translateX(-10px); }
 
 /* --- MODALS --- */
 .modal-overlay { position: fixed; inset: 0; z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
 .modal-overlay.active { display: flex; }
-.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); }
-.close-btn { position: absolute; top: 25px; right: 30px; font-size: 2rem; color: #fff; cursor: pointer; z-index: 10; }
-input { width: 100%; padding: 20px; margin-top: 15px; background: #000; border: 1px solid var(--border); border-radius: 18px; color: #fff; font-size: 1rem; outline: none; }
-input:focus { border-color: var(--accent); }
-.confirm-btn { width: 100%; padding: 20px; margin-top: 25px; background: #fff; color: #000; border: none; border-radius: 20px; font-weight: 900; cursor: pointer; font-size: 1rem; }
-.confirm-btn:hover { background: var(--accent); }
+.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.95); }
+.close-btn { position: absolute; top: 40px; right: 50px; font-size: 3rem; color: #fff; cursor: pointer; z-index: 10; font-weight: 100; }
+input { width: 100%; padding: 25px; margin-top: 20px; background: #000; border: 0.5px solid var(--border); border-radius: 25px; color: #fff; font-size: 1.1rem; outline: none; }
+input:focus { border-color: var(--emerald); }
+.confirm-btn { width: 100%; padding: 25px; margin-top: 30px; background: #fff; color: #000; border: none; border-radius: 25px; font-weight: 900; cursor: pointer; font-size: 1.1rem; letter-spacing: 2px; }
 .hidden { display: none !important; }
