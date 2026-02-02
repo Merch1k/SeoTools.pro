@@ -3,104 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ACUS — Sovereign Interface</title>
+    <title>ACUS — Premium Tools</title>
+    <link rel="icon" type="image/png" href="Logoito.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="ambient-layer">
+    <!-- 🌌 ГИБРИДНЫЙ ФОН (AURORA + NOISE) -->
+    <div class="background-wrapper">
         <div class="noise-overlay"></div>
+        <div class="aurora-blob purple"></div>
+        <div class="aurora-blob green"></div>
+        <div class="aurora-blob blue"></div>
     </div>
-
+    
+    <!-- HEADER -->
     <header>
-        <div class="header-content">
-            <div class="brand-logo">ACUS</div>
-            <button id="triggerMenu" class="menu-toggle">
+        <div class="header-inner">
+            <!-- Радужный логотип из старого дизайна -->
+            <div class="logo-wrapper">
+                <div class="logo">ACUS</div>
+                <div class="logo-badge">PRO</div>
+            </div>
+            
+            <button id="hamburgerBtn" class="hamburger-btn">
+                <span></span>
                 <span></span>
                 <span></span>
             </button>
         </div>
     </header>
 
-    <!-- DRAWER -->
-    <div id="appDrawer" class="drawer">
-        <div class="drawer-backdrop"></div>
-        <div class="drawer-panel">
-            <span class="close-icon" id="closeDrawer">&times;</span>
+    <!-- PREMIUM SIDEBAR MENU -->
+    <div id="mainMenu" class="menu-overlay">
+        <div class="menu-backdrop"></div>
+        <div class="menu-panel glass-morphism">
+            <div class="menu-header">
+                <span class="menu-title">ACUS MENU</span>
+                <button class="close-menu"><i class="fa fa-times"></i></button>
+            </div>
             
-            <div id="guestState">
-                <a href="#" id="lnkLogin" class="nav-item"><i class="fa fa-lock"></i> <span data-lang-key="loginBtn">Вход</span></a>
-                <a href="#" id="lnkReg" class="nav-item"><i class="fa fa-plus"></i> <span data-lang-key="registerBtn">Регистрация</span></a>
+            <div id="guestNav">
+                <a href="#" id="menuLoginBtn" class="menu-item"><i class="fa fa-sign-in-alt"></i> Войти</a>
+                <a href="#" id="menuRegisterBtn" class="menu-item"><i class="fa fa-user-plus"></i> Регистрация</a>
             </div>
 
-            <div id="userState" class="hidden">
-                <div style="margin-bottom: 40px; padding: 0 10px;">
-                    <div style="font-size: 0.8rem; color: #666; margin-bottom: 5px;">ACCOUNT</div>
-                    <div id="displayUser" style="font-size: 1.5rem; color: #fff;">User</div>
+            <div id="userNav" class="hidden">
+                <div class="user-profile-card">
+                    <div class="avatar-glow"><i class="fa fa-user-astronaut"></i></div>
+                    <div class="user-details">
+                        <span id="menuUserName">User</span>
+                        <span class="status-text">Premium Member</span>
+                    </div>
                 </div>
-                <a href="#" id="lnkLib" class="nav-item"><i class="fa fa-box"></i> <span data-lang-key="myPurchases">Мои покупки</span></a>
-                <a href="#" id="lnkOut" class="nav-item"><i class="fa fa-arrow-right"></i> <span data-lang-key="logoutBtn">Выход</span></a>
-            </div>
-
-            <div class="lang-switch">
-                <button data-lang="ru" class="lang-btn active">RU</button>
-                <button data-lang="en" class="lang-btn">EN</button>
+                <div class="menu-divider"></div>
+                <a href="#" id="menuLibraryBtn" class="menu-item active-glow">
+                    <i class="fa fa-cloud-download-alt"></i> Библиотека
+                </a>
+                <a href="#" id="menuLogoutBtn" class="menu-item">
+                    <i class="fa fa-power-off"></i> Выход
+                </a>
             </div>
         </div>
     </div>
 
-    <main class="wrapper">
-        <div class="hero-section">
-            <h1 class="hero-title" data-lang-key="headerTitle">Premium Ecosystem</h1>
-            <p class="hero-subtitle" data-lang-key="headerDesc">Профессиональные инструменты. Безупречная точность. Абсолютная анонимность.</p>
-        </div>
+    <!-- MAIN CONTENT -->
+    <main class="hero-section">
+        <div class="container">
+            <div class="hero-header">
+                <h1 class="gradient-title">Ultimate SEO Tools</h1>
+                <p>Профессиональные решения для доминирования в поиске.</p>
+            </div>
 
-        <!-- VIDEO -->
-        <div class="video-container">
-            <video controls muted poster="Pins.png">
-                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-            </video>
-        </div>
-
-        <div class="separator"></div>
-
-        <!-- GRID -->
-        <div id="mainGrid" class="product-grid">
-            <!-- JS -->
+            <!-- Сетка товаров -->
+            <div id="products-grid" class="grid-container">
+                <!-- JS рендер -->
+            </div>
         </div>
     </main>
 
-    <!-- AUTH MODAL -->
-    <div id="authOverlay" class="modal-overlay">
-        <div class="modal-backdrop"></div>
-        <div class="vault-box">
-            <span class="close-icon" id="closeAuth">&times;</span>
-            <div class="vault-title">AUTHENTICATION</div>
-            <form id="formAuth">
-                <input type="text" id="inUser" class="clean-input" placeholder="Identity" required>
-                <input type="password" id="inPass" class="clean-input" placeholder="Passkey" required>
-                <button type="submit" class="action-btn" style="margin-top: 30px;" data-lang-key="authBtn">Enter System</button>
-            </form>
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 ACUS. Designed for Winners.</p>
+    </footer>
+
+    <!-- === МОДАЛЬНЫЕ ОКНА === -->
+    
+    <!-- ОПЛАТА КРИПТОЙ (ADI) -->
+    <div id="paymentModal" class="modal hidden">
+        <div class="modal-wrapper">
+            <div class="modal-content glass-card payment-style">
+                <span class="close-modal">&times;</span>
+                <div class="pay-icon-glow"><i class="fa-brands fa-bitcoin"></i></div>
+                <h3>Crypto Payment</h3>
+                
+                <div class="bill-info">
+                    <span id="payName" class="bill-item">Товар</span>
+                    <span id="payAmount" class="bill-price">0 ADI</span>
+                </div>
+
+                <div class="wallet-section">
+                    <p>Отправьте ADI (TON) на кошелек:</p>
+                    <div class="wallet-address-box" id="walletCopyBtn">
+                        <span id="walletAddress">...</span>
+                        <i class="fa fa-copy"></i>
+                    </div>
+                    <div class="pulse-text">Ожидание транзакции...</div>
+                </div>
+
+                <form id="cryptoCheckForm">
+                    <input type="text" id="txHash" placeholder="Вставьте Hash (TXID) транзакции" required>
+                    <button type="submit" class="neon-btn full-width">
+                        <i class="fa fa-check"></i> Я ОПЛАТИЛ
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- PAYMENT MODAL -->
-    <div id="payOverlay" class="modal-overlay">
-        <div class="modal-backdrop"></div>
-        <div class="vault-box">
-            <span class="close-icon" id="closePay">&times;</span>
-            <div class="vault-title" id="payLabel">INVOICING</div>
-            <div id="payValue" class="vault-value">0 ADI</div>
-            
-            <div class="copy-field" id="btnCopy">
-                UQBK...3xL9 <i class="fa fa-copy" style="margin-left: 10px;"></i>
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal hidden">
+        <div class="modal-wrapper">
+            <div class="modal-content glass-card">
+                <span class="close-modal">&times;</span>
+                <h2>Вход</h2>
+                <form id="loginForm">
+                    <input type="text" id="loginEmail" placeholder="Логин" required>
+                    <input type="password" id="loginPass" placeholder="Пароль" required>
+                    <button type="submit" class="neon-btn full-width">Войти</button>
+                </form>
             </div>
+        </div>
+    </div>
 
-            <form id="formPay">
-                <input type="text" id="inHash" class="clean-input" placeholder="Transaction Hash" required>
-                <button type="submit" class="action-btn" style="margin-top: 30px;" data-lang-key="checkBtn">Verify Asset</button>
-            </form>
+    <!-- Reg Modal -->
+    <div id="regModal" class="modal hidden">
+        <div class="modal-wrapper">
+            <div class="modal-content glass-card">
+                <span class="close-modal">&times;</span>
+                <h2>Регистрация</h2>
+                <form id="regFormRequest">
+                    <input type="text" id="newLogin" placeholder="Придумайте Логин" required>
+                    <input type="text" id="newPass" placeholder="Пароль" required>
+                    <button type="submit" class="neon-btn full-width">Отправить заявку</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Library -->
+    <div id="libraryModal" class="modal hidden">
+        <div class="modal-wrapper">
+            <div class="modal-content glass-card">
+                <span class="close-modal">&times;</span>
+                <h2>Мои программы</h2>
+                <div id="libraryList" class="lib-list"></div>
+            </div>
         </div>
     </div>
 
