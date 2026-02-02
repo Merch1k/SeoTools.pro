@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ACUS — Elite SEO Solutions</title>
+    <title>ACUS — Ultra Premium SEO Tools</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="vfx-bg">
-        <div class="vfx-orb orb-1"></div>
-        <div class="vfx-orb orb-2"></div>
-        <div class="noise"></div>
+    <div class="luxury-bg">
+        <div class="glow-spot spot-1"></div>
+        <div class="glow-spot spot-2"></div>
     </div>
 
     <header>
         <div class="header-container">
             <div class="logo">ACUS</div>
-            <button id="menuBtn" class="burger">
+            <button id="openMenu" class="burger">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -27,30 +26,29 @@
     </header>
 
     <!-- SIDE MENU -->
-    <div id="sideMenu" class="menu-wrap">
-        <div class="menu-overlay"></div>
+    <div id="sideMenu" class="side-menu">
+        <div class="menu-blur"></div>
         <div class="menu-panel">
-            <span class="close-btn">&times;</span>
+            <span class="close-btn" id="closeMenu">&times;</span>
             
             <div id="guestBox">
-                <a href="#" id="loginOpen" class="nav-link"><i class="fa fa-door-open"></i> <span data-lang-key="loginBtn">Войти</span></a>
-                <a href="#" id="regOpen" class="nav-link"><i class="fa fa-user-plus"></i> <span data-lang-key="registerBtn">Регистрация</span></a>
+                <a href="#" id="loginLink" class="nav-link"><i class="fa fa-bolt-lightning"></i> <span data-lang-key="loginBtn">Войти</span></a>
+                <a href="#" id="regLink" class="nav-link"><i class="fa fa-user-plus"></i> <span data-lang-key="registerBtn">Регистрация</span></a>
             </div>
 
             <div id="userBox" class="hidden">
-                <div class="user-tag">
-                    <i class="fa fa-circle-user"></i>
-                    <span id="userNameText">User</span>
+                <div style="padding: 20px; background: rgba(0,255,163,0.1); border-radius: 20px; margin-bottom: 30px;">
+                    <span id="userNameDisplay" style="color: var(--accent); font-weight: 900; font-size: 1.2rem;">User</span>
                 </div>
-                <a href="#" id="libOpen" class="nav-link"><i class="fa fa-layer-group"></i> <span data-lang-key="myPurchases">Мои покупки</span></a>
-                <a href="#" id="logoutAction" class="nav-link"><i class="fa fa-right-from-bracket"></i> <span data-lang-key="logoutBtn">Выход</span></a>
+                <a href="#" id="libLink" class="nav-link"><i class="fa fa-crown"></i> <span data-lang-key="myPurchases">Мои покупки</span></a>
+                <a href="#" id="logoutBtn" class="nav-link"><i class="fa fa-power-off"></i> <span data-lang-key="logoutBtn">Выход</span></a>
             </div>
 
-            <div class="lang-row">
-                <p data-lang-key="languageBtn">Язык / Language</p>
-                <div class="lang-grid">
-                    <button data-lang="ru" class="l-btn">RU</button>
-                    <button data-lang="en" class="l-btn">EN</button>
+            <div style="margin-top: auto;">
+                <p style="font-size: 0.8rem; color: #555; text-transform: uppercase; letter-spacing: 2px;">Language</p>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button data-lang="ru" class="lang-btn-style active">RU</button>
+                    <button data-lang="en" class="lang-btn-style">EN</button>
                 </div>
             </div>
         </div>
@@ -59,73 +57,59 @@
     <main class="main-content">
         <div class="container">
             
-            <div class="section-title">
-                <h2 data-lang-key="headerTitle">Elite Ecosystem</h2>
-                <div class="line"></div>
+            <div class="section-header">
+                <h1 data-lang-key="headerTitle">Elite Utilities</h1>
+                <div class="accent-bar"></div>
             </div>
 
-            <!-- VIDEO SECTION -->
-            <section class="video-section">
-                <div class="video-theatre">
+            <!-- VIDEO -->
+            <section class="video-block">
+                <div class="video-container">
                     <video controls muted poster="Pins.png">
                         <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
                     </video>
-                    <div class="video-overlay">
-                        <p data-lang-key="videoDesc">Посмотрите наш продукт в действии</p>
-                    </div>
                 </div>
             </section>
 
-            <!-- PRODUCTS GRID -->
-            <div id="grid" class="premium-grid">
-                <!-- Карточки -->
+            <!-- GRID -->
+            <div id="productGrid" class="premium-grid">
+                <!-- JS Inject -->
             </div>
         </div>
     </main>
 
-    <!-- MODAL AUTH -->
-    <div id="authModal" class="modal">
-        <div class="menu-overlay"></div>
-        <div class="payment-card">
-            <span class="close-btn">&times;</span>
+    <!-- AUTH MODAL -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-backdrop"></div>
+        <div class="payment-modal">
+            <span class="close-btn" id="closeAuth">&times;</span>
             <div class="card-chip"></div>
             <h2 data-lang-key="authTitle">Авторизация</h2>
             <form id="authForm">
-                <input type="text" id="uInp" placeholder="Login" required>
-                <input type="password" id="pInp" placeholder="Password" required>
-                <button type="submit" class="confirm-btn" data-lang-key="authBtn">Вход</button>
+                <input type="text" id="loginInp" placeholder="Login" required>
+                <input type="password" id="passInp" placeholder="Password" required>
+                <button type="submit" class="confirm-btn" data-lang-key="authBtn">Enter System</button>
             </form>
         </div>
     </div>
 
-    <!-- MODAL PAYMENT (OLD LOOK) -->
-    <div id="payModal" class="modal">
-        <div class="menu-overlay"></div>
-        <div class="payment-card">
-            <span class="close-btn">&times;</span>
+    <!-- PAYMENT MODAL -->
+    <div id="payModal" class="modal-overlay">
+        <div class="modal-backdrop"></div>
+        <div class="payment-modal">
+            <span class="close-btn" id="closePay">&times;</span>
             <div class="card-chip"></div>
-            <h3 id="payProdName">Product</h3>
-            <div id="payProdPrice" class="pay-amount">0 ADI</div>
+            <h3 id="payName" style="color: #fff; font-size: 1.5rem;">Product</h3>
+            <div id="payAmount" class="amount-text">0 ADI</div>
             
-            <div class="wallet-box" id="copyWallet">
-                <p style="font-size: 0.7rem; color: #888; margin-bottom: 5px;">ADI WALLET (TON):</p>
-                <code id="walletAddr">UQBK...3xL9</code>
+            <div class="wallet-address-wrapper" id="copyAddr">
+                <code>UQBK...3xL9</code>
             </div>
 
             <form id="payForm">
-                <input type="text" id="txHash" placeholder="Transaction Hash (TXID)" required>
-                <button type="submit" class="confirm-btn" data-lang-key="checkBtn">Я оплатил</button>
+                <input type="text" id="txHash" placeholder="TXID / Hash" required>
+                <button type="submit" class="confirm-btn" data-lang-key="checkBtn">Verify Payment</button>
             </form>
-        </div>
-    </div>
-
-    <!-- MODAL LIBRARY -->
-    <div id="libModal" class="modal">
-        <div class="menu-overlay"></div>
-        <div class="payment-card" style="max-width: 500px;">
-            <span class="close-btn">&times;</span>
-            <h2 data-lang-key="myPurchases">Мои программы</h2>
-            <div id="libContent" style="margin-top: 20px; text-align: left;"></div>
         </div>
     </div>
 
