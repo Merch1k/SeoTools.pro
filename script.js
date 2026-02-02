@@ -442,3 +442,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Запуск при загрузке
     updateAuthUI();
 });
+
