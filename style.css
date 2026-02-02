@@ -1,365 +1,120 @@
-/* --- 💎 ИМПОРТ ПРЕМИУМ ШРИФТА --- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
 
 :root {
-    --primary: #1e293b;
-    --dark: #0f172a;
-    --slate: #1e293b; /* Более сложный серый */
-    --light: #f8fafc;
-    --white: #ffffff;
-    --green: #4ade80;
-    --accent-glow: rgba(74, 222, 128, 0.5);
-    --glass-bg: rgba(30, 41, 59, 0.7);
+    --primary: #1e293b; --dark: #0f172a; --white: #ffffff;
+    --green: #4ade80; --glow-purple: #a855f7; --glow-cyan: #22d3ee;
     --glass-border: rgba(255, 255, 255, 0.08);
-
-    /* Новые переменные для градиентов и теней */
-    --glow-purple: #a855f7;
-    --glow-cyan: #22d3ee;
 }
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    margin: 0;
-    background-color: var(--dark);
-    color: var(--light);
-    min-height: 100vh;
-    overflow-x: hidden; /* Убираем горизонтальный скролл */
+    font-family: 'Inter', sans-serif; margin: 0; background: var(--dark);
+    color: #f8fafc; min-height: 100vh; overflow-x: hidden;
 }
 
-/* --- 🌌 АНИМИРОВАННЫЙ ФОН "АВРОРА" --- */
+/* 🌌 ФОН */
 .background-glow {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--dark);
-    z-index: -1;
-    overflow: hidden;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1; background: var(--dark); overflow: hidden;
 }
 .aurora {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.3;
-    transition: transform 0.5s ease-out;
+    position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.2;
+    transition: transform 0.6s ease-out;
 }
-.aurora.one {
-    width: 50vw;
-    height: 50vw;
-    background: var(--glow-purple);
-}
-.aurora.two {
-    width: 40vw;
-    height: 40vw;
-    background: var(--glow-cyan);
-}
+.aurora.one { width: 60vw; height: 60vw; background: var(--glow-purple); top: -10%; left: -10%; }
+.aurora.two { width: 50vw; height: 50vw; background: var(--glow-cyan); bottom: -10%; right: -10%; }
 
-/* --- 💎 HEADER (ПРЕМИУМ) --- */
+/* 💎 HEADER */
 header {
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(12px);
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
-    border-bottom: 1px solid var(--glass-border);
-    position: sticky;
-    top: 0;
-    z-index: 2000;
+    background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(15px);
+    padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 9999;
 }
-
 .logo {
-    font-weight: 800;
-    font-size: 2rem;
-    background: linear-gradient(to right, #66ff66, #00ffff, #be26cd, #ff00ff, #ff3366, #ffff66, #66ff66);
-    background-size: 200% auto;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-    animation: rainbow-animation 4s ease-in-out infinite;
-    cursor: default;
-    filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+    font-weight: 800; font-size: 2rem; background: linear-gradient(to right, #66ff66, #00ffff, #ff00ff, #ffff66);
+    background-size: 200% auto; color: transparent; -webkit-background-clip: text;
+    animation: rainbow 5s linear infinite;
 }
+@keyframes rainbow { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-@keyframes rainbow-animation {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* Меню */
-.main-menu {
-    position: absolute;
-    top: calc(100% + 20px);
-    right: 0;
-    background: rgba(20, 30, 48, 0.9);
-    backdrop-filter: blur(15px);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    z-index: 3000;
-    min-width: 200px;
-    overflow: visible; /* ИСПРАВЛЕНИЕ ДЛЯ ВЫПАДАЮЩЕГО ЯЗЫКА */
-    padding: 8px;
-}
-.main-menu a {
-    display: flex; /* Для выравнивания иконки и текста */
-    align-items: center;
-    padding: 12px 20px; 
-    color: #cbd5e1;
-    text-decoration: none; 
-    white-space: nowrap; 
-    transition: all 0.2s;
-    font-size: 0.95rem;
-    font-weight: 500;
-    border-radius: 8px;
-    border: none;
-}
-.main-menu a:hover { 
-    background-color: rgba(74, 222, 128, 0.1); 
-    color: var(--white);
-}
-
-/* -----------------------------------------------------------
-   === 💎 PREMIUM GRID & CARDS (НОВЫЙ ДИЗАЙН) === 
-   ----------------------------------------------------------- */
+/* 📦 СЕТКА ТОВАРОВ (Исправлено наложение) */
 .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 2.5rem;
-    padding-bottom: 50px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    /* Перспектива здесь предотвращает наложение при наклоне */
+    perspective: 2000px; 
 }
+
 .card {
     position: relative;
     border-radius: 24px;
     background: #111827;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
-    will-change: transform;
-}
-.card::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: 25px;
-    background: conic-gradient(from var(--angle), transparent 30%, var(--green), var(--glow-cyan), transparent 70%);
-    animation: spin 6s linear infinite;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    z-index: -1;
-}
-.card:hover::before { opacity: 1; }
-@property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
-@keyframes spin { to { --angle: 360deg; } }
-.card-content {
-    background: linear-gradient(165deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.7) 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 24px;
-    padding: 25px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+    transition: transform 0.3s ease-out, z-index 0s;
     z-index: 1;
+    transform-style: preserve-3d;
 }
-.card:hover { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); }
-.card-img-wrapper {
-    height: 220px;
-    border-radius: 20px;
-    overflow: hidden;
-    margin-bottom: 20px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,255,255,0.05);
-    background: #000;
-    transition: all 0.4s ease;
-    transform: translateZ(20px);
-}
-.card-img-wrapper img {
-    width: 100%; height: 100%; object-fit: cover; 
-    transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s;
-    opacity: 0.8;
-}
-.card-info-block {
-    text-align: center;
-    flex-grow: 1; 
-    display: flex;
-    flex-direction: column;
-    transform: translateZ(10px);
-}
-.card-info-block h3 {
-    color: var(--white); 
-    font-size: 1.5rem; 
-    margin-bottom: 12px;
-    font-weight: 700;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-}
-.card-info-block p {
-    color: #94a3b8; 
-    font-size: 1rem; 
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-.price-button {
-    background: linear-gradient(135deg, var(--green) 0%, #16a3a4 100%);
-    color: #0c1827;
-    border: none;
-    padding: 16px;
-    border-radius: 16px;
-    font-weight: 700;
-    font-size: 1.1rem;
-    cursor: pointer;
-    margin-top: auto;
-    position: relative;
-    overflow: hidden;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 10px 20px -5px rgba(74, 222, 128, 0.4);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    border: 1px solid rgba(255,255,255,0.2);
-    transform: translateZ(30px);
-}
-.price-button::after {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-    transition: left 0.6s;
-}
-.card:hover .card-img-wrapper { box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
-.card:hover .card-img-wrapper img { transform: scale(1.1); opacity: 1; }
-.card:hover .price-button { box-shadow: 0 15px 30px rgba(74, 222, 128, 0.6); }
-.card:hover .price-button::after { left: 100%; }
 
-/* --- МОДАЛЬНЫЕ ОКНА (PREMIUM) --- */
-.modal {
-    position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(10px);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 5000;
-    animation: fadeIn 0.3s ease;
+/* При наведении карточка всегда ВЫШЕ соседей */
+.card:hover {
+    z-index: 50;
 }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.modal-content {
-    background: linear-gradient(145deg, #161e2d, #0b111a);
-    padding: 2.5rem;
-    border-radius: 20px; 
-    width: 360px;
-    position: relative;
+
+.card-content {
+    background: linear-gradient(165deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+    backdrop-filter: blur(20px); border-radius: 24px; padding: 25px;
+    height: 100%; display: flex; flex-direction: column;
     border: 1px solid var(--glass-border);
-    text-align: center;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.7);
-}
-input {
-    width: 100%; padding: 16px; margin: 12px 0;
-    box-sizing: border-box; border-radius: 12px;
-    border: 1px solid #334155; 
-    background: #0f172a; 
-    color: white;
-    font-size: 1rem;
-    font-family: 'Inter', sans-serif;
-    transition: all 0.3s;
-}
-input:focus {
-    outline: none;
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2);
-    background: #1e293b;
 }
 
-/* --- ОСТАЛЬНЫЕ ЭЛЕМЕНТЫ --- */
+.card-img-wrapper {
+    height: 200px; border-radius: 16px; overflow: hidden; margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.5s; }
+
+.card-info-block { text-align: center; flex-grow: 1; }
+.card-info-block h3 { color: #fff; font-size: 1.4rem; margin: 0 0 10px; }
+.card-info-block p { color: #94a3b8; font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px; }
+
+.price-button {
+    background: linear-gradient(135deg, var(--green), #16a3a4);
+    color: #0c1827; border: none; padding: 15px; border-radius: 14px;
+    font-weight: 800; cursor: pointer; transition: 0.3s;
+}
+
+/* 📱 МОБИЛЬНАЯ ВЕРСИЯ (2 РЯДА) */
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 колонки */
+        gap: 15px;
+        padding: 20px 10px;
+    }
+    .card { transform: none !important; } /* Отключаем наклон на тач-экранах */
+    .card-content { padding: 15px; }
+    .card-img-wrapper { height: 120px; margin-bottom: 10px; }
+    .card-info-block h3 { font-size: 1.1rem; }
+    .card-info-block p { font-size: 0.8rem; line-height: 1.3; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+    .price-button { padding: 12px; font-size: 0.9rem; }
+}
+
+/* МОДАЛКИ */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+    display: flex; justify-content: center; align-items: center; z-index: 99999;
+}
+.modal-content {
+    background: #161e2d; padding: 30px; border-radius: 24px;
+    width: 90%; max-width: 400px; text-align: center;
+    border: 1px solid var(--glass-border);
+}
 .hidden { display: none !important; }
 
-/* -----------------------------------------------------------
-   === АДАПТИВНОСТЬ (PREMIUM MOBILE) === 
-   ----------------------------------------------------------- */
-@media (max-width: 1024px) {
-    /* Сбрасываем 3D эффекты */
-    .card, .card-content, .card-img-wrapper, .price-button { transform: none !important; }
-    .card::before { display: none; } /* Убираем тяжелую рамку */
-    
-    .grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 КОЛОНКИ */
-        gap: 12px; /* Уменьшаем отступ между карточками */
-        padding: 0 12px 50px;
-    }
-    
-    .card { border-radius: 16px; }
-    .card-content {
-        padding: 12px; /* Меньше внутренний отступ */
-        border-radius: 16px;
-    }
-    
-    .card-img-wrapper {
-        height: 110px; /* Картинка меньше по высоте */
-        margin-bottom: 10px;
-        border-radius: 12px;
-    }
-    
-    .card-info-block h3 {
-        font-size: 0.95rem; /* Уменьшаем шрифт заголовка */
-        margin-bottom: 5px;
-    }
-    
-    .card-info-block p {
-        font-size: 0.75rem; /* Уменьшаем шрифт описания */
-        line-height: 1.3;
-        margin-bottom: 12px;
-        /* Обрезаем текст если длинный */
-        display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-    }
-    
-    .price-button {
-        padding: 10px 0; /* Компактная кнопка */
-        font-size: 0.85rem;
-        border-radius: 10px;
-    }
-    
-    /* Шапка и модалки на телефоне */
-    header { padding: 0.8rem 1rem; }
-    .logo { font-size: 1.5rem; }
-    .modal-content { width: 85%; padding: 1.5rem; }
+.main-menu {
+    position: absolute; top: 100%; right: 0; background: rgba(15,23,42,0.95);
+    border: 1px solid var(--glass-border); border-radius: 12px; padding: 10px; min-width: 200px;
 }
-
-/* Стили, которые не были изменены */
-.hero { text-align: center; padding: 3rem 1rem; }
-.container { max-width: 1200px; margin: 0 auto; }
-.header-left, .header-right { flex: 1; }
-.header-center { flex-grow: 1; text-align: center; }
-.header-right { display: flex; justify-content: flex-end; align-items: center; }
-.header-title { margin: 0; font-size: 1rem; color: var(--light); opacity: 0.8; }
-.menu-container { position: relative; }
-.hamburger-btn { background: none; border: none; cursor: pointer; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
-.hamburger-btn span { display: block; width: 28px; height: 3px; background-color: var(--green); border-radius: 3px; transition: all 0.3s; box-shadow: 0 0 8px rgba(74, 222, 128, 0.4); }
-.hamburger-btn:hover span { background-color: #fff; box-shadow: 0 0 12px rgba(255, 255, 255, 0.6); }
-.submenu-container { position: relative; width: 100%; }
-.lang-submenu a { padding-left: 20px; font-size: 0.9em; }
-.lang-submenu {
-    position: absolute; top: 0; right: 100%; 
-    background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(15px);
-    border: 1px solid var(--glass-border); min-width: 140px;
-    border-radius: 12px 0 0 12px; box-shadow: -5px 5px 20px rgba(0,0,0,0.3);
-    display: flex; flex-direction: column; z-index: 3001; margin-right: 8px; overflow: hidden;
-}
-.video-section { text-align: center; padding: 60px 20px; }
-.video-wrapper { max-width: 900px; margin: 0 auto; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); position: relative; }
-.video-wrapper video { width: 100%; display: block; }
-.video-description { padding: 20px; background: rgba(15, 23, 42, 0.8); }
-.close, .close-reg, .close-payment, .close-library { position: absolute; right: 20px; top: 15px; cursor: pointer; font-size: 1.8rem; color: #94a3b8; transition: color 0.3s; }
-.close:hover, .close-reg:hover, .close-payment:hover, .close-library:hover { color: var(--green); }
-button[type="submit"] { width: 100%; padding: 14px; background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%); color: var(--dark); border: none; cursor: pointer; font-weight: bold; border-radius: 10px; margin-top: 15px; font-size: 1rem; transition: transform 0.2s, box-shadow 0.2s; }
-button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(74, 222, 128, 0.3); }
-footer { text-align: center; padding: 3rem 1rem; background: var(--dark); margin-top: 4rem; border-top: 1px solid var(--glass-border); }
-.telegram-btn { display: inline-flex; align-items: center; gap: 10px; background-color: #2AABEE; color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-top: 1.5rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 5px 15px rgba(42, 171, 238, 0.3); }
-.telegram-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(42, 171, 238, 0.5); }
-.menu-profile-header { padding: 15px 20px; color: var(--green); font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.03); border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 5px; }
-.menu-profile-header i { font-size: 1.4rem; }
-.main-menu a i { margin-right: 12px; width: 20px; text-align: center; }
-.menu-divider { height: 1px; background: rgba(255, 255, 255, 0.1); margin: 8px 0; }
-.lib-list { display: flex; flex-direction: column; gap: 15px; margin-top: 1rem; }
-.lib-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: left; }
-.download-link { text-decoration: none; color: var(--green); font-weight: bold; }
-.download-link:hover { text-decoration: underline; }
-
+.main-menu a { display: block; padding: 12px; color: #fff; text-decoration: none; border-radius: 8px; }
