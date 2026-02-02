@@ -1,148 +1,350 @@
 :root {
-    --bg-dark: #020617;
-    --bg-card: rgba(15, 23, 42, 0.6);
-    --primary: #10b981; /* Зеленый неон */
-    --accent: #3b82f6;  /* Синий неон */
-    --text: #f8fafc;
-    --text-muted: #94a3b8;
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --font-head: 'Outfit', sans-serif;
-    --font-body: 'Inter', sans-serif;
+    --primary: #1e293b;
+    --dark: #0f172a;
+    --light: #f8fafc;
+    --white: #ffffff;
+    --green: #4ade80;
 }
 
 body {
-    background-color: var(--bg-dark);
-    color: var(--text);
-    font-family: var(--font-body);
+    font-family: 'Segoe UI', sans-serif;
     margin: 0;
-    min-height: 100vh;
-    background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 80%);
+    background-color: var(--dark);
+    color: var(--light);
 }
 
-/* Шум на фоне для дороговизны */
-body::before {
-    content: ""; position: fixed; inset: 0;
-    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 99;
-}
-
-/* === HEADER === */
+/* Header */
 header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 1.5rem 5%;
-    position: sticky; top: 0; z-index: 1000;
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--glass-border);
-    background: rgba(2, 6, 23, 0.8);
+    background: var(--primary);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 2000;
 }
+
+.header-left, .header-right { flex: 1; }
+.header-center { flex-grow: 1; text-align: center; }
+.header-right { display: flex; justify-content: flex-end; align-items: center; }
+
+.header-title { margin: 0; font-size: 1rem; color: var(--light); }
 
 .logo {
-    font-family: var(--font-head);
-    font-weight: 800; font-size: 1.8rem;
-    background: linear-gradient(90deg, #fff, #94a3b8);
-    -webkit-background-clip: text; color: transparent;
+    font-weight: bold;
+    font-size: 2rem;
+    background: linear-gradient(to right, #66ff66, #00ffff, #7d26cd, #ff00ff, #ff3366, #ffff66, #66ff66);
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: rainbow-animation 4s ease-in-out infinite;
+    cursor: default;
 }
 
-.nav-btn {
-    background: transparent; border: 1px solid var(--glass-border);
-    color: var(--text); padding: 8px 20px; border-radius: 8px;
-    cursor: pointer; transition: 0.3s; font-family: var(--font-head);
+@keyframes rainbow-animation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
-.nav-btn:hover { background: var(--text); color: var(--bg-dark); }
-.nav-btn.outline { border-color: var(--primary); color: var(--primary); }
-.nav-btn.outline:hover { background: var(--primary); color: #000; }
 
-/* === HERO === */
-.hero {
-    text-align: center; padding: 6rem 1rem;
-}
-.hero h1 {
-    font-family: var(--font-head); font-size: 3.5rem; margin: 0;
-    letter-spacing: -2px;
-}
-.gradient-text {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-    -webkit-background-clip: text; color: transparent;
-}
-.hero p { color: var(--text-muted); font-size: 1.1rem; margin-top: 1rem; }
+/* Меню-бургер */
+.menu-container { position: relative; }
 
-/* === GRID & CARDS === */
-.container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-.section-header { margin-bottom: 2rem; border-left: 4px solid var(--primary); padding-left: 15px; }
-.section-header h2 { margin: 0; font-family: var(--font-head); }
+.hamburger-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 10px; display: flex; flex-direction: column; gap: 5px;
+}
 
+.hamburger-btn span {
+    display: block; width: 25px; height: 3px;
+    background-color: var(--green); border-radius: 3px; transition: all 0.3s;
+}
+
+/* Выпадающее меню */
+.main-menu {
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    background: var(--primary);
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    z-index: 3000;
+    min-width: 160px;
+}
+
+.main-menu a {
+    display: block; padding: 12px 20px; color: var(--light);
+    text-decoration: none; white-space: nowrap; transition: background 0.2s;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.main-menu a:hover { background-color: var(--dark); color: var(--green); }
+
+/* Контейнер языка (relative) */
+.submenu-container { position: relative; width: 100%; }
+
+/* Меню языка (выезжает ВЛЕВО) */
+.lang-submenu {
+    position: absolute;
+    top: 0; right: 100%; /* Влево */
+    background: var(--primary);
+    min-width: 140px;
+    border-radius: 8px 0 0 8px;
+    box-shadow: -5px 5px 20px rgba(0,0,0,0.3);
+    display: flex; flex-direction: column; z-index: 3001;
+    margin-right: 5px;
+}
+
+.lang-submenu a { padding-left: 20px; font-size: 0.9em; }
+
+/* Профиль */
+#userProfile { display: flex; align-items: center; gap: 15px; }
+#userProfile button {
+    background: var(--primary); border: 1px solid var(--green);
+    color: var(--light); padding: 5px 15px; cursor: pointer; border-radius: 5px;
+}
+
+/* Контент */
+.hero { text-align: center; padding: 2rem 1rem; }
+.container { max-width: 1200px; margin: 0 auto; }
+
+/* --- НОВАЯ СЕТКА (GRID) --- */
 .grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 2rem;
+    display: grid;
+    /* На ПК строго 3 колонки */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 3rem; /* Большой отступ между карточками */
+    perspective: 1000px;
+    padding-bottom: 50px;
 }
 
+/* МАГИЯ: Ставим 4-й элемент (Безлимит) по центру во втором ряду */
+.card:last-child {
+    grid-column: 2; /* Занять вторую (центральную) колонку */
+}
+
+/* --- СТИЛЬ КАРТОЧКИ (ПРОЗРАЧНЫЙ КОНТЕЙНЕР) --- */
 .card {
-    background: var(--bg-card);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px; overflow: hidden;
-    transition: transform 0.4s, box-shadow 0.4s;
-    display: flex; flex-direction: column;
+    background: transparent; /* Без фона */
+    box-shadow: none;        /* Без общей тени */
+    border-radius: 0;
+    overflow: visible;       
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Разрыв между блоками */
+    height: auto;
 }
 
-.card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    border-color: rgba(255,255,255,0.2);
+/* Эффект парения для всех частей (Картинка, Текст, Кнопка) */
+.card-img-wrapper, 
+.card-info-block, 
+.price-button {
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5); /* Глубокая тень */
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s;
 }
 
-.card-img {
-    height: 180px; background: #000; position: relative;
-}
-.card-img img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.5s; }
-.card:hover .card-img img { opacity: 1; transform: scale(1.05); }
+/* !!! ЭФФЕКТ СВЯЗНОСТИ: Наводим на карточку (или кнопку) -> Двигается ВСЁ !!! */
+.card:hover .card-img-wrapper { transform: translateY(-7px); }
+.card:hover .card-info-block { transform: translateY(-4px); border-color: rgba(74, 222, 128, 0.3); } /* Подсветка рамки */
+.card:hover .price-button { transform: translateY(-7px) scale(1.02); }
 
-.card-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-.card-info h3 { margin: 0 0 10px; font-family: var(--font-head); }
-.card-info p { color: var(--text-muted); font-size: 0.9rem; flex-grow: 1; }
 
-.price-btn {
-    width: 100%; padding: 14px; margin-top: 15px;
-    border: none; border-radius: 12px;
-    background: var(--text); color: var(--bg-dark);
-    font-weight: 700; cursor: pointer; transition: 0.3s;
+/* --- БЛОК 1: КАРТИНКА --- */
+.card-img-wrapper {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 200px;
+    background: var(--primary);
 }
-.price-btn:hover { background: var(--primary); box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
 
-/* Состояние "Куплено" */
-.price-btn.download {
-    background: #1e293b; color: var(--primary); border: 1px solid var(--primary);
+.card-img-wrapper img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    object-position: top; /* <-- ВОТ ИЗМЕНЕНИЕ */
 }
-.price-btn.download:hover { background: var(--primary); color: #000; }
 
-/* === LIBRARY (Cart/Dashboard) === */
-.library-list {
-    background: rgba(15, 23, 42, 0.4);
-    border-radius: 16px; padding: 20px;
+/* --- БЛОК 2: ИНФОРМАЦИЯ --- */
+.card-info-block {
+    background: var(--primary);
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    flex-grow: 1; 
+    border: 1px solid rgba(255,255,255,0.05);
 }
-.lib-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 15px; border-bottom: 1px solid var(--glass-border);
-}
-.lib-item:last-child { border: none; }
-.download-link {
-    color: var(--primary); text-decoration: none; font-weight: bold;
-    display: flex; align-items: center; gap: 8px;
-}
-.download-link:hover { text-decoration: underline; }
 
-/* === MODALS === */
+.card-info-block h3 {
+    margin-top: 0; color: var(--white); font-size: 1.3rem; margin-bottom: 10px;
+}
+
+.card-info-block p {
+    color: #cbd5e1; font-size: 0.95rem; margin: 0;
+}
+
+/* --- БЛОК 3: КНОПКА (ОТДЕЛЬНО) --- */
+.price-button {
+    background: var(--green);
+    color: var(--dark);
+    border: none;
+    padding: 15px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 1.3rem;
+    cursor: pointer;
+    margin-top: auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.price-button::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.5s;
+}
+.price-button:hover::after { left: 100%; }
+
+/* Видео внутри карточки */
+.video-container video { width: 100%; height: 100%; object-fit: cover; }
+
+
+/* Видео секция (Верхняя) */
+.video-section { text-align: center; padding: 40px 20px; }
+.video-wrapper {
+    max-width: 800px; margin: 0 auto;
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.video-wrapper video { width: 100%; display: block; }
+
+/* Модальные окна */
 .modal {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
-    display: flex; justify-content: center; align-items: center; z-index: 5000;
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 5000;
 }
+
+.modal-content {
+    background: var(--primary); padding: 2rem;
+    border-radius: 10px; width: 320px; position: relative;
+    border: 1px solid var(--green); text-align: center;
+}
+
 .hidden { display: none !important; }
 
-.glass-panel {
-    background: #0f172a; padding: 2.5rem; border-radius: 24px;
-    border: 1px solid var(--glass-border); width: 340px;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.7); position: relative;
+.close, .close-reg {
+    position: absolute; right: 15px; top: 10px;
+    cursor: pointer; font-size: 1.5rem; color: var(--light);
 }
 
-.input-group {
-    background: #020617; border: 1px solid #334155;
-    border-rad
+input {
+    width: 100%; padding: 12px; margin: 10px 0;
+    box-sizing: border-box; border-radius: 5px;
+    border: 1px solid #444; background: var(--dark); color: white;
+}
+
+button[type="submit"] {
+    width: 100%; padding: 12px;
+    background: var(--green); color: var(--dark);
+    border: none; cursor: pointer; font-weight: bold;
+    border-radius: 5px; margin-top: 10px;
+}
+
+/* Footer */
+footer { text-align: center; padding: 2rem 1rem; background: var(--primary); margin-top: 2rem; }
+
+.telegram-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background-color: #2AABEE; color: white; padding: 10px 20px;
+    border-radius: 5px; text-decoration: none; font-weight: bold;
+    margin-top: 1rem; transition: transform 0.2s;
+}
+.telegram-btn:hover { transform: scale(1.05); }
+
+/* --- Стили профиля ВНУТРИ меню --- */
+.menu-profile-header {
+    padding: 15px 20px;
+    color: var(--green);
+    font-weight: bold;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05); /* Чуть выделяем фон */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 5px;
+}
+
+.menu-profile-header i {
+    font-size: 1.4rem;
+}
+
+/* Иконки в пунктах меню (Корзина, Выход) */
+.main-menu a i {
+    margin-right: 10px;
+    width: 20px; /* Чтобы текст ровно стоял */
+    text-align: center;
+    color: var(--green);
+}
+
+.menu-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 5px 0;
+}
+
+/* Скрываем блоки через класс hidden (убедимся, что он работает правильно) */
+.hidden {
+    display: none !important;
+}
+
+/* --- МОБИЛЬНАЯ ОПТИМИЗАЦИЯ --- */
+@media (max-width: 768px) {
+    header { padding: 0.8rem 1rem; }
+    .hero { padding: 1rem 0.5rem; }
+    .logo { font-size: 1.5rem; }
+
+    /* Сброс сетки для телефона */
+    .grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 колонки */
+        gap: 0.8rem;
+    }
+    
+    /* ОТМЕНЯЕМ центрирование последней карточки на телефоне */
+    .card:last-child { grid-column: auto; }
+
+    /* Уменьшаем блоки на телефоне */
+    .card-img-wrapper { height: 110px; border-radius: 10px; }
+    .card-info-block { padding: 10px; border-radius: 10px; }
+    .card h3 { font-size: 0.95rem; margin-bottom: 5px; line-height: 1.2; }
+    .card p {
+        font-size: 0.75rem; line-height: 1.3; margin-bottom: 5px;
+        display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    /* Кнопка на телефоне */
+    .price-button {
+        padding: 8px 0; font-size: 0.9rem; border-radius: 10px;
+    }
+    
+    /* Уменьшаем gap на телефоне, чтобы влезло */
+    .card { gap: 8px; }
+
+    .video-section h2 { font-size: 1.3rem; padding: 0 10px; }
+    .modal-content { width: 85%; padding: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+    /* На очень узких можно 1 колонку, или оставить 2 если влезает */
+    /* .grid { grid-template-columns: 1fr; } */
+}
+
+
+
+
