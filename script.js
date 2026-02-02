@@ -6,9 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; // Например: '700123456:AAHi...'
     const TG_CHAT_ID = '5683927471';     // Например: '987654321'
 
-    // ВРЕМЯ ЖИЗНИ ПОДПИСКИ В МИЛЛИСЕКУНДАХ
-    // 60000 = 1 минута (для теста). Для 30 дней поставьте: 2592000000
     const SUBSCRIPTION_DURATION = 60000; 
+
+    // ! НОВЫЙ КОД: Определяем, является ли устройство мобильным
+    const isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
     // ==========================================
     // 🌍 СЛОВАРЬ ПЕРЕВОДОВ (RU / EN)
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- ЛОГИКА ДАННЫХ ---
     let currentUser = localStorage.getItem('acus_user');
-    let userPurchases = []; // Загрузим позже
+    let userPurchases = []; 
     let currentProductToBuy = null;
 
     // --- DOM ЭЛЕМЕНТЫ ---
@@ -46,12 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 🛠 ФУНКЦИИ
     // ==========================================
-
-    /**
-     * ! ИСПРАВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ И МИГРАЦИИ ДАННЫХ
-     * Загружает покупки для пользователя и конвертирует старый формат ([1,2]) в новый ([{id:1, expires:...}]),
-     * немедленно сохраняя изменения, чтобы избежать повторной конвертации.
-     */
     function loadAndMigratePurchases(user) {
         if (!user) {
             userPurchases = [];
@@ -59,21 +54,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         let rawData = JSON.parse(localStorage.getItem(`purchases_${user}`)) || [];
         let didMigrate = false;
-
         const migratedData = rawData.map(item => {
             if (typeof item === 'number') {
-                didMigrate = true; // Ставим флаг, что произошла конвертация
+                didMigrate = true;
                 return { id: item, expires: Date.now() + SUBSCRIPTION_DURATION };
             }
             return item;
         });
-
-        // ФИКС ЗДЕСЬ: Если мы что-то сконвертировали, немедленно сохраняем правильный формат
         if (didMigrate) {
-            console.log("Migration complete. Saving new data format.");
             localStorage.setItem(`purchases_${user}`, JSON.stringify(migratedData));
         }
-
         userPurchases = migratedData;
     }
 
@@ -106,11 +96,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 btnContent = `${buyText} ${product.price} ₽`;
             }
             let clickAttr = isOwned ? '' : `onclick="buyProduct(${product.id})"`;
-
             card.innerHTML = `<div class="card-content"><div class="card-img-wrapper"><img src="${product.image}" alt="${product.title}"></div><div class="card-info-block"><h3>${product.title}</h3><p>${product.description}</p></div><button class="${btnClass}" ${clickAttr}>${btnContent}</button></div>`;
             grid.appendChild(card);
         });
-        apply3DEffect();
+        
+        // ! ИЗМЕНЕНИЕ: Запускаем 3D эффект ТОЛЬКО если это не мобильное устройство
+        if (!isMobile) {
+            apply3DEffect();
+        }
     }
     
     function setLanguage(lang) {
@@ -151,9 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateAuthUI() {
-        // Загружаем данные для текущего пользователя
         loadAndMigratePurchases(currentUser);
-
         if(currentUser) {
             guestNav.classList.add('hidden');
             userNav.classList.remove('hidden');
@@ -213,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(login) {
             currentUser = login;
             localStorage.setItem('acus_user', login);
-            updateAuthUI(); // Эта функция теперь сама загружает и мигрирует данные
+            updateAuthUI(); 
             authModal.classList.add('hidden');
             alert(`${translations[currentLang].welcome} ${login}!`);
         }
@@ -256,7 +247,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 💎 PREMIUM DESIGN SCRIPTS (АНИМАЦИЯ ФОНА И КАРТОЧЕК)
     // ==========================================================
     const auroraContainer = document.querySelector('.background-glow');
-    if (auroraContainer) {
+    
+    // ! ИЗМЕНЕНИЕ: Запускаем анимацию фона ТОЛЬКО на ПК
+    if (auroraContainer && !isMobile) {
         const aurora1 = auroraContainer.querySelector('.aurora.one');
         const aurora2 = auroraContainer.querySelector('.aurora.two');
         document.addEventListener('mousemove', (e) => {
@@ -287,5 +280,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- ПЕРВЫЙ ЗАПУСК ---
     updateAuthUI();
-});```
-
+});
