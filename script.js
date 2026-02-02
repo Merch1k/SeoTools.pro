@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
             demoMode: "Введите данные для входа", developedIn: "Разработан в 2026.", telegramBtn: "Наш Telegram канал"
         },
         en: {
-            languageBtn: "Language", headerTitle: "SEO Multitool", loginBtn: "Login", logoutBtn: "Logout",
+            languageBtn: "Language", headerTitle: "Multifunctional professional tool", loginBtn: "Login", logoutBtn: "Logout",
             registerBtn: "Registration", registerTitle: "Registration", sendRequestBtn: "Send Request",
-            videoTitle: "See our product in action", multitoolTitle: "SEO Multitool",
+            videoTitle: "See our product in action",
             multitoolDesc: "Our tool analyzes keywords, tracks rankings, and helps you outperform competitors.",
             loading: "Loading products...", authTitle: "Authorization", passwordPlaceholder: "Password", authBtn: "Login",
             demoMode: "Enter login credentials", developedIn: "Developed in 2026.", telegramBtn: "Our Telegram channel"
@@ -250,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateAuthUI(savedUser);
 
 });
+
 
 
 
