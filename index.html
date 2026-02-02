@@ -3,101 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS | Premium Software</title>
-    <!-- Шрифты -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
-    <!-- Иконки -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>SEO Tools — Профессиональный софт</title>
+    <link rel="icon" type="image/png" href="Logoito.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-
+    
     <!-- Шапка -->
     <header>
-        <div class="header-content">
-            <div class="logo">NEXUS</div>
-            
-            <!-- Бургер -->
-            <div class="menu-btn" id="menuBtn">
-                <i class="fa fa-bars"></i>
-            </div>
+        <div class="header-left">
+            <h1 class="header-title" data-lang-key="headerTitle">SEO Утилита</h1>
+        </div>
+        <div class="header-center">
+            <div class="logo">ACUS</div>
+        </div>
+        <div class="header-right">
+            <div class="menu-container">
+                <button id="hamburgerBtn" class="hamburger-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <!-- Выпадающее меню -->
+                <div id="mainMenu" class="main-menu hidden">
+                    
+                    <!-- ГОСТЬ -->
+                    <div id="guestNav">
+                        <a href="#" id="menuLoginBtn" data-lang-key="loginBtn">Войти</a>
+                        <a href="#" id="menuRegisterBtn" data-lang-key="registerBtn">Регистрация</a>
+                    </div>
 
-            <!-- Навигация -->
-            <nav id="mainNav">
-                <div id="guestPanel">
-                    <button onclick="openModal('authModal')">Войти</button>
+                    <!-- ПОЛЬЗОВАТЕЛЬ -->
+                    <div id="userNav" class="hidden">
+                        <div class="menu-profile-header">
+                            <i class="fa fa-user-circle"></i>
+                            <span id="menuUserName">User</span>
+                        </div>
+                        
+                        <!-- НОВАЯ КНОПКА -->
+                        <a href="#" id="menuLibraryBtn" style="color: #4ade80;">
+                            <i class="fa fa-download"></i> Мои покупки
+                        </a>
+
+                        <a href="#" id="menuCartBtn">
+                            <i class="fa fa-shopping-cart"></i> Корзина
+                        </a>
+
+                        <a href="#" id="menuLogoutBtn" data-lang-key="logoutBtn">
+                            <i class="fa fa-sign-out-alt"></i> Выход
+                        </a>
+                        
+                        <div class="menu-divider"></div>
+                    </div>
+                    
+                    <!-- Язык -->
+                    <div class="submenu-container">
+                        <a href="#" id="menuLangBtn" data-lang-key="languageBtn">Язык</a>
+                        <div id="langSubmenu" class="lang-submenu hidden">
+                            <a href="#" data-lang="ru">Русский</a>
+                            <a href="#" data-lang="en">English</a>
+                        </div>
+                    </div>
                 </div>
-                <div id="userPanel" class="hidden">
-                    <span id="userNameDisplay">User</span>
-                    <button onclick="openLibrary()" class="highlight-btn"><i class="fa fa-download"></i> Мои покупки</button>
-                    <button onclick="logout()"><i class="fa fa-sign-out-alt"></i></button>
-                </div>
-            </nav>
+            </div>
         </div>
     </header>
 
-    <!-- Основной блок -->
-    <main>
-        <div class="hero">
-            <h1>SYSTEM <span class="gradient-text">CORE</span></h1>
-            <p>Приватный софт. Моментальный доступ.</p>
+    <!-- Видео -->
+    <section class="video-section">
+        <h2 data-lang-key="videoTitle">Посмотрите наш продукт в действии</h2>
+        <div class="video-wrapper">
+            <video controls muted poster="Pins.png">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                Ваш браузер не поддерживает видео.
+            </video>
+            <div class="video-description">
+                <h1 data-lang-key="multitoolTitle">SEO Мультитул</h1>
+                <p data-lang-key="multitoolDesc">
+                    Наш инструмент анализирует ключевые слова, отслеживает позиции и помогает вам обойти конкурентов.
+                </p>
+            </div>
         </div>
+    </section>
 
-        <!-- Сетка товаров -->
+    <!-- Сетка товаров -->
+    <main class="hero">
         <div class="container">
-            <div id="productsGrid" class="grid">
-                <!-- Карточки появятся здесь через JS -->
+            <div id="products-grid" class="grid">
+                <div class="loading" data-lang-key="loading">Загрузка товаров...</div>
             </div>
         </div>
     </main>
 
     <!-- Подвал -->
     <footer>
-        <p>&copy; 2026 NEXUS SYSTEMS.</p>
+        <p>&copy; ACUS TOOLS. <span data-lang-key="developedIn">Разработан в 2026.</span></p>
+        <a href="https://t.me/seo_dark_side" target="_blank" class="telegram-btn">
+            Telegram
+        </a>
     </footer>
 
-    <!-- === МОДАЛКИ === -->
+    <!-- === МОДАЛЬНЫЕ ОКНА === -->
 
     <!-- Вход -->
     <div id="authModal" class="modal hidden">
-        <div class="modal-card">
-            <span class="close-btn" onclick="closeModal('authModal')">&times;</span>
-            <h2>Вход</h2>
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 data-lang-key="authTitle">Авторизация</h2>
             <form id="loginForm">
-                <input type="text" id="loginInput" placeholder="Логин" required>
-                <button type="submit">Войти</button>
+                <input type="text" id="loginEmail" placeholder="Логин" required>
+                <input type="password" id="loginPass" placeholder="Пароль" required>
+                <button type="submit" data-lang-key="authBtn">Войти</button>
+            </form>
+            <p class="small-text" data-lang-key="demoMode">Демо: введите любые данные</p>
+        </div>
+    </div>
+
+    <!-- Регистрация -->
+    <div id="regModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-reg">&times;</span>
+            <h2 data-lang-key="registerTitle">Регистрация</h2>
+            <form id="regFormRequest">
+                <input type="text" id="newLogin" placeholder="Придумайте Логин" required>
+                <input type="text" id="newPass" placeholder="Придумайте Пароль" required>
+                <button type="submit" data-lang-key="sendRequestBtn">Отправить заявку</button>
             </form>
         </div>
     </div>
 
-    <!-- Оплата -->
+    <!-- ОПЛАТА -->
     <div id="paymentModal" class="modal hidden">
-        <div class="modal-card">
-            <span class="close-btn" onclick="closeModal('paymentModal')">&times;</span>
-            <h2>Оплата</h2>
-            <p id="payTitle" style="color:#4ade80; margin-bottom:10px;">...</p>
-            <div id="payPrice" style="font-size:2rem; font-weight:bold; margin-bottom:20px;">0 ₽</div>
+        <div class="modal-content payment-style">
+            <span class="close-payment">&times;</span>
+            <h2>Оплата товара</h2>
+            <p id="payName" style="color: #4ade80; margin-bottom: 10px; font-weight: bold; font-size: 1.2rem;">...</p>
+            <div id="payAmount" style="font-size: 2rem; margin-bottom: 20px;">0 ₽</div>
             
             <form id="paymentForm">
-                <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" required style="letter-spacing:2px; text-align:center;">
-                <div style="display:flex; gap:10px;">
+                <div class="card-input-wrapper">
+                    <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" required style="text-align: center; letter-spacing: 2px;">
+                </div>
+                <div style="display: flex; gap: 10px;">
                     <input type="text" placeholder="MM/YY" maxlength="5" required>
                     <input type="password" placeholder="CVC" maxlength="3" required>
                 </div>
-                <button type="submit">Оплатить</button>
+                <button type="submit">Оплатить картой</button>
             </form>
         </div>
     </div>
 
-    <!-- Библиотека -->
+    <!-- БИБЛИОТЕКА (СКАЧИВАНИЕ) -->
     <div id="libraryModal" class="modal hidden">
-        <div class="modal-card">
-            <span class="close-btn" onclick="closeModal('libraryModal')">&times;</span>
-            <h2>Мои покупки</h2>
-            <div id="libraryList" class="lib-list"></div>
+        <div class="modal-content library-style">
+            <span class="close-library">&times;</span>
+            <h2>Мои программы</h2>
+            <div id="libraryList" class="lib-list">
+                <!-- Сюда попадут купленные товары -->
+            </div>
         </div>
     </div>
 
     <script src="script.js"></script>
+
 </body>
 </html>
