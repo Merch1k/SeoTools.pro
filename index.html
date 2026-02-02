@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ACUS — Premium SEO Tools</title>
     <link rel="icon" type="image/png" href="Logoito.png">
     <link rel="stylesheet" href="style.css">
@@ -10,13 +10,11 @@
 </head>
 <body>
 
-    <!-- АНИМИРОВАННЫЙ ФОН -->
     <div class="background-glow">
         <div class="aurora one"></div>
         <div class="aurora two"></div>
     </div>
     
-    <!-- Шапка -->
     <header>
         <div class="header-left">
             <h1 class="header-title" data-lang-key="headerTitle">SEO Утилита</h1>
@@ -27,9 +25,7 @@
         <div class="header-right">
             <div class="menu-container">
                 <button id="hamburgerBtn" class="hamburger-btn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span></span><span></span><span></span>
                 </button>
                 
                 <div id="mainMenu" class="main-menu hidden">
@@ -37,7 +33,6 @@
                         <a href="#" id="menuLoginBtn" data-lang-key="loginBtn">Войти</a>
                         <a href="#" id="menuRegisterBtn" data-lang-key="registerBtn">Регистрация</a>
                     </div>
-
                     <div id="userNav" class="hidden">
                         <div class="menu-profile-header">
                             <i class="fa fa-user-circle"></i>
@@ -46,15 +41,10 @@
                         <a href="#" id="menuLibraryBtn" style="color: #4ade80;">
                             <i class="fa fa-download"></i> <span data-lang-key="myPurchases">Мои покупки</span>
                         </a>
-                        <a href="#" id="menuCartBtn">
-                            <i class="fa fa-shopping-cart"></i> <span data-lang-key="cart">Корзина</span>
-                        </a>
                         <a href="#" id="menuLogoutBtn" data-lang-key="logoutBtn">
                             <i class="fa fa-sign-out-alt"></i> Выход
                         </a>
-                        <div class="menu-divider"></div>
                     </div>
-                    
                     <div class="submenu-container">
                         <a href="#" id="menuLangBtn" data-lang-key="languageBtn">Язык</a>
                         <div id="langSubmenu" class="lang-submenu hidden">
@@ -67,7 +57,6 @@
         </div>
     </header>
 
-    <!-- Видео -->
     <section class="video-section">
         <h2 data-lang-key="videoTitle">Посмотрите наш продукт в действии</h2>
         <div class="video-wrapper">
@@ -75,14 +64,11 @@
                 <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
             </video>
             <div class="video-description">
-                <p data-lang-key="multitoolDesc">
-                    Наш инструмент анализирует ключевые слова, отслеживает позиции и помогает вам обойти конкурентов.
-                </p>
+                <p data-lang-key="multitoolDesc">Наш инструмент анализирует ключевые слова.</p>
             </div>
         </div>
     </section>
 
-    <!-- Сетка товаров -->
     <main class="hero">
         <div class="container">
             <div id="products-grid" class="grid">
@@ -91,12 +77,26 @@
         </div>
     </main>
 
-    <footer>
-        <p>&copy; ACUS TOOLS. <span data-lang-key="developedIn">Разработан в 2026.</span></p>
-        <a href="https://t.me/seo_dark_side" target="_blank" class="telegram-btn">Telegram</a>
-    </footer>
+    <!-- ОПЛАТА ADI -->
+    <div id="paymentModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-payment" style="position:absolute; right:20px; top:15px; cursor:pointer; font-size:1.5rem;">&times;</span>
+            <h2 style="color:var(--green);">Оплата ADI</h2>
+            <p id="payName" style="font-weight:bold; margin-bottom:5px;">...</p>
+            <div id="payAmount" style="font-size: 2rem; margin-bottom: 20px;">0 ADI</div>
+            
+            <div style="text-align:left; background:rgba(0,0,0,0.3); padding:15px; border-radius:15px; border:1px solid var(--glass-border);">
+                <label style="font-size:0.7rem; color:#94a3b8;">АДРЕС КОШЕЛЬКА:</label>
+                <input type="text" id="walletAddr" value="ВАШ_КОШЕЛЕК_ЗДЕСЬ" readonly>
+                
+                <label style="font-size:0.7rem; color:#ffcc00; font-weight:bold;">КОММЕНТАРИЙ:</label>
+                <input type="text" id="payMemo" readonly style="color:var(--green); font-weight:bold; text-align:center;">
+            </div>
+            <p style="font-size:0.7rem; color:#888; margin-top:15px;">Проверка транзакции происходит автоматически.</p>
+        </div>
+    </div>
 
-    <!-- МОДАЛЬНЫЕ ОКНА -->
+    <!-- МОДАЛКИ ВХОДА И ПРОЧЕЕ (ПОЛНЫЙ КОД) -->
     <div id="authModal" class="modal hidden">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -104,58 +104,11 @@
             <form id="loginForm">
                 <input type="text" id="loginEmail" placeholder="Логин" required>
                 <input type="password" id="loginPass" placeholder="Пароль" required>
-                <button type="submit" data-lang-key="authBtn">Войти</button>
+                <button type="submit" data-lang-key="authBtn" style="width:100%; background:var(--green); border:none; padding:15px; border-radius:12px; cursor:pointer;">Войти</button>
             </form>
-        </div>
-    </div>
-
-    <div id="regModal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-reg">&times;</span>
-            <h2 data-lang-key="registerTitle">Регистрация</h2>
-            <form id="regFormRequest">
-                <input type="text" id="newLogin" placeholder="Придумайте Логин" required>
-                <input type="text" id="newPass" placeholder="Придумайте Пароль" required>
-                <button type="submit" data-lang-key="sendRequestBtn">Отправить заявку</button>
-            </form>
-        </div>
-    </div>
-
-<!-- ОПЛАТА (БЕСПЛАТНАЯ АВТОМАТИКА) -->
-    <div id="paymentModal" class="modal hidden">
-        <div class="modal-content payment-style" style="border: 1px solid #4ade80; width: 360px;">
-            <span class="close-payment">&times;</span>
-            <h2 style="color: #4ade80; margin-bottom: 5px;">Оплата TON</h2>
-            <p id="payName" style="font-weight: bold; font-size: 1rem;">...</p>
-            <div id="payAmount" style="font-size: 2rem; margin-bottom: 20px; font-weight: 800; color: #fff;">0 TON</div>
-            
-            <div style="text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px;">
-                <label style="font-size: 0.7rem; color: #94a3b8;">АДРЕС КОШЕЛЬКА:</label>
-                <input type="text" id="walletAddr" readonly style="font-size: 0.75rem; margin-bottom: 15px; background: #0f172a; border: 1px solid #334155;">
-                
-                <label style="font-size: 0.7rem; color: #ffcc00; font-weight: bold;">КОММЕНТАРИЙ (ОБЯЗАТЕЛЬНО):</label>
-                <input type="text" id="payMemo" readonly style="font-size: 1.4rem; font-weight: 800; color: #4ade80; border: 2px solid #4ade80; text-align: center; background: #0f172a;">
-                
-                <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 15px; line-height: 1.4;">
-                    Отправьте TON с этим комментарием. Система проверяет блокчейн каждые 15 сек. Как только деньги придут, доступ откроется.
-                </p>
-            </div>
-
-            <div style="margin-top: 20px; color: #4ade80; font-size: 0.8rem;">
-                <i class="fa fa-circle-notch fa-spin"></i> Ожидание транзакции...
-            </div>
-        </div>
-    </div>
-
-    <div id="libraryModal" class="modal hidden">
-        <div class="modal-content library-style">
-            <span class="close-library">&times;</span>
-            <h2 data-lang-key="myPurchases">Мои программы</h2>
-            <div id="libraryList" class="lib-list"></div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-
