@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const SOVEREIGN_CONFIG = {
+    const SYSTEM_CONFIG = {
         token: '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA',
         chat: '5683927471',
-        wallet: '0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB'
+        wallet: 'UQBKg4_q8x5v2J1z...YOUR_WALLET'
     };
 
     const LOCALES = {
@@ -11,14 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
         en: { headerTitle: "Digital Elite", loginBtn: "Entry", registerBtn: "Join", logoutBtn: "Exit", myPurchases: "Arsenal", authBtn: "Authenticate", checkBtn: "Complete", buy: "Activate" }
     };
 
-    let lang = localStorage.getItem('sovereign_lang') || 'ru';
-    let user = localStorage.getItem('sovereign_user');
+    let lang = localStorage.getItem('acus_lang') || 'ru';
+    let user = localStorage.getItem('acus_user');
 
     const products = [
-        { id: 1, name: "Parser Pro", desc: "Enterprise-grade data harvesting architecture.", price: 1500, img: "https://placehold.co/600x400/000/fff?text=PARSER" },
-        { id: 2, name: "Neural Rank", desc: "AI-powered tracking for global search supremacy.", price: 2500, img: "https://placehold.co/600x400/000/fff?text=NEURAL" },
-        { id: 3, name: "Audit Core", desc: "Deep infrastructure vulnerability diagnostics.", price: 3500, img: "https://placehold.co/600x400/000/fff?text=AUDIT" },
-        { id: 4, name: "VIP Suite", desc: "Infinite access to the complete ACUS legacy.", price: 9990, img: "https://placehold.co/600x400/000/fff?text=VIP" }
+        { id: 1, name: "Parser Pro", desc: "Absolute data harvesting performance architecture.", price: 1500, img: "https://placehold.co/600x400/000/fff?text=PARSER" },
+        { id: 2, name: "Neural Rank", desc: "AI-powered dominance tracker for global SEO.", price: 2500, img: "https://placehold.co/600x400/000/fff?text=NEURAL" },
+        { id: 3, name: "Audit Core", desc: "Exposing infrastructure vulnerabilities through deep scan.", price: 3500, img: "https://placehold.co/600x400/000/fff?text=AUDIT" },
+        { id: 4, name: "Sovereign Pack", desc: "Complete access to the entire digital arsenal.", price: 9990, img: "https://placehold.co/600x400/000/fff?text=SOVEREIGN" }
     ];
 
     function render() {
@@ -29,48 +29,54 @@ document.addEventListener('DOMContentLoaded', () => {
         products.forEach(p => {
             const owned = buys.some(x => x.id === p.id);
             const card = document.createElement('div');
-            card.className = 'card-perspective';
+            card.className = 'card-scene';
             card.innerHTML = `
                 <div class="card">
-                    <div class="card-inner">
-                        <div class="card-image-box"><img src="${p.img}" alt=""></div>
+                    <div class="card-body">
+                        <div class="card-media"><img src="${p.img}" alt=""></div>
                         <h3 class="card-title">${p.name}</h3>
                         <p class="card-desc">${p.desc}</p>
-                        <button class="btn-activate ${owned?'owned':''}" ${owned?'':`onclick="initPay(${p.id})"`}>
+                        <button class="btn-premium ${owned?'owned':''}" ${owned?'':`onclick="initPay(${p.id})"`}>
                             ${owned ? 'AUTHORIZED' : `${LOCALES[lang].buy} / ${p.price} ADI`}
                         </button>
                     </div>
                 </div>`;
             grid.appendChild(card);
         });
-        if(window.innerWidth > 1024) applyHapticTilt();
+        if(window.innerWidth > 1024) initDynamicTilt();
     }
 
-    function applyHapticTilt() {
+    // --- DEEP GLASS PARALLAX EFFECT ---
+    function initDynamicTilt() {
         document.querySelectorAll('.card').forEach(c => {
             c.onmousemove = (e) => {
                 const r = c.getBoundingClientRect();
                 const x = e.clientX - r.left - r.width/2;
                 const y = e.clientY - r.top - r.height/2;
-                // Внутренний параллакс для элементов
+                
+                // Элементы
                 const img = c.querySelector('img');
+                const title = c.querySelector('.card-title');
+                const desc = c.querySelector('.card-desc');
                 const btn = c.querySelector('button');
+
                 c.style.transform = `perspective(2000px) rotateX(${-y/40}deg) rotateY(${x/40}deg)`;
                 img.style.transform = `scale(1.1) translate(${x/30}px, ${y/30}px)`;
-                btn.style.transform = `translateZ(60px) translate(${x/50}px, ${y/50}px)`;
+                title.style.transform = `translateZ(50px) translate(${x/25}px, ${y/25}px)`;
+                desc.style.transform = `translateZ(30px) translate(${x/35}px, ${y/35}px)`;
+                btn.style.transform = `translateZ(60px) translate(${x/15}px, ${y/15}px)`;
             };
             c.onmouseleave = () => {
                 c.style.transform = '';
-                c.querySelector('img').style.transform = '';
-                c.querySelector('button').style.transform = '';
+                [c.querySelector('img'), c.querySelector('.card-title'), c.querySelector('.card-desc'), c.querySelector('button')].forEach(el => el.style.transform = '');
             };
         });
     }
 
     function sync() {
-        user = localStorage.getItem('sovereign_user');
-        document.getElementById('authGuest').classList.toggle('hidden', !!user);
-        document.getElementById('authUser').classList.toggle('hidden', !user);
+        user = localStorage.getItem('acus_user');
+        document.getElementById('guestBox').classList.toggle('hidden', !!user);
+        document.getElementById('userBox').classList.toggle('hidden', !user);
         if(user) document.getElementById('userName').innerText = user;
 
         document.querySelectorAll('[data-lang-key]').forEach(el => {
@@ -93,52 +99,52 @@ document.addEventListener('DOMContentLoaded', () => {
         const hash = document.getElementById('txHash').value;
         const p = products.find(x => x.id === window.activeId);
         
-        await fetch(`https://api.telegram.org/bot${SOVEREIGN_CONFIG.token}/sendMessage`, {
+        await fetch(`https://api.telegram.org/bot${SYSTEM_CONFIG.token}/sendMessage`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ chat_id: SOVEREIGN_CONFIG.chat, text: `🏛 SOVEREIGN ASSET TRANSFER: ${user}\nProduct: ${p.name}\nTX: ${hash}` })
+            body: JSON.stringify({ chat_id: SYSTEM_CONFIG.chat, text: `🏛 SOVEREIGN ASSET VERIFICATION: ${user}\nItem: ${p.name}\nTX: ${hash}` })
         });
         
         let buys = JSON.parse(localStorage.getItem(`buys_${user}`)) || [];
         buys.push({ id: p.id });
         localStorage.setItem(`buys_${user}`, JSON.stringify(buys));
-        alert('Verification request processed by Sovereignty.');
+        alert('Asset transfer verification in progress.');
         closeM();
         render();
     };
 
     document.getElementById('authForm').onsubmit = (e) => {
         e.preventDefault();
-        localStorage.setItem('sovereign_user', document.getElementById('inpUser').value);
+        localStorage.setItem('acus_user', document.getElementById('inpUser').value);
         sync();
         closeM();
     };
 
     document.getElementById('actLogout').onclick = () => {
-        localStorage.removeItem('sovereign_user');
+        localStorage.removeItem('acus_user');
         sync();
         closeM();
     };
 
     function openM(id) { document.getElementById(id).classList.add('active'); }
-    function closeM() { document.querySelectorAll('.modal-overlay, .vault-nav').forEach(el => el.classList.remove('active')); }
+    function closeM() { document.querySelectorAll('.modal-wrap, .nav-vault').forEach(el => el.classList.remove('active')); }
 
-    document.getElementById('openVault').onclick = () => openM('vaultNav');
-    document.querySelectorAll('#closeVault, .vault-blur, #authClose, #payClose').forEach(b => b.onclick = closeM);
+    document.getElementById('navOpen').onclick = () => openM('navVault');
+    document.querySelectorAll('#navClose, .vault-overlay, #authClose, #payClose').forEach(b => b.onclick = closeM);
 
-    document.querySelectorAll('.l-node').forEach(b => {
+    document.querySelectorAll('.node-lang').forEach(b => {
         b.onclick = () => {
             lang = b.dataset.lang;
-            localStorage.setItem('sovereign_lang', lang);
-            document.querySelectorAll('.l-node').forEach(x => x.classList.remove('active'));
+            localStorage.setItem('acus_lang', lang);
+            document.querySelectorAll('.node-lang').forEach(x => x.classList.remove('active'));
             b.classList.add('active');
             sync();
         };
     });
 
     document.getElementById('copyAddr').onclick = () => {
-        navigator.clipboard.writeText(SOVEREIGN_CONFIG.wallet);
-        alert('Sovereign address securely copied.');
+        navigator.clipboard.writeText(SYSTEM_CONFIG.wallet);
+        alert('Vault address securely copied.');
     };
 
     sync();
