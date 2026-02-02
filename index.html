@@ -33,13 +33,11 @@
                 </button>
                 
                 <div id="mainMenu" class="main-menu hidden">
-                    <!-- ГОСТЬ -->
                     <div id="guestNav">
                         <a href="#" id="menuLoginBtn" data-lang-key="loginBtn">Войти</a>
                         <a href="#" id="menuRegisterBtn" data-lang-key="registerBtn">Регистрация</a>
                     </div>
 
-                    <!-- ПОЛЬЗОВАТЕЛЬ -->
                     <div id="userNav" class="hidden">
                         <div class="menu-profile-header">
                             <i class="fa fa-user-circle"></i>
@@ -57,7 +55,6 @@
                         <div class="menu-divider"></div>
                     </div>
                     
-                    <!-- Язык -->
                     <div class="submenu-container">
                         <a href="#" id="menuLangBtn" data-lang-key="languageBtn">Язык</a>
                         <div id="langSubmenu" class="lang-submenu hidden">
@@ -76,7 +73,6 @@
         <div class="video-wrapper">
             <video controls muted poster="Pins.png">
                 <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                Ваш браузер не поддерживает видео.
             </video>
             <div class="video-description">
                 <p data-lang-key="multitoolDesc">
@@ -95,16 +91,12 @@
         </div>
     </main>
 
-    <!-- Подвал -->
     <footer>
         <p>&copy; ACUS TOOLS. <span data-lang-key="developedIn">Разработан в 2026.</span></p>
-        <a href="https://t.me/seo_dark_side" target="_blank" class="telegram-btn">
-            Telegram
-        </a>
+        <a href="https://t.me/seo_dark_side" target="_blank" class="telegram-btn">Telegram</a>
     </footer>
 
-    <!-- === МОДАЛЬНЫЕ ОКНА === -->
-    <!-- Вход -->
+    <!-- МОДАЛЬНЫЕ ОКНА -->
     <div id="authModal" class="modal hidden">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -114,11 +106,9 @@
                 <input type="password" id="loginPass" placeholder="Пароль" required>
                 <button type="submit" data-lang-key="authBtn">Войти</button>
             </form>
-            <p class="small-text" data-lang-key="demoMode">Демо: введите любые данные</p>
         </div>
     </div>
 
-    <!-- Регистрация -->
     <div id="regModal" class="modal hidden">
         <div class="modal-content">
             <span class="close-reg">&times;</span>
@@ -131,39 +121,37 @@
         </div>
     </div>
 
-    <!-- ОПЛАТА (КРИПТО) -->
+    <!-- ОПЛАТА (АВТОМАТИЗИРОВАННАЯ) -->
     <div id="paymentModal" class="modal hidden">
-        <div class="modal-content payment-style">
+        <div class="modal-content payment-style" style="border: 1px solid var(--green);">
             <span class="close-payment">&times;</span>
-            <h2 style="margin-bottom: 5px;">Оплата</h2>
-            <p id="payName" style="color: #4ade80; margin-bottom: 5px; font-weight: bold; font-size: 1.2rem;">...</p>
-            <div id="payAmount" style="font-size: 2rem; margin-bottom: 15px; color: #fff;">0 ₽</div>
+            <h2 style="color: var(--green); margin-bottom: 5px;">Оплата TON</h2>
+            <p id="payName" style="font-weight: bold;">...</p>
+            <div id="payAmount" style="font-size: 2.2rem; margin-bottom: 20px; font-weight: 800;">0 TON</div>
             
-            <div style="text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border); margin-bottom: 15px;">
-                <label style="font-size: 0.8rem; color: #94a3b8;">Реквизиты (TON / USDT):</label>
-                <div style="display: flex; gap: 10px; align-items: center; margin-top: 5px;">
-                    <!-- ЗАМЕНИТЕ ЭТОТ ТЕКСТ НА ВАШ АДРЕС ИЛИ ЮЗЕРНЕЙМ В ТГ -->
-                    <input type="text" value="0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB" readonly style="margin: 0; font-size: 0.85rem; border-color: var(--green); text-align: center;">
-                </div>
-                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 10px; line-height: 1.4;">
-                    Переведите сумму по указанным реквизитам в Telegram Wallet. После перевода нажмите кнопку ниже, мы проверим транзакцию.
+            <div style="text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; border: 1px solid var(--glass-border);">
+                <label style="font-size: 0.7rem; color: #94a3b8;">АДРЕС КОШЕЛЬКА:</label>
+                <input type="text" id="walletAddr" readonly style="font-size: 0.8rem; margin-bottom: 15px;">
+                
+                <label style="font-size: 0.7rem; color: #ffcc00; font-weight: bold;">КОММЕНТАРИЙ К ПЛАТЕЖУ (ОБЯЗАТЕЛЬНО):</label>
+                <input type="text" id="payMemo" readonly style="font-size: 1.4rem; font-weight: 800; color: var(--green); border: 2px solid var(--green); text-align: center;">
+                
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 15px; line-height: 1.4;">
+                    Отправьте указанную сумму с <b>точным</b> комментарием. Доступ откроется автоматически сразу после подтверждения транзакции сетью (обычно 10-20 сек).
                 </p>
             </div>
 
-            <form id="paymentForm">
-                <button type="submit">Я оплатил(а)</button>
-            </form>
+            <div style="margin-top: 20px; color: var(--green); font-size: 0.9rem;">
+                <i class="fa fa-sync fa-spin"></i> Ожидание транзакции в блокчейне...
+            </div>
         </div>
     </div>
 
-    <!-- БИБЛИОТЕКА (СКАЧИВАНИЕ) -->
     <div id="libraryModal" class="modal hidden">
         <div class="modal-content library-style">
             <span class="close-library">&times;</span>
             <h2 data-lang-key="myPurchases">Мои программы</h2>
-            <div id="libraryList" class="lib-list">
-                <!-- Сюда попадут купленные товары -->
-            </div>
+            <div id="libraryList" class="lib-list"></div>
         </div>
     </div>
 
