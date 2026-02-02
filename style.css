@@ -1,145 +1,168 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
 
 :root {
-    --bg: #000000;
-    --card-bg: #050505;
-    --accent: #00ff88; /* Arctic Emerald */
-    --platinum: #e2e8f0;
-    --border: rgba(255, 255, 255, 0.05);
-    --glass: rgba(255, 255, 255, 0.02);
+    --bg-deep: #000000;
+    --card-surface: #0a0a0c;
+    --emerald: #00ff8f; /* Arctic Emerald */
+    --silver: #e2e8f0;
+    --border-light: rgba(255, 255, 255, 0.05);
+    --glass: blur(25px) saturate(180%);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--platinum); overflow-x: hidden; }
 
-/* --- 🌑 BACKGROUND VFX --- */
-.bg-monolith { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 0%, #0a0a0a 0%, #000 100%); }
-.bg-monolith::after {
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-deep);
+    color: var(--silver);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* --- 🌌 ГЛУБОКАЯ АТМОСФЕРА --- */
+.vfx-canvas { position: fixed; inset: 0; z-index: -1; background: #000; }
+.vfx-canvas::after {
     content: ''; position: absolute; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.02'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
     pointer-events: none;
 }
-
-/* --- 💎 ARCHITECTURAL HEADER --- */
-header { 
-    position: sticky; top: 0; z-index: 1000; 
-    background: rgba(0,0,0,0.8); backdrop-filter: blur(30px);
-    border-bottom: 0.5px solid var(--border);
+.glow-core {
+    position: absolute; width: 50vw; height: 50vh; background: radial-gradient(circle, rgba(0, 255, 143, 0.05) 0%, transparent 70%);
+    top: -10%; left: 50%; transform: translateX(-50%); pointer-events: none;
 }
-.header-container { max-width: 1400px; margin: 0 auto; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
-.logo { font-size: 1.8rem; font-weight: 900; letter-spacing: -2px; color: #fff; }
 
-.burger-menu { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 8px; }
-.burger-menu span { width: 30px; height: 1px; background: #fff; transition: 0.4s; }
-
-/* --- 🎥 CINEMATIC VIDEO --- */
-.video-section { margin-bottom: 80px; }
-.video-frame { 
-    background: #000; border-radius: 40px; overflow: hidden; 
-    border: 0.5px solid var(--border); box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-    position: relative;
+/* --- 💎 МИНИМАЛИСТИЧНЫЙ HEADER --- */
+header {
+    position: sticky; top: 0; z-index: 1000;
+    background: rgba(0,0,0,0.8); backdrop-filter: var(--glass);
+    border-bottom: 0.5px solid var(--border-light);
 }
-.video-frame video { width: 100%; display: block; aspect-ratio: 21/9; object-fit: cover; }
-.video-label { position: absolute; bottom: 20px; left: 20px; font-size: 0.7rem; letter-spacing: 3px; color: rgba(255,255,255,0.4); text-transform: uppercase; }
+.header-inner {
+    max-width: 1400px; margin: 0 auto; padding: 20px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.logo { font-size: 1.6rem; font-weight: 900; letter-spacing: -2px; color: #fff; text-transform: uppercase; }
 
-/* --- 📦 THE GRID (MATHEMATICAL PRECISION) --- */
+.nav-trigger { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 8px; }
+.nav-trigger span { width: 30px; height: 1px; background: #fff; transition: 0.4s cubic-bezier(0.2, 1, 0.2, 1); }
+
+/* --- 📦 THE ELITE GRID --- */
 .container { max-width: 1300px; margin: 0 auto; padding: 0 40px; }
-.main-content { padding: 60px 0; }
-.page-title { margin-bottom: 60px; }
-.page-title h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; letter-spacing: -4px; line-height: 0.9; margin-bottom: 20px; color: #fff; }
-.divider { width: 40px; height: 1px; background: var(--accent); }
+.hero-block { padding: 100px 0 60px; }
+.hero-block h1 { 
+    font-size: clamp(3rem, 7vw, 5rem); font-weight: 900; letter-spacing: -4px; 
+    line-height: 0.9; margin-bottom: 25px; color: #fff;
+    background: linear-gradient(180deg, #fff 0%, #444 100%);
+    -webkit-background-clip: text; color: transparent;
+}
+.hero-line { width: 40px; height: 1px; background: var(--emerald); box-shadow: 0 0 15px var(--emerald); }
 
-.premium-grid { 
-    display: grid; 
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 40px; 
+.elite-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-bottom: 100px;
 }
 
-/* --- 💎 THE CARD (OBSIDIAN CUT) --- */
-.card {
-    position: relative; background: var(--card-bg); border-radius: 32px;
-    border: 0.5px solid var(--border); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+/* --- 💎 THE CARD (OBSIDIAN PRECISION) --- */
+.card-unit {
+    position: relative; background: var(--card-surface); border-radius: 40px;
+    border: 0.5px solid var(--border-light); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex; flex-direction: column; height: 100%; overflow: hidden;
 }
-.card:hover { transform: translateY(-12px); border-color: rgba(255,255,255,0.15); box-shadow: 0 30px 60px rgba(0,0,0,0.9); }
-
-/* Эффект "Платиновой искры" при наведении */
-.card::after {
-    content: ''; position: absolute; inset: 0; opacity: 0;
-    background: linear-gradient(135deg, transparent 45%, rgba(255,255,255,0.05) 50%, transparent 55%);
-    transition: 0.6s; pointer-events: none;
+.card-unit:hover {
+    transform: translateY(-15px); border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 50px 100px rgba(0,0,0,0.9);
 }
-.card:hover::after { opacity: 1; transform: translateX(100%) skewX(-20deg); }
 
-.card-body { padding: 30px; display: flex; flex-direction: column; flex-grow: 1; }
-.card-media { width: 100%; aspect-ratio: 16/10; border-radius: 16px; overflow: hidden; margin-bottom: 25px; border: 0.5px solid var(--border); background: #000; }
-.card-media img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; grayscale: 0.2; transition: 1s; }
-.card:hover .card-media img { transform: scale(1.05); opacity: 1; grayscale: 0; }
+.card-visual {
+    width: 100%; aspect-ratio: 16/10; overflow: hidden;
+    padding: 15px; background: #000;
+}
+.visual-inner {
+    width: 100%; height: 100%; border-radius: 25px; overflow: hidden;
+    position: relative; border: 0.5px solid var(--border-light);
+}
+.visual-inner img { 
+    width: 100%; height: 100%; object-fit: cover; opacity: 0.6; grayscale: 0.5;
+    transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-unit:hover .visual-inner img { transform: scale(1.08); opacity: 1; grayscale: 0; }
 
-.card-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -1px; color: #fff; }
-.card-desc { color: #666; font-size: 0.95rem; line-height: 1.6; margin-bottom: 30px; flex-grow: 1; }
+.card-info { padding: 35px; display: flex; flex-direction: column; flex-grow: 1; }
+.card-info h3 { font-size: 1.6rem; font-weight: 700; margin-bottom: 15px; color: #fff; letter-spacing: -1px; }
+.card-info p { color: #666; font-size: 0.95rem; line-height: 1.6; margin-bottom: 35px; flex-grow: 1; }
 
-.btn-luxury {
-    width: 100%; padding: 20px; border-radius: 14px; border: none;
-    background: #fff; color: #000; font-weight: 800; font-size: 0.85rem;
+.cta-executive {
+    width: 100%; padding: 22px; border-radius: 20px; border: 0.5px solid var(--border-light);
+    background: transparent; color: #fff; font-weight: 800; font-size: 0.8rem;
     cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
-    transition: 0.3s; margin-top: auto;
+    transition: 0.4s; position: relative; overflow: hidden;
 }
-.btn-luxury:hover { background: var(--accent); transform: scale(1.02); }
-.btn-luxury.owned { background: transparent; border: 1px solid var(--border); color: #444; cursor: default; }
+.cta-executive:hover {
+    background: #fff; color: #000; box-shadow: 0 0 30px rgba(255,255,255,0.2);
+}
+.cta-executive.owned { border-color: transparent; background: #111; color: #444; cursor: default; }
 
-/* --- 📱 MOBILE OPTIMIZATION --- */
-@media (max-width: 1024px) {
-    .premium-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+/* --- 📱 MOBILE OPTIMIZATION (2-COLUMN EXCELLENCE) --- */
+@media (max-width: 1100px) {
+    .elite-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
     .container { padding: 0 15px; }
-    .card { border-radius: 20px; }
-    .card-body { padding: 15px; }
-    .card-media { height: 120px; border-radius: 12px; margin-bottom: 15px; }
-    .card-title { font-size: 1rem; margin-bottom: 5px; }
-    .card-desc { font-size: 0.75rem; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 15px; }
-    .btn-luxury { padding: 14px; font-size: 0.7rem; border-radius: 10px; }
-    .page-title h1 { font-size: 2.2rem; }
-    .video-frame { border-radius: 24px; }
+    .hero-block { padding: 60px 0 30px; }
+    .card-unit { border-radius: 24px; }
+    .card-visual { padding: 8px; aspect-ratio: 1/1; }
+    .card-info { padding: 15px; }
+    .card-info h3 { font-size: 1rem; margin-bottom: 6px; }
+    .card-info p { font-size: 0.75rem; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 15px; }
+    .cta-executive { padding: 14px; font-size: 0.7rem; border-radius: 12px; }
+    .hero-block h1 { font-size: 2.2rem; }
 }
+
+/* --- 🎥 CINEMATIC VIDEO --- */
+.video-wrapper { margin-bottom: 80px; border-radius: 50px; overflow: hidden; border: 0.5px solid var(--border-light); background: #000; }
+.video-wrapper video { width: 100%; display: block; aspect-ratio: 21/9; object-fit: cover; }
 
 /* --- 📂 NAVIGATION PANEL --- */
-.side-nav { position: fixed; inset: 0; z-index: 2000; display: none; }
-.side-nav.active { display: flex; }
-.nav-blur { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(40px); }
-.nav-panel {
-    position: absolute; right: 0; top: 0; bottom: 0; width: 340px;
-    background: #000; border-left: 0.5px solid var(--border);
-    padding: 60px 40px; transform: translateX(100%); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+.nav-panel-wrap { position: fixed; inset: 0; z-index: 2000; display: none; }
+.nav-panel-wrap.active { display: flex; }
+.nav-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(50px); }
+.nav-content {
+    position: absolute; right: 0; top: 0; bottom: 0; width: 360px;
+    background: #000; border-left: 0.5px solid var(--border-light);
+    padding: 80px 50px; transform: translateX(100%); transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.side-nav.active .nav-panel { transform: translateX(0); }
+.nav-panel-wrap.active .nav-content { transform: translateX(0); }
 .nav-link { 
-    display: flex; align-items: center; gap: 20px; padding: 20px; 
-    color: #fff; text-decoration: none; font-size: 1.2rem; font-weight: 600;
-    border-radius: 16px; margin-bottom: 10px; transition: 0.3s;
+    display: flex; align-items: center; gap: 20px; padding: 25px; 
+    color: #fff; text-decoration: none; font-size: 1.4rem; font-weight: 700;
+    border-radius: 25px; transition: 0.3s;
 }
-.nav-link:hover { background: var(--glass); color: var(--accent); }
+.nav-link:hover { background: #0a0a0c; color: var(--emerald); }
 
-/* --- 💳 LUXURY PAYMENT SHEET --- */
-.pay-sheet {
-    background: #080808; border: 0.5px solid var(--border); border-radius: 40px;
-    padding: 50px; width: 100%; max-width: 480px; position: relative;
-    box-shadow: 0 50px 100px #000; text-align: center;
-}
-.pay-sheet h3 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 5px; color: #444; margin-bottom: 30px; }
-.pay-amount { font-size: 3.5rem; font-weight: 900; color: #fff; margin-bottom: 30px; letter-spacing: -3px; }
-.wallet-box {
-    background: #000; border: 0.5px solid var(--border); padding: 20px;
-    border-radius: 20px; margin-bottom: 30px; cursor: pointer; transition: 0.3s;
-}
-.wallet-box:hover { border-color: var(--accent); }
-.wallet-box code { color: var(--accent); font-family: monospace; font-size: 1rem; }
+/* --- 🏳️ LANG NODES --- */
+.lang-footer { margin-top: auto; padding-top: 40px; }
+.lang-nodes { display: flex; gap: 15px; }
+.l-node { background: none; border: 0.5px solid var(--border-light); color: #444; padding: 10px 20px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: 700; }
+.l-node.active { color: #fff; border-color: #fff; }
 
-/* --- MODALS --- */
-.modal-overlay { position: fixed; inset: 0; z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
-.modal-overlay.active { display: flex; }
-.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.9); }
-.close-btn { position: absolute; top: 30px; right: 40px; font-size: 2rem; color: #fff; cursor: pointer; z-index: 10; font-weight: 100; }
-input { width: 100%; padding: 20px; margin-top: 15px; background: #000; border: 0.5px solid var(--border); border-radius: 16px; color: #fff; font-size: 1rem; outline: none; }
+/* --- 💳 SOVEREIGN PAYMENT --- */
+.modal-frame { position: fixed; inset: 0; z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
+.modal-frame.active { display: flex; }
+.modal-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.98); }
+.modal-box {
+    position: relative; background: #08080a; border: 0.5px solid var(--border-light);
+    border-radius: 40px; padding: 50px; width: 100%; max-width: 480px; text-align: center;
+}
+.modal-box h3 { font-size: 0.7rem; letter-spacing: 5px; color: #444; margin-bottom: 40px; text-transform: uppercase; }
+.modal-price { font-size: 4rem; font-weight: 900; color: #fff; margin-bottom: 40px; letter-spacing: -4px; }
+.wallet-plate {
+    background: #000; border: 0.5px solid var(--border-light); padding: 25px;
+    border-radius: 25px; margin-bottom: 30px; cursor: pointer; transition: 0.3s;
+}
+.wallet-plate:hover { border-color: var(--emerald); }
+.wallet-plate code { color: var(--emerald); font-family: monospace; font-size: 1.1rem; }
+.confirm-trigger { width: 100%; padding: 25px; background: #fff; color: #000; border-radius: 20px; border: none; font-weight: 900; cursor: pointer; font-size: 1rem; letter-spacing: 2px; }
+input { width: 100%; padding: 25px; margin-top: 15px; background: #000; border: 0.5px solid var(--border-light); border-radius: 20px; color: #fff; outline: none; }
 input:focus { border-color: #fff; }
-.confirm-btn { width: 100%; padding: 20px; margin-top: 25px; background: #fff; color: #000; border: none; border-radius: 16px; font-weight: 900; cursor: pointer; }
+.close-trigger { position: absolute; top: 40px; right: 40px; font-size: 2.5rem; color: #fff; cursor: pointer; font-weight: 100; }
 .hidden { display: none !important; }
