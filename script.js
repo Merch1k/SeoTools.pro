@@ -6,14 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; // Например: '700123456:AAHi...'
     const TG_CHAT_ID = '5683927471';     // Например: '987654321'
 
-document.addEventListener('DOMContentLoaded', () => {
-
-    // ==========================================
-    // ⚙️ НАСТРОЙКИ (ВВЕДИТЕ СВОИ ДАННЫЕ!)
-    // ==========================================
-    const TG_BOT_TOKEN = 'ВАШ_ТОКЕН_БОТА'; // <-- ВСТАВЬТЕ СЮДА ВАШ ТОКЕН
-    const TG_CHAT_ID = 'ВАШ_CHAT_ID';     // <-- ВСТАВЬТЕ СЮДА ВАШ CHAT ID
-    
     // ВРЕМЯ ЖИЗНИ ПОДПИСКИ В МИЛЛИСЕКУНДАХ
     // 60000 = 1 минута (для теста). Для 30 дней поставьте: 2592000000
     const SUBSCRIPTION_DURATION = 60000; 
@@ -296,3 +288,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- ПЕРВЫЙ ЗАПУСК ---
     updateAuthUI();
 });```
+
