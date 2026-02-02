@@ -1,15 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- НАСТРОЙКИ TELEGRAM (ВСТАВЬТЕ СВОИ ДАННЫЕ) ---
-    const TG_BOT_TOKEN = 'ВАШ_ТОКЕН_БОТА'; // Например: '123456789:AAHg...'
-    const TG_CHAT_ID = 'ВАШ_CHAT_ID';     // Например: '987654321'
-
-    // --- КОНФИГУРАЦИЯ ---
-    // ВРЕМЯ ЖИЗНИ ПОДПИСКИ (в миллисекундах)
-    // 60000 = 1 минута. Для месяца: 30 * 24 * 60 * 60 * 1000
+    // ==========================================
+    // ⚙️ НАСТРОЙКИ (ВВЕДИТЕ СВОИ ДАННЫЕ)
+    // ==========================================
+    const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; // Например: '700123456:AAHi...'
+    const TG_CHAT_ID = '5683927471';     // Например: '987654321'
+    
+    // ВРЕМЯ ЖИЗНИ ПОДПИСКИ
+    // 60000 = 1 минута (для теста). 
+    // Чтобы сделать 30 дней, поставьте: 2592000000
     const SUBSCRIPTION_DURATION = 60000; 
 
-    // --- СЛОВАРЬ ПЕРЕВОДОВ ---
+    // ==========================================
+    // 🌍 СЛОВАРЬ ПЕРЕВОДОВ (RU / EN)
+    // ==========================================
     const translations = {
         ru: {
             headerTitle: "SEO Утилита",
@@ -32,7 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
             myPurchases: "Мои покупки",
             cart: "Корзина",
             regSuccess: "Заявка отправлена администратору!",
-            regError: "Ошибка отправки. Попробуйте позже."
+            regError: "Ошибка отправки. Попробуйте позже.",
+            paySuccess: "Оплата прошла успешно!",
+            welcome: "Добро пожаловать,",
+            noSubs: "У вас пока нет активных подписок.",
+            loginAlert: "Сначала войдите в аккаунт!"
         },
         en: {
             headerTitle: "SEO Utility",
@@ -55,13 +63,17 @@ document.addEventListener('DOMContentLoaded', () => {
             myPurchases: "My Library",
             cart: "Cart",
             regSuccess: "Request sent to admin!",
-            regError: "Sending error. Try again later."
+            regError: "Sending error. Try again later.",
+            paySuccess: "Payment successful!",
+            welcome: "Welcome,",
+            noSubs: "No active subscriptions.",
+            loginAlert: "Please log in first!"
         }
     };
 
     let currentLang = 'ru'; 
 
-    // --- ДАННЫЕ (4 ТОВАРА) ---
+    // --- ДАННЫЕ ТОВАРОВ ---
     const products = [
         { 
             id: 1, 
@@ -97,11 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
-    // --- СОСТОЯНИЕ (LOCALSTORAGE) ---
+    // --- ЛОГИКА ДАННЫХ (LocalStorage) ---
     let currentUser = localStorage.getItem('acus_user');
     let rawPurchases = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
     
-    // Миграция старых данных
+    // Превращаем старые данные (просто ID) в новые (ID + Время)
     let userPurchases = rawPurchases.map(item => {
         if (typeof item === 'number') {
             return { id: item, expires: Date.now() + SUBSCRIPTION_DURATION };
@@ -134,19 +146,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const paymentModal = document.getElementById('paymentModal');
     const libraryModal = document.getElementById('libraryModal');
 
-    // --- ФУНКЦИИ ---
+    // ==========================================
+    // 🛠 ФУНКЦИИ
+    // ==========================================
 
+    // 1. Проверка таймера подписки
     function checkExpirations() {
         if (!currentUser) return;
         const now = Date.now();
         const initialCount = userPurchases.length;
+        
+        // Оставляем только те, у которых время НЕ вышло
         userPurchases = userPurchases.filter(p => p.expires > now);
         
+        // Если что-то удалилось — сохраняем изменения
         if (userPurchases.length !== initialCount) {
             localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
         }
     }
 
+    // 2. Отрисовка товаров
     function renderProducts() {
         checkExpirations();
         grid.innerHTML = '';
@@ -161,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             let btnContent = '';
             if (isOwned) {
+                // Считаем минуты до конца
                 const timeLeft = Math.max(0, Math.ceil((purchase.expires - Date.now()) / 60000));
                 const inLibText = translations[currentLang].inLibrary;
                 btnContent = `<i class="fa fa-check"></i> ${inLibText} <br><span style="font-size:0.7em; opacity:0.8">${timeLeft} min left</span>`;
@@ -187,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 3. Смена языка
     function setLanguage(lang) {
         if (!translations[lang]) return;
         currentLang = lang;
@@ -194,16 +215,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const key = el.getAttribute('data-lang-key');
             if (translations[lang][key]) el.textContent = translations[lang][key];
         });
+        
+        // Обновляем текст в меню
         if(menuLibraryBtn) menuLibraryBtn.innerHTML = `<i class="fa fa-download"></i> ${translations[lang].myPurchases}`;
         const cartBtn = document.getElementById('menuCartBtn');
         if(cartBtn) cartBtn.innerHTML = `<i class="fa fa-shopping-cart"></i> ${translations[lang].cart}`;
+        
         renderProducts();
         langSubmenu.classList.add('hidden');
     }
 
-    // --- ОБРАБОТЧИКИ СОБЫТИЙ ---
+    // ==========================================
+    // ⚡️ ОБРАБОТЧИКИ СОБЫТИЙ
+    // ==========================================
 
-    // 1. Язык
+    // Меню языка
     if (menuLangBtn) {
         menuLangBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -219,10 +245,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. Покупка
+    // Функция покупки (глобальная)
     window.buyProduct = (id) => {
         if (!currentUser) {
-            alert(currentLang === 'ru' ? 'Сначала войдите в аккаунт!' : 'Please log in first!');
+            alert(translations[currentLang].loginAlert);
             authModal.classList.remove('hidden');
             return;
         }
@@ -234,6 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Форма оплаты
     document.getElementById('paymentForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const btn = e.target.querySelector('button');
@@ -250,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 userPurchases.push(purchaseData);
                 localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
                 
-                alert(currentLang === 'ru' ? 'Оплата прошла успешно!' : 'Payment successful!');
+                alert(translations[currentLang].paySuccess);
                 paymentModal.classList.add('hidden');
                 e.target.reset();
                 renderProducts(); 
@@ -260,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1500);
     });
 
-    // 3. Библиотека
+    // Открытие библиотеки
     if(menuLibraryBtn) {
         menuLibraryBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -275,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const list = document.getElementById('libraryList');
         list.innerHTML = '';
         if(userPurchases.length === 0) {
-            list.innerHTML = `<p style="color:#aaa">${currentLang === 'ru' ? 'У вас пока нет активных подписок.' : 'No active subscriptions.'}</p>`;
+            list.innerHTML = `<p style="color:#aaa">${translations[currentLang].noSubs}</p>`;
         } else {
             userPurchases.forEach(purchase => {
                 const p = products.find(prod => prod.id === purchase.id);
@@ -286,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="lib-item">
                             <div>
                                 <span style="font-weight:bold; display:block;">${p.title}</span>
-                                <span style="font-size:0.8em; color:#4ade80;">Expires: ${dateEnd}</span>
+                                <span style="font-size:0.8em; color:#4ade80;">Do: ${dateEnd}</span>
                             </div>
                             <a href="#" class="download-link" onclick="alert('${dlText}: ${p.file}')">
                                 <i class="fa fa-download"></i> ${dlText}
@@ -298,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 4. Авторизация
+    // Авторизация (Вход)
     function updateAuthUI() {
         if(currentUser) {
             guestNav.classList.add('hidden');
@@ -319,16 +346,18 @@ document.addEventListener('DOMContentLoaded', () => {
             currentUser = login;
             localStorage.setItem('acus_user', login);
             let loaded = JSON.parse(localStorage.getItem(`purchases_${login}`)) || [];
+            // Восстанавливаем формат данных, если он был старым
             userPurchases = loaded.map(item => {
                  if (typeof item === 'number') return { id: item, expires: Date.now() + SUBSCRIPTION_DURATION };
                  return item;
             });
             updateAuthUI();
             authModal.classList.add('hidden');
-            alert(currentLang === 'ru' ? `Добро пожаловать, ${login}!` : `Welcome, ${login}!`);
+            alert(`${translations[currentLang].welcome} ${login}!`);
         }
     });
 
+    // Выход
     if(menuLogoutBtn) {
         menuLogoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -340,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. РЕГИСТРАЦИЯ (ОТПРАВКА В TELEGRAM)
+    // 🚀 РЕГИСТРАЦИЯ + TELEGRAM (ИСПРАВЛЕНО)
     const regForm = document.getElementById('regFormRequest');
     if (regForm) {
         regForm.addEventListener('submit', (e) => {
@@ -351,17 +380,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = regForm.querySelector('button');
             const originalText = btn.textContent;
 
-            // Проверка на заполнение
             if(!login || !pass) return;
 
-            // Меняем кнопку на "Отправка..."
             btn.disabled = true;
             btn.textContent = '...';
 
-            // Формируем сообщение
-            const message = `🔔 <b>Новая заявка на регистрацию!</b>\n\n👤 <b>Логин:</b> ${login}\n🔑 <b>Пароль:</b> ${pass}`;
+            // Сообщение для Телеграма
+            const message = `🔔 <b>Новая заявка!</b>\n\n👤 <b>Логин:</b> ${login}\n🔑 <b>Пароль:</b> ${pass}`;
 
-            // Отправляем в Telegram
+            // Отправка запроса
             fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -377,12 +404,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     regModal.classList.add('hidden');
                     regForm.reset();
                 } else {
+                    console.error('Ошибка Telegram:', response);
                     alert(translations[currentLang].regError);
-                    console.error('Telegram Error:', response);
                 }
             })
             .catch(error => {
-                console.error('Fetch Error:', error);
+                console.error('Ошибка сети:', error);
                 alert(translations[currentLang].regError);
             })
             .finally(() => {
@@ -392,15 +419,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- УПРАВЛЕНИЕ ИНТЕРФЕЙСОМ ---
+    // Управление меню (Бургер)
     hamburgerBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         mainMenu.classList.toggle('hidden');
     });
 
+    // Открытие модалок через меню
     if(menuLoginBtn) menuLoginBtn.addEventListener('click', () => { authModal.classList.remove('hidden'); mainMenu.classList.add('hidden'); });
     if(menuRegisterBtn) menuRegisterBtn.addEventListener('click', () => { regModal.classList.remove('hidden'); mainMenu.classList.add('hidden'); });
 
+    // Закрытие крестиком
     document.querySelectorAll('.close, .close-reg, .close-payment, .close-library').forEach(btn => {
         btn.addEventListener('click', () => {
             authModal.classList.add('hidden');
@@ -410,5 +439,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Запуск при загрузке
     updateAuthUI();
 });
