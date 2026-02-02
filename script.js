@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; // Например: '700123456:AAHi...'
     const TG_CHAT_ID = '5683927471';     // Например: '987654321'
-    
+
     // ВРЕМЯ ЖИЗНИ ПОДПИСКИ В МИЛЛИСЕКУНДАХ
     // 60000 = 1 минута (для теста). Для 30 дней поставьте: 2592000000
     const SUBSCRIPTION_DURATION = 60000; 
@@ -21,8 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- ЛОГИКА ДАННЫХ ---
     let currentUser = localStorage.getItem('acus_user');
-    let rawPurchases = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
-    let userPurchases = rawPurchases.map(item => (typeof item === 'number') ? { id: item, expires: Date.now() + SUBSCRIPTION_DURATION } : item);
+    let userPurchases = []; // Загрузим позже
     let currentProductToBuy = null;
 
     // --- DOM ЭЛЕМЕНТЫ ---
@@ -47,6 +46,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 🛠 ФУНКЦИИ
     // ==========================================
+
+    /**
+     * ! ИСПРАВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ И МИГРАЦИИ ДАННЫХ
+     * Загружает покупки для пользователя и конвертирует старый формат ([1,2]) в новый ([{id:1, expires:...}]),
+     * немедленно сохраняя изменения, чтобы избежать повторной конвертации.
+     */
+    function loadAndMigratePurchases(user) {
+        if (!user) {
+            userPurchases = [];
+            return;
+        }
+        let rawData = JSON.parse(localStorage.getItem(`purchases_${user}`)) || [];
+        let didMigrate = false;
+
+        const migratedData = rawData.map(item => {
+            if (typeof item === 'number') {
+                didMigrate = true; // Ставим флаг, что произошла конвертация
+                return { id: item, expires: Date.now() + SUBSCRIPTION_DURATION };
+            }
+            return item;
+        });
+
+        // ФИКС ЗДЕСЬ: Если мы что-то сконвертировали, немедленно сохраняем правильный формат
+        if (didMigrate) {
+            console.log("Migration complete. Saving new data format.");
+            localStorage.setItem(`purchases_${user}`, JSON.stringify(migratedData));
+        }
+
+        userPurchases = migratedData;
+    }
+
     function checkExpirations() {
         if (!currentUser) return;
         const now = Date.now();
@@ -90,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('[data-lang-key]').forEach(el => {
             const key = el.getAttribute('data-lang-key');
             if (translations[lang][key]) {
-                // Если внутри есть иконка, сохраняем ее
                 const icon = el.querySelector('i');
                 if (icon) {
                     el.innerHTML = `${icon.outerHTML} ${translations[lang][key]}`;
@@ -122,11 +151,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateAuthUI() {
+        // Загружаем данные для текущего пользователя
+        loadAndMigratePurchases(currentUser);
+
         if(currentUser) {
             guestNav.classList.add('hidden');
             userNav.classList.remove('hidden');
             menuUserName.textContent = currentUser;
-            checkExpirations();
         } else {
             guestNav.classList.remove('hidden');
             userNav.classList.add('hidden');
@@ -182,15 +213,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if(login) {
             currentUser = login;
             localStorage.setItem('acus_user', login);
-            let loaded = JSON.parse(localStorage.getItem(`purchases_${login}`)) || [];
-            userPurchases = loaded.map(item => (typeof item === 'number') ? { id: item, expires: Date.now() + SUBSCRIPTION_DURATION } : item);
-            updateAuthUI();
+            updateAuthUI(); // Эта функция теперь сама загружает и мигрирует данные
             authModal.classList.add('hidden');
             alert(`${translations[currentLang].welcome} ${login}!`);
         }
     });
 
-    if(menuLogoutBtn) menuLogoutBtn.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('acus_user'); currentUser = null; userPurchases = []; updateAuthUI(); mainMenu.classList.add('hidden'); });
+    if(menuLogoutBtn) menuLogoutBtn.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('acus_user'); currentUser = null; updateAuthUI(); mainMenu.classList.add('hidden'); });
     
     const regForm = document.getElementById('regFormRequest');
     if (regForm) {
@@ -204,67 +233,4 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
             btn.textContent = '...';
             const message = `🔔 <b>Новая заявка!</b>\n\n👤 <b>Логин:</b> ${login}\n🔑 <b>Пароль:</b> ${pass}`;
-            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'HTML' }) })
-            .then(response => {
-                if (response.ok) {
-                    alert(translations[currentLang].regSuccess);
-                    regModal.classList.add('hidden');
-                    regForm.reset();
-                } else {
-                    console.error('Ошибка Telegram:', response);
-                    alert(translations[currentLang].regError);
-                }
-            })
-            .catch(error => { console.error('Ошибка сети:', error); alert(translations[currentLang].regError); })
-            .finally(() => { btn.disabled = false; btn.textContent = originalText; });
-        });
-    }
-
-    hamburgerBtn.addEventListener('click', (e) => { e.stopPropagation(); mainMenu.classList.toggle('hidden'); });
-    if(menuLoginBtn) menuLoginBtn.addEventListener('click', () => { authModal.classList.remove('hidden'); mainMenu.classList.add('hidden'); });
-    if(menuRegisterBtn) menuRegisterBtn.addEventListener('click', () => { regModal.classList.remove('hidden'); mainMenu.classList.add('hidden'); });
-    document.querySelectorAll('.close, .close-reg, .close-payment, .close-library').forEach(btn => {
-        btn.addEventListener('click', () => {
-            authModal.classList.add('hidden');
-            regModal.classList.add('hidden');
-            paymentModal.classList.add('hidden');
-            libraryModal.classList.add('hidden');
-        });
-    });
-
-    // ==========================================================
-    // 💎 PREMIUM DESIGN SCRIPTS (АНИМАЦИЯ ФОНА И КАРТОЧЕК)
-    // ==========================================================
-    const auroraContainer = document.querySelector('.background-glow');
-    if (auroraContainer) {
-        const aurora1 = auroraContainer.querySelector('.aurora.one');
-        const aurora2 = auroraContainer.querySelector('.aurora.two');
-        document.addEventListener('mousemove', (e) => {
-            const { clientX, clientY } = e;
-            const x = clientX / window.innerWidth;
-            const y = clientY / window.innerHeight;
-            aurora1.style.transform = `translate(${x * 80 - 40}%, ${y * 80 - 40}%)`;
-            aurora2.style.transform = `translate(${x * -80 + 40}%, ${y * -80 + 40}%)`;
-        });
-    }
-
-    function apply3DEffect() {
-        const cards = document.querySelectorAll('.card');
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const rotateX = (y / rect.height - 0.5) * -15;
-                const rotateY = (x / rect.width - 0.5) * 15;
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-            });
-        });
-    }
-
-    // --- ПЕРВЫЙ ЗАПУСК ---
-    updateAuthUI();
-});
+            fetch(
