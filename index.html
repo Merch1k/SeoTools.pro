@@ -6,12 +6,10 @@
     <title>SEO Tools — Профессиональный софт</title>
     <link rel="icon" type="image/png" href="Logoito.png">
     <link rel="stylesheet" href="style.css">
-    <!-- Иконки FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     
-<!-- Шапка -->
     <header>
         <div class="header-left">
             <h1 class="header-title" data-lang-key="headerTitle">SEO Утилита</h1>
@@ -20,7 +18,6 @@
             <div class="logo">ACUS</div>
         </div>
         <div class="header-right">
-            <!-- Меню-бургер (ВСЕГДА ВИДНО) -->
             <div class="menu-container">
                 <button id="hamburgerBtn" class="hamburger-btn">
                     <span></span>
@@ -28,29 +25,27 @@
                     <span></span>
                 </button>
                 
-                <!-- Выпадающее меню -->
                 <div id="mainMenu" class="main-menu hidden">
-                    
-                    <!-- БЛОК ДЛЯ ГОСТЯ (По умолчанию виден) -->
                     <div id="guestNav">
                         <a href="#" id="menuLoginBtn" data-lang-key="loginBtn">Войти</a>
                         <a href="#" id="menuRegisterBtn" data-lang-key="registerBtn">Регистрация</a>
                     </div>
 
-                    <!-- БЛОК ДЛЯ ПОЛЬЗОВАТЕЛЯ (Скрыт по умолчанию) -->
                     <div id="userNav" class="hidden">
-                        <!-- Шапка профиля в меню -->
                         <div class="menu-profile-header">
                             <i class="fa fa-user-circle"></i>
                             <span id="menuUserName">User</span>
                         </div>
                         
-                        <!-- Корзина -->
+                        <!-- НОВАЯ КНОПКА: МОИ ПОКУПКИ -->
+                        <a href="#" id="menuLibraryBtn">
+                            <i class="fa fa-download"></i> Мои покупки
+                        </a>
+
                         <a href="#" id="menuCartBtn">
                             <i class="fa fa-shopping-cart"></i> Корзина
                         </a>
 
-                        <!-- Выход -->
                         <a href="#" id="menuLogoutBtn" data-lang-key="logoutBtn">
                             <i class="fa fa-sign-out-alt"></i> Выход
                         </a>
@@ -58,7 +53,6 @@
                         <div class="menu-divider"></div>
                     </div>
                     
-                    <!-- Язык (Виден всем) -->
                     <div class="submenu-container">
                         <a href="#" id="menuLangBtn" data-lang-key="languageBtn">Язык</a>
                         <div id="langSubmenu" class="lang-submenu hidden">
@@ -71,25 +65,19 @@
         </div>
     </header>
 
-    <!-- Видео секция -->
     <section class="video-section">
         <h2 data-lang-key="videoTitle">Посмотрите наш продукт в действии</h2>
         <div class="video-wrapper">
             <video controls muted poster="Pins.png">
-                <source src="https://www.w3schools.com/html/" type="video/mp4">
-                Ваш браузер не поддерживает видео.
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
             </video>
             <div class="video-description">
                 <h1 data-lang-key="multitoolTitle">SEO Мультитул</h1>
-                <p data-lang-key="multitoolDesc">
-                    Наш инструмент анализирует ключевые слова, отслеживает позиции 
-                    и помогает вам обойти конкурентов.
-                </p>
+                <p data-lang-key="multitoolDesc">Наш инструмент анализирует ключевые слова.</p>
             </div>
         </div>
     </section>
 
-    <!-- Сетка товаров -->
     <main class="hero">
         <div class="container">
             <div id="products-grid" class="grid">
@@ -98,37 +86,32 @@
         </div>
     </main>
 
-    <!-- Подвал -->
     <footer>
         <p>&copy; SEO TOOLS. <span data-lang-key="developedIn">Разработан в 2026.</span></p>
-        <a href="https://t.me/seo_dark_side" target="_blank" class="telegram-btn">
-        </a>
+        <a href="https://t.me/seo_dark_side" target="_blank" class="telegram-btn"></a>
     </footer>
 
     <!-- === МОДАЛЬНЫЕ ОКНА === -->
 
-    <!-- Окно ВХОДА -->
+    <!-- Вход -->
     <div id="authModal" class="modal hidden">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2 data-lang-key="authTitle">Авторизация</h2>
             <form id="loginForm">
                 <input type="text" id="loginEmail" placeholder="Логин" required>
-                <input type="password" id="loginPass" placeholder="Пароль" required data-lang-placeholder="passwordPlaceholder">
+                <input type="password" id="loginPass" placeholder="Пароль" required>
                 <button type="submit" data-lang-key="authBtn">Войти</button>
             </form>
             <p class="small-text" data-lang-key="demoMode">Демо режим: введите любые данные</p>
         </div>
     </div>
 
-    <!-- Окно РЕГИСТРАЦИИ (Заявка) -->
+    <!-- Регистрация -->
     <div id="regModal" class="modal hidden">
         <div class="modal-content">
             <span class="close-reg">&times;</span>
             <h2 data-lang-key="registerTitle">Регистрация</h2>
-            <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">
-                Придумайте логин и пароль. Данные отправятся администратору в Telegram для активации.
-            </p>
             <form id="regFormRequest">
                 <input type="text" id="newLogin" placeholder="Придумайте Логин" required>
                 <input type="text" id="newPass" placeholder="Придумайте Пароль" required>
@@ -137,12 +120,39 @@
         </div>
     </div>
 
-    <!-- ПОДКЛЮЧЕНИЕ СКРИПТА -->
-    <script src="script.js"></script>
+    <!-- НОВОЕ: Окно ОПЛАТЫ -->
+    <div id="paymentModal" class="modal hidden">
+        <div class="modal-content payment-content">
+            <span class="close-payment">&times;</span>
+            <h2>Оплата заказа</h2>
+            <p id="paymentProductName" style="color: #4ade80; margin-bottom: 20px;">Название товара</p>
+            <div class="price-display" id="paymentProductPrice">0 ₽</div>
+            
+            <form id="paymentForm">
+                <label>Номер карты</label>
+                <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" required style="text-align: center; letter-spacing: 2px;">
+                
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" placeholder="MM/YY" maxlength="5" required style="width: 50%;">
+                    <input type="password" placeholder="CVC" maxlength="3" required style="width: 50%;">
+                </div>
+                
+                <button type="submit">Оплатить</button>
+            </form>
+        </div>
+    </div>
 
+    <!-- НОВОЕ: Окно БИБЛИОТЕКИ (Мои покупки) -->
+    <div id="libraryModal" class="modal hidden">
+        <div class="modal-content library-content">
+            <span class="close-library">&times;</span>
+            <h2>Мои покупки</h2>
+            <div id="libraryList" class="library-list">
+                <p style="color: #666;">У вас пока нет покупок.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
