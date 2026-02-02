@@ -1,159 +1,221 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- CONFIGURATION ---
-    const CFG = {
-        tgBot: '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA',
-        tgChat: '5683927471',
-        wallet: 'UQBKg4_q8x5v2J1z...YOUR_WALLET'
-    };
+    // === ⚙️ НАСТРОЙКИ ===
+    const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; 
+    const TG_CHAT_ID = '5683927471'; 
+    const CRYPTO_WALLET = '0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB'; 
+    const ADI_RATE = 180; // 1 ADI = 1 Рубль (для примера)
 
-    const DICT = {
-        ru: { headerTitle: "Цифровой Суверенитет", headerDesc: "Инструменты для профессионального доминирования.", loginBtn: "Вход", registerBtn: "Регистрация", logoutBtn: "Выход", myPurchases: "Арсенал", authBtn: "Авторизация", checkBtn: "Подтвердить", buy: "Доступ" },
-        en: { headerTitle: "Digital Sovereignty", headerDesc: "Tools for professional dominance.", loginBtn: "Entry", registerBtn: "Join", logoutBtn: "Exit", myPurchases: "Arsenal", authBtn: "Authenticate", checkBtn: "Confirm", buy: "Access" }
-    };
+    // Проверка устройства
+    const isMobile = window.innerWidth <= 1024;
 
-    let lang = localStorage.getItem('lang') || 'ru';
-    let currentUser = localStorage.getItem('user');
-
-    const items = [
-        { id: 1, title: "Parser Pro", desc: "Data extraction architecture.", price: 1500, img: "https://placehold.co/600x400/000/fff?text=PARSER" },
-        { id: 2, name: "Neural Rank", desc: "AI-powered global tracking.", price: 2500, img: "https://placehold.co/600x400/000/fff?text=NEURAL" },
-        { id: 3, name: "Audit Core", desc: "Infrastructure vulnerability scan.", price: 3500, img: "https://placehold.co/600x400/000/fff?text=AUDIT" },
-        { id: 4, name: "Sovereign", desc: "Full ecosystem access.", price: 9990, img: "https://placehold.co/600x400/000/fff?text=VIP" }
+    // === ДАННЫЕ ===
+    const products = [ 
+        { id: 1, title: "Parser Pro", description: "Мощный парсер данных. Собирает всё.", price: 1500, image: "https://placehold.co/600x400/09090b/10b981?text=PARSER", file: "parser.exe" }, 
+        { id: 2, title: "Rank Tracker", description: "Топ-1 в отслеживании позиций Google.", price: 2500, image: "https://placehold.co/600x400/09090b/8b5cf6?text=TRACKER", file: "tracker.zip" }, 
+        { id: 3, title: "SEO Audit", description: "Технический аудит сайта за 1 минуту.", price: 3500, image: "https://placehold.co/600x400/09090b/06b6d4?text=AUDIT", file: "audit.dmg" }, 
+        { id: 4, title: "VIP Access", description: "Безлимитный доступ ко всем тулзам.", price: 9990, image: "https://placehold.co/600x400/09090b/ec4899?text=VIP", file: "vip.rar" },
+        { id: 5, title: "Indexer", description: "Быстрая индексация страниц в поисковиках.", price: 1200, image: "https://placehold.co/600x400/09090b/eab308?text=INDEXER", file: "indexer.exe" },
+        { id: 6, title: "Keywords", description: "Подбор ключевых слов с AI анализом.", price: 1800, image: "https://placehold.co/600x400/09090b/ef4444?text=KEYS", file: "keys.zip" }
     ];
 
-    // --- RENDER ENGINE ---
-    function render() {
-        const grid = document.getElementById('mainGrid');
-        const purchases = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
-        grid.innerHTML = '';
+    let currentUser = localStorage.getItem('acus_user');
+    let userPurchases = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
+    let currentProduct = null;
 
-        items.forEach(item => {
-            const isBought = purchases.some(p => p.id === item.id);
-            const el = document.createElement('div');
-            el.className = 'card-unit';
-            el.innerHTML = `
-                <div class="card-padding">
-                    <div class="card-visual"><img src="${item.img}" alt=""></div>
-                    <div class="card-head">
-                        <h3>${item.name || item.title}</h3>
-                        <p>${item.desc}</p>
-                    </div>
-                    <button class="btn-purchase ${isBought ? 'active' : ''}" ${!isBought ? `onclick="sysPay(${item.id})"` : ''}>
-                        ${isBought ? 'AUTHORIZED' : `${DICT[lang].buy} — ${item.price} ADI`}
-                    </button>
-                </div>
-            `;
-            grid.appendChild(el);
-        });
+    // === DOM ЭЛЕМЕНТЫ ===
+    const grid = document.getElementById('products-grid');
+    const mainMenu = document.getElementById('mainMenu');
+    const modals = {
+        auth: document.getElementById('authModal'),
+        reg: document.getElementById('regModal'),
+        pay: document.getElementById('paymentModal'),
+        lib: document.getElementById('libraryModal')
+    };
 
-        // Initialize Ray Tracing
-        if(window.innerWidth > 1024) initRayTracing();
+    // === 🛠 ФУНКЦИИ ===
+    
+    function init() {
+        if(document.getElementById('walletAddress')) 
+            document.getElementById('walletAddress').textContent = CRYPTO_WALLET.substring(0, 10) + '...';
+        
+        updateAuthUI();
+        renderProducts();
+        
+        // Включаем 3D эффект только если не мобильный
+        if (!isMobile) {
+            init3DEffect();
+        }
     }
 
-    function initRayTracing() {
-        document.querySelectorAll('.card-unit').forEach(card => {
-            card.onmousemove = e => {
+    function renderProducts() {
+        grid.innerHTML = '';
+        products.forEach(p => {
+            const isOwned = userPurchases.some(x => x.id === p.id);
+            const btnClass = isOwned ? 'neon-btn owned' : 'neon-btn';
+            const btnText = isOwned ? '<i class="fa fa-check"></i> КУПЛЕНО' : `${p.price} ADI`;
+            const onClick = isOwned ? '' : `onclick="buy(${p.id})"`;
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            // Атрибуты для 3D эффекта
+            card.setAttribute('data-tilt', '');
+            
+            card.innerHTML = `
+                <div class="card-image"><img src="${p.image}" alt="${p.title}"></div>
+                <div class="card-body">
+                    <h3 class="card-title">${p.title}</h3>
+                    <p class="card-desc">${p.description}</p>
+                    <button class="${btnClass}" ${onClick}>${btnText}</button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+        
+        if (!isMobile) init3DEffect(); // Обновляем листенеры
+    }
+
+    // === 🎮 ЛОГИКА 3D (DESKTOP) ===
+    function init3DEffect() {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
                 
-                // Subtle Tilt
-                const cx = rect.width / 2;
-                const cy = rect.height / 2;
-                const rotateX = ((y - cy) / cy) * -2; // Очень тонкий наклон
-                const rotateY = ((x - cx) / cx) * 2;
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            };
-            card.onmouseleave = () => {
-                card.style.transform = '';
-            };
+                // Переменные для CSS градиента
+                card.style.setProperty('--x', `${x}px`);
+                card.style.setProperty('--y', `${y}px`);
+
+                // Поворот
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -10; // Max 10deg
+                const rotateY = ((x - centerX) / centerX) * 10;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
         });
     }
 
-    function sync() {
-        currentUser = localStorage.getItem('user');
-        document.getElementById('guestState').classList.toggle('hidden', !!currentUser);
-        document.getElementById('userState').classList.toggle('hidden', !currentUser);
-        if(currentUser) document.getElementById('displayUser').innerText = currentUser;
-
-        document.querySelectorAll('[data-lang-key]').forEach(el => {
-            el.innerText = DICT[lang][el.dataset.langKey];
-        });
-        
-        document.querySelectorAll('.lang-btn').forEach(b => {
-            b.classList.toggle('active', b.dataset.lang === lang);
-        });
-        
-        render();
-    }
-
-    // --- ACTIONS ---
-    window.sysPay = (id) => {
-        if(!currentUser) return openModal('authOverlay');
-        const item = items.find(i => i.id === id);
-        document.getElementById('payLabel').innerText = (item.name || item.title).toUpperCase();
-        document.getElementById('payValue').innerText = item.price + ' ADI';
-        window.tempId = id;
-        openModal('payOverlay');
+    // === 💰 ОПЛАТА ===
+    window.buy = (id) => {
+        if (!currentUser) return openModal('auth');
+        currentProduct = products.find(p => p.id === id);
+        document.getElementById('payName').textContent = currentProduct.title;
+        document.getElementById('payAmount').textContent = `${currentProduct.price} ADI`;
+        openModal('pay');
     };
 
-    document.getElementById('formPay').onsubmit = async (e) => {
+    document.getElementById('cryptoCheckForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const hash = document.getElementById('inHash').value;
-        const item = items.find(i => i.id === window.tempId);
+        const btn = e.target.querySelector('button');
+        const txHash = document.getElementById('txHash').value;
         
-        await fetch(`https://api.telegram.org/bot${CFG.tgBot}/sendMessage`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ chat_id: CFG.tgChat, text: `🏛 VAULT: ${currentUser}\nItem: ${item.name}\nTX: ${hash}` })
-        });
-
-        let list = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
-        list.push({ id: item.id });
-        localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(list));
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Checking...';
         
-        closeAll();
-        render();
-        alert('Transaction verified.');
-    };
-
-    document.getElementById('formAuth').onsubmit = (e) => {
-        e.preventDefault();
-        localStorage.setItem('user', document.getElementById('inUser').value);
-        sync();
-        closeAll();
-    };
-
-    document.getElementById('lnkOut').onclick = () => {
-        localStorage.removeItem('user');
-        sync();
-        closeAll();
-    };
-
-    // --- UX ---
-    function openModal(id) { document.getElementById(id).classList.add('active'); }
-    function closeAll() { 
-        document.querySelectorAll('.modal-overlay, .drawer').forEach(el => el.classList.remove('active', 'open')); 
-    }
-
-    document.getElementById('triggerMenu').onclick = () => document.getElementById('appDrawer').classList.add('open');
-    document.querySelectorAll('.close-icon, .drawer-backdrop, .modal-backdrop').forEach(b => b.onclick = closeAll);
-    document.querySelectorAll('.lang-btn').forEach(b => b.onclick = () => {
-        lang = b.dataset.lang;
-        localStorage.setItem('lang', lang);
-        sync();
+        // Отправка в TG
+        const msg = `💎 <b>PAYMENT CHECK</b>\nUser: ${currentUser}\nItem: ${currentProduct.title}\nSum: ${currentProduct.price} ADI\nTX: <code>${txHash}</code>`;
+        
+        try {
+            await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg, parse_mode: 'HTML' })
+            });
+            
+            // Демо-активация
+            userPurchases.push({ id: currentProduct.id, date: Date.now() });
+            localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
+            
+            alert('Заявка отправлена администратору! Доступ открыт (Демо).');
+            closeModals();
+            renderProducts();
+        } catch(err) {
+            alert('Ошибка сети');
+        } finally {
+            btn.innerHTML = 'Я ОПЛАТИЛ';
+            e.target.reset();
+        }
     });
-    
-    document.getElementById('lnkLogin').onclick = () => { closeAll(); openModal('authOverlay'); };
-    document.getElementById('lnkReg').onclick = () => { closeAll(); openModal('authOverlay'); };
-    
-    document.getElementById('btnCopy').onclick = () => {
-        navigator.clipboard.writeText(CFG.wallet);
-        alert('Secure clipboard copy.');
-    };
 
-    sync();
+    document.getElementById('walletCopyBtn').addEventListener('click', () => {
+        navigator.clipboard.writeText(CRYPTO_WALLET);
+        alert('Кошелек скопирован!');
+    });
+
+    // === 👤 UI & AUTH ===
+    function updateAuthUI() {
+        const guest = document.getElementById('guestNav');
+        const user = document.getElementById('userNav');
+        if(currentUser) {
+            guest.classList.add('hidden');
+            user.classList.remove('hidden');
+            document.getElementById('menuUserName').textContent = currentUser;
+        } else {
+            guest.classList.remove('hidden');
+            user.classList.add('hidden');
+        }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        currentUser = document.getElementById('loginEmail').value;
+        localStorage.setItem('acus_user', currentUser);
+        userPurchases = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
+        updateAuthUI();
+        renderProducts();
+        closeModals();
+    });
+
+    document.getElementById('regFormRequest').addEventListener('submit', (e) => {
+        e.preventDefault();
+        // В реале тут отправка в TG
+        alert('Заявка на регистрацию отправлена!');
+        closeModals();
+    });
+
+    document.getElementById('menuLibraryBtn').addEventListener('click', () => {
+        const list = document.getElementById('libraryList');
+        list.innerHTML = '';
+        if(userPurchases.length === 0) list.innerHTML = '<p style="color:#666">Пусто...</p>';
+        else {
+            userPurchases.forEach(pur => {
+                const p = products.find(prod => prod.id === pur.id);
+                if(p) list.innerHTML += `<div style="padding:10px; border-bottom:1px solid #333; display:flex; justify-content:space-between"><span>${p.title}</span><a href="#" style="color:var(--accent)">Скачать</a></div>`;
+            });
+        }
+        openModal('lib');
+    });
+
+    document.getElementById('menuLogoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('acus_user');
+        currentUser = null;
+        userPurchases = [];
+        updateAuthUI();
+        renderProducts();
+        toggleMenu(false);
+    });
+
+    // === MENU ===
+    function toggleMenu(state) {
+        if(state) mainMenu.classList.add('active');
+        else mainMenu.classList.remove('active');
+    }
+    
+    document.getElementById('hamburgerBtn').addEventListener('click', () => toggleMenu(true));
+    document.querySelector('.close-menu').addEventListener('click', () => toggleMenu(false));
+    document.querySelector('.menu-backdrop').addEventListener('click', () => toggleMenu(false));
+    
+    // === MODALS HELPERS ===
+    function openModal(name) { toggleMenu(false); closeModals(); modals[name].classList.remove('hidden'); }
+    function closeModals() { Object.values(modals).forEach(m => m.classList.add('hidden')); }
+    document.querySelectorAll('.close-modal').forEach(b => b.addEventListener('click', closeModals));
+
+    init();
 });
