@@ -1,167 +1,152 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const TG_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA';
-    const TG_CHAT = '5683927471';
-    const WALLET = '0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB';
+    const TG = {
+        token: '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA',
+        chat: '5683927471'
+    };
+    const WALLET_ADDR = '0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB';
 
     const translations = {
-        ru: { headerTitle: "Премиум Экосистема", loginBtn: "Войти", registerBtn: "Регистрация", logoutBtn: "Выход", languageBtn: "Язык", myPurchases: "Мои покупки", authTitle: "Вход в систему", authBtn: "Войти", checkBtn: "Я оплатил", buy: "Купить", videoDesc: "Посмотрите возможности нашей утилиты в действии" },
-        en: { headerTitle: "Premium Ecosystem", loginBtn: "Login", registerBtn: "Join", logoutBtn: "Logout", languageBtn: "Language", myPurchases: "My Library", authTitle: "Authorization", authBtn: "Log In", checkBtn: "Verified", buy: "Buy", videoDesc: "Watch our utility features in action" }
+        ru: { headerTitle: "Элитные Утилиты", loginBtn: "Войти", registerBtn: "Регистрация", logoutBtn: "Выход", languageBtn: "Язык", myPurchases: "Мои покупки", authTitle: "Вход", authBtn: "Войти", checkBtn: "Подтвердить", buy: "Купить", videoDesc: "Премиальное качество анализа данных" },
+        en: { headerTitle: "Elite Utilities", loginBtn: "Login", registerBtn: "Sign Up", logoutBtn: "Logout", languageBtn: "Language", myPurchases: "Library", authTitle: "Login", authBtn: "Enter", checkBtn: "Verify", buy: "Buy", videoDesc: "Premium data analysis quality" }
     };
 
-    let currentLang = localStorage.getItem('acus_lang') || 'ru';
-    let user = localStorage.getItem('acus_user');
-    
-    // Функция получения покупок для ТЕКУЩЕГО юзера
-    function getPurchases() {
-        if(!user) return [];
-        return JSON.parse(localStorage.getItem(`buy_${user}`)) || [];
-    }
+    let lang = localStorage.getItem('lang') || 'ru';
+    let user = localStorage.getItem('user');
 
     const products = [
-        { id: 1, name: "Parser Pro", desc: "Data extraction at light speed.", price: 1500, img: "https://placehold.co/600x400/0c0c12/00ff88?text=PARSER" },
-        { id: 2, name: "Rank Tracker", desc: "Monitor rankings in real-time.", price: 2500, img: "https://placehold.co/600x400/0c0c12/bc13fe?text=TRACKER" },
-        { id: 3, name: "Audit Core", desc: "Deep technical SEO analysis.", price: 3500, img: "https://placehold.co/600x400/0c0c12/00ff88?text=AUDIT" },
-        { id: 4, name: "VIP Stack", desc: "Unlimited access to all tools.", price: 9990, img: "https://placehold.co/600x400/0c0c12/bc13fe?text=VIP" }
+        { id: 1, name: "Parser Pro", desc: "Enterprise data harvesting system.", price: 1500, img: "https://placehold.co/600x400/0a0a0f/00ff88?text=PARSER" },
+        { id: 2, name: "Rank Tracker", desc: "Real-time global position monitoring.", price: 2500, img: "https://placehold.co/600x400/0a0a0f/bc13fe?text=TRACKER" },
+        { id: 3, name: "Audit Core", desc: "Advanced technical infrastructure scan.", price: 3500, img: "https://placehold.co/600x400/0a0a0f/00ff88?text=AUDIT" },
+        { id: 4, name: "VIP Stack", desc: "Complete digital arsenal. Lifetime.", price: 9990, img: "https://placehold.co/600x400/0a0a0f/bc13fe?text=VIP" }
     ];
 
-    function renderProducts() {
-        const grid = document.getElementById('productsGrid');
-        const purchases = getPurchases();
+    function render() {
+        const grid = document.getElementById('grid');
+        const buys = JSON.parse(localStorage.getItem(`buys_${user}`)) || [];
         grid.innerHTML = '';
         
         products.forEach(p => {
-            const isOwned = purchases.some(x => x.id === p.id);
+            const owned = buys.some(x => x.id === p.id);
             const card = document.createElement('div');
-            card.className = 'card';
+            card.className = 'card-wrapper';
             card.innerHTML = `
-                <div class="card-img"><img src="${p.img}" alt=""></div>
-                <div class="card-info">
-                    <h3>${p.name}</h3>
-                    <p>${p.desc}</p>
-                    <button class="buy-btn ${isOwned?'owned':''}" ${isOwned?'':`onclick="startPay(${p.id})"`}>
-                        ${isOwned ? (currentLang === 'ru' ? 'КУПЛЕНО' : 'OWNED') : `${translations[currentLang].buy} ${p.price} ADI`}
-                    </button>
-                </div>
-            `;
+                <div class="card">
+                    <div class="card-inner">
+                        <div class="card-img"><img src="${p.img}" alt=""></div>
+                        <div class="card-info">
+                            <h3>${p.name}</h3>
+                            <p>${p.desc}</p>
+                            <button class="buy-btn ${owned?'owned':''}" ${owned?'':`onclick="openPay(${p.id})"`}>
+                                ${owned ? (lang==='ru'?'КУПЛЕНО':'OWNED') : `${translations[lang].buy} ${p.price} ADI`}
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
             grid.appendChild(card);
         });
+        if(window.innerWidth > 1024) initTilt();
     }
 
-    // --- ЛОГИКА ИНТЕРФЕЙСА ---
+    // --- TILT EFFECT (ПК) ---
+    function initTilt() {
+        document.querySelectorAll('.card').forEach(c => {
+            c.onmousemove = (e) => {
+                const r = c.getBoundingClientRect();
+                const x = e.clientX - r.left - r.width/2;
+                const y = e.clientY - r.top - r.height/2;
+                c.style.transform = `perspective(1000px) rotateX(${-y/20}deg) rotateY(${x/20}deg)`;
+            };
+            c.onmouseleave = () => c.style.transform = '';
+        });
+    }
+
     function updateUI() {
-        user = localStorage.getItem('acus_user');
-        const guestLinks = document.getElementById('guestLinks');
-        const userLinks = document.getElementById('userLinks');
-        const displayUserName = document.getElementById('displayUserName');
+        user = localStorage.getItem('user');
+        document.getElementById('guestBox').classList.toggle('hidden', !!user);
+        document.getElementById('userBox').classList.toggle('hidden', !user);
+        if(user) document.getElementById('userNameText').innerText = user;
 
-        if(user) {
-            guestLinks.classList.add('hidden');
-            userLinks.classList.remove('hidden');
-            displayUserName.innerText = user;
-        } else {
-            guestLinks.classList.remove('hidden');
-            userLinks.classList.add('hidden');
-        }
-
-        // Обновляем тексты
         document.querySelectorAll('[data-lang-key]').forEach(el => {
-            const key = el.getAttribute('data-lang-key');
-            el.innerText = translations[currentLang][key];
+            el.innerText = translations[lang][el.dataset.langKey];
         });
-
-        // Активная кнопка языка
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.lang === currentLang);
-        });
-
-        renderProducts();
+        document.querySelectorAll('.l-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+        render();
     }
 
-    // --- СОБЫТИЯ ---
-    window.startPay = (id) => {
-        if(!user) { openModal('authModal'); return; }
+    // --- PAYMENTS ---
+    window.openPay = (id) => {
+        if(!user) return openM('authModal');
         const p = products.find(x => x.id === id);
-        document.getElementById('payTitle').innerText = p.name;
-        document.getElementById('payPrice').innerText = p.price + ' ADI';
-        window.activeProductId = id;
-        openModal('payModal');
+        document.getElementById('payProdName').innerText = p.name;
+        document.getElementById('payProdPrice').innerText = p.price + ' ADI';
+        window.activeId = id;
+        openM('payModal');
     };
 
     document.getElementById('payForm').onsubmit = async (e) => {
         e.preventDefault();
         const hash = document.getElementById('txHash').value;
-        const p = products.find(x => x.id === window.activeProductId);
+        const p = products.find(x => x.id === window.activeId);
         
-        await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+        await fetch(`https://api.telegram.org/bot${TG.token}/sendMessage`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ chat_id: TG_CHAT, text: `💰 ОПЛАТА: ${user}\nТовар: ${p.name}\nTX: ${hash}` })
+            body: JSON.stringify({ chat_id: TG.chat, text: `💎 ОПЛАТА: ${user}\nProduct: ${p.name}\nTX: ${hash}` })
         });
         
-        let purchases = getPurchases();
-        purchases.push({ id: p.id });
-        localStorage.setItem(`buy_${user}`, JSON.stringify(purchases));
-        
-        alert(currentLang === 'ru' ? 'Заявка отправлена!' : 'Request sent!');
-        closeModals();
-        renderProducts();
+        let buys = JSON.parse(localStorage.getItem(`buys_${user}`)) || [];
+        buys.push({ id: p.id });
+        localStorage.setItem(`buys_${user}`, JSON.stringify(buys));
+        alert('Запрос отправлен!');
+        closeM();
+        render();
     };
 
-    // Авторизация
+    // --- AUTH ---
     document.getElementById('authForm').onsubmit = (e) => {
         e.preventDefault();
-        const val = document.getElementById('userInp').value;
-        localStorage.setItem('acus_user', val);
+        const val = document.getElementById('uInp').value;
+        localStorage.setItem('user', val);
         updateUI();
-        closeModals();
+        closeM();
     };
 
-    document.getElementById('logoutBtnMenu').onclick = () => {
-        localStorage.removeItem('acus_user');
+    document.getElementById('logoutAction').onclick = () => {
+        localStorage.removeItem('user');
         updateUI();
-        closeModals();
+        closeM();
     };
 
-    // Языки
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.onclick = () => {
-            currentLang = btn.dataset.lang;
-            localStorage.setItem('acus_lang', currentLang);
-            updateUI();
-        };
+    // --- UI HELPERS ---
+    function openM(id) { document.getElementById(id).classList.add('open'); }
+    function closeM() { document.querySelectorAll('.modal, .menu-wrap').forEach(el => el.classList.remove('open')); }
+
+    document.getElementById('menuBtn').onclick = () => openM('sideMenu');
+    document.querySelectorAll('.close-btn, .menu-overlay').forEach(b => b.onclick = closeM);
+
+    document.getElementById('loginOpen').onclick = () => openM('authModal');
+    document.getElementById('regOpen').onclick = () => openM('authModal');
+
+    document.querySelectorAll('.l-btn').forEach(b => {
+        b.onclick = () => { lang = b.dataset.lang; localStorage.setItem('lang', lang); updateUI(); };
     });
 
-    // Модалки и меню
-    function openModal(id) { document.getElementById(id).classList.add('open'); }
-    function closeModals() { 
-        document.querySelectorAll('.modal').forEach(m => m.classList.remove('open')); 
-        document.getElementById('sideMenu').classList.remove('open');
-    }
-
-    document.getElementById('burgerBtn').onclick = () => openModal('sideMenu');
-    document.querySelector('.menu-close').onclick = closeModals;
-    document.querySelector('.menu-overlay').onclick = closeModals;
-    document.querySelectorAll('.close-modal, .modal-bg').forEach(b => b.onclick = closeModals);
-    
-    document.getElementById('loginBtnMenu').onclick = () => openModal('authModal');
-    document.getElementById('regBtnMenu').onclick = () => openModal('authModal');
-    document.getElementById('libBtnMenu').onclick = () => {
-        const list = document.getElementById('libList');
-        const purchases = getPurchases();
-        list.innerHTML = purchases.length ? '' : '<p>Empty</p>';
-        purchases.forEach(pur => {
-            const p = products.find(x => x.id === pur.id);
-            list.innerHTML += `<div style="padding:10px; border-bottom:1px solid #222;">${p.name} - <span style="color:var(--accent)">Active</span></div>`;
-        });
-        openModal('libModal');
-    };
-
     document.getElementById('copyWallet').onclick = () => {
-        navigator.clipboard.writeText(WALLET);
-        alert('Wallet Copied!');
+        navigator.clipboard.writeText(WALLET_ADDR);
+        alert('Copied!');
     };
 
-    // INIT
+    document.getElementById('libOpen').onclick = () => {
+        const buys = JSON.parse(localStorage.getItem(`buys_${user}`)) || [];
+        const cont = document.getElementById('libContent');
+        cont.innerHTML = buys.length ? '' : '<p>Empty</p>';
+        buys.forEach(b => {
+            const p = products.find(x => x.id === b.id);
+            cont.innerHTML += `<div style="padding:15px; background:rgba(255,255,255,0.05); margin-bottom:10px; border-radius:10px;">${p.name} - <span style="color:var(--accent)">Active</span></div>`;
+        });
+        openM('libModal');
+    };
+
     updateUI();
 });
