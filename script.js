@@ -1,17 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================
-    // ⚙️ НАСТРОЙКИ
+    // ⚙️ НАСТРОЙКИ (ЗАПОЛНИ ЭТИ ДАННЫЕ)
     // ==========================================
     const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA';
     const TG_CHAT_ID = '5683927471'; 
-    const SUBSCRIPTION_DURATION = 60000; // 1 минута для теста (измените на 2592000000 для 30 дней)
+    
+    const MY_TON_ADDRESS = 'ВАШ_TON_КОШЕЛЕК'; // Твой адрес
+    const TON_API_KEY = 'ВАШ_КЛЮЧ_TONAPI_IO'; // Ключ с сайта tonapi.io
 
+    const TON_EXCHANGE_RATE = 650; // Курс 1 TON = 650 RUB
+    const SUBSCRIPTION_DURATION = 2592000000; // 30 дней в мс
     const isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
+    // ==========================================
+    // 🌍 СЛОВАРЬ И ДАННЫЕ
+    // ==========================================
     const translations = { 
-        ru: { headerTitle: "SEO Утилита", loginBtn: "Войти", registerBtn: "Регистрация", logoutBtn: "Выход", languageBtn: "Язык", videoTitle: "Посмотрите наш продукт в действии", multitoolDesc: "Наш инструмент анализирует ключевые слова, отслеживает позиции и помогает вам обойти конкурентов.", loading: "Загрузка товаров...", developedIn: "Разработан в 2026.", authTitle: "Авторизация", authBtn: "Войти", demoMode: "Демо: введите любые данные", registerTitle: "Регистрация", sendRequestBtn: "Отправить заявку", buyPrefix: "Купить за", inLibrary: "В библиотеке", download: "Скачать", myPurchases: "Мои покупки", cart: "Корзина", regSuccess: "Заявка отправлена администратору!", regError: "Ошибка отправки. Попробуйте позже.", paySuccess: "Заявка на оплату принята! Доступ открыт.", welcome: "Добро пожаловать,", noSubs: "У вас пока нет активных подписок.", loginAlert: "Сначала войдите в аккаунт!" }, 
-        en: { headerTitle: "SEO Utility", loginBtn: "Log In", registerBtn: "Sign Up", logoutBtn: "Log Out", languageBtn: "Language", videoTitle: "See our product in action", multitoolDesc: "Our tool analyzes keywords, tracks rankings, and helps you outrank competitors.", loading: "Loading products...", developedIn: "Developed in 2026.", authTitle: "Authorization", authBtn: "Log In", demoMode: "Demo: enter any data", registerTitle: "Registration", sendRequestBtn: "Send Request", buyPrefix: "Buy for", inLibrary: "Owned", download: "Download", myPurchases: "My Library", cart: "Cart", regSuccess: "Request sent to admin!", regError: "Sending error. Try again later.", paySuccess: "Payment request sent! Access granted.", welcome: "Welcome,", noSubs: "No active subscriptions.", loginAlert: "Please log in first!" } 
+        ru: { headerTitle: "SEO Утилита", loginBtn: "Войти", registerBtn: "Регистрация", logoutBtn: "Выход", languageBtn: "Язык", videoTitle: "Посмотрите наш продукт в действии", multitoolDesc: "Наш инструмент анализирует ключевые слова, отслеживает позиции и помогает вам обойти конкурентов.", loading: "Загрузка товаров...", developedIn: "Разработан в 2026.", authTitle: "Авторизация", authBtn: "Войти", demoMode: "Демо: введите любые данные", registerTitle: "Регистрация", sendRequestBtn: "Отправить заявку", buyPrefix: "Купить за", inLibrary: "В библиотеке", download: "Скачать", myPurchases: "Мои покупки", cart: "Корзина", regSuccess: "Заявка отправлена администратору!", regError: "Ошибка отправки. Попробуйте позже.", paySuccess: "Оплата подтверждена! Доступ открыт.", welcome: "Добро пожаловать,", noSubs: "У вас пока нет активных подписок.", loginAlert: "Сначала войдите в аккаунт!" }, 
+        en: { headerTitle: "SEO Utility", loginBtn: "Log In", registerBtn: "Sign Up", logoutBtn: "Log Out", languageBtn: "Language", videoTitle: "See our product in action", multitoolDesc: "Our tool analyzes keywords, tracks rankings, and helps you outrank competitors.", loading: "Loading products...", developedIn: "Developed in 2026.", authTitle: "Authorization", authBtn: "Log In", demoMode: "Demo: enter any data", registerTitle: "Registration", sendRequestBtn: "Send Request", buyPrefix: "Buy for", inLibrary: "Owned", download: "Download", myPurchases: "My Library", cart: "Cart", regSuccess: "Request sent to admin!", regError: "Sending error. Try again later.", paySuccess: "Payment confirmed! Access granted.", welcome: "Welcome,", noSubs: "No active subscriptions.", loginAlert: "Please log in first!" } 
     };
     
     let currentLang = 'ru'; 
@@ -25,43 +32,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentUser = localStorage.getItem('acus_user');
     let userPurchases = []; 
-    let currentProductToBuy = null;
+    let currentOrder = null;
+    let checkInterval = null;
 
+    // --- DOM ЭЛЕМЕНТЫ ---
     const grid = document.getElementById('products-grid');
-    const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mainMenu = document.getElementById('mainMenu');
-    const guestNav = document.getElementById('guestNav');
-    const userNav = document.getElementById('userNav');
-    const menuUserName = document.getElementById('menuUserName');
-    const menuLoginBtn = document.getElementById('menuLoginBtn');
-    const menuRegisterBtn = document.getElementById('menuRegisterBtn');
-    const menuLogoutBtn = document.getElementById('menuLogoutBtn');
-    const menuLibraryBtn = document.getElementById('menuLibraryBtn');
-    const menuLangBtn = document.getElementById('menuLangBtn');
-    const langSubmenu = document.getElementById('langSubmenu');
-    const langLinks = document.querySelectorAll('.lang-submenu a');
     const authModal = document.getElementById('authModal');
-    const regModal = document.getElementById('regModal');
     const paymentModal = document.getElementById('paymentModal');
-    const libraryModal = document.getElementById('libraryModal');
 
     // ==========================================
-    // 🛠 ФУНКЦИИ
+    // 🔍 ЛОГИКА АВТО-ОПЛАТЫ (TONAPI)
+    // ==========================================
+    async function checkPayment() {
+        if (!currentOrder) return;
+        try {
+            const response = await fetch(`https://tonapi.io/v2/blockchain/accounts/${MY_TON_ADDRESS}/transactions?limit=15`, {
+                headers: { 'Authorization': `Bearer ${TON_API_KEY}` }
+            });
+            const data = await response.json();
+            if (data.transactions) {
+                for (let tx of data.transactions) {
+                    const comment = tx.in_msg?.decoded_body?.text || "";
+                    const valueTon = (tx.in_msg?.value || 0) / 1000000000;
+                    
+                    if (comment === currentOrder.memo && valueTon >= (currentOrder.amountTon * 0.98)) {
+                        finalizeTransaction();
+                        break;
+                    }
+                }
+            }
+        } catch (e) { console.error("Blockchain error:", e); }
+    }
+
+    function finalizeTransaction() {
+        clearInterval(checkInterval);
+        userPurchases.push({ id: currentOrder.productId, expires: Date.now() + SUBSCRIPTION_DURATION });
+        localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
+        
+        // Уведомление владельцу
+        fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                chat_id: TG_CHAT_ID, 
+                text: `✅ <b>ОПЛАТА ПОЛУЧЕНА!</b>\nЮзер: ${currentUser}\nТовар: ${currentOrder.title}\nСумма: ${currentOrder.amountTon} TON`, 
+                parse_mode: 'HTML' 
+            })
+        });
+
+        alert(translations[currentLang].paySuccess);
+        paymentModal.classList.add('hidden');
+        renderProducts();
+    }
+
+    // ==========================================
+    // 🛠 СТАНДАРТНЫЕ ФУНКЦИИ
     // ==========================================
     function loadAndMigratePurchases(user) {
         if (!user) { userPurchases = []; return; }
-        let rawData = JSON.parse(localStorage.getItem(`purchases_${user}`)) || [];
-        userPurchases = rawData;
+        userPurchases = JSON.parse(localStorage.getItem(`purchases_${user}`)) || [];
     }
 
     function checkExpirations() {
         if (!currentUser) return;
         const now = Date.now();
-        const initialCount = userPurchases.length;
+        const countBefore = userPurchases.length;
         userPurchases = userPurchases.filter(p => p.expires > now);
-        if (userPurchases.length !== initialCount) {
-            localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
-        }
+        if (userPurchases.length !== countBefore) localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
     }
 
     function renderProducts() {
@@ -72,158 +110,77 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'card';
             const purchase = userPurchases.find(p => p.id === product.id);
             const isOwned = !!purchase;
-            let btnClass = isOwned ? 'price-button owned' : 'price-button';
             let btnContent = '';
             
             if (isOwned) {
-                const timeLeft = Math.max(0, Math.ceil((purchase.expires - Date.now()) / 60000));
-                const inLibText = translations[currentLang].inLibrary;
-                btnContent = `<i class="fa fa-check"></i> ${inLibText} <br><span style="font-size:0.7em; opacity:0.8">${timeLeft} min left</span>`;
+                const minLeft = Math.max(0, Math.ceil((purchase.expires - Date.now()) / 60000));
+                btnContent = `<i class="fa fa-check"></i> ${translations[currentLang].inLibrary} <br><span style="font-size:0.7em; opacity:0.8">${minLeft} min left</span>`;
             } else {
                 btnContent = `${translations[currentLang].buyPrefix} ${product.price} ₽`;
             }
             
-            let clickAttr = isOwned ? '' : `onclick="buyProduct(${product.id})"`;
-            card.innerHTML = `<div class="card-content"><div class="card-img-wrapper"><img src="${product.image}" alt="${product.title}"></div><div class="card-info-block"><h3>${product.title}</h3><p>${product.description}</p></div><button class="${btnClass}" ${clickAttr}>${btnContent}</button></div>`;
+            card.innerHTML = `<div class="card-content"><div class="card-img-wrapper"><img src="${product.image}"></div><div class="card-info-block"><h3>${product.title}</h3><p>${product.description}</p></div><button class="price-button ${isOwned?'owned':''}" ${isOwned?'':`onclick="buyProduct(${product.id})"`}>${btnContent}</button></div>`;
             grid.appendChild(card);
         });
-        
         if (!isMobile) apply3DEffect();
     }
-    
-    function setLanguage(lang) {
-        if (!translations[lang]) return;
-        currentLang = lang;
-        document.documentElement.lang = lang;
-        document.querySelectorAll('[data-lang-key]').forEach(el => {
-            const key = el.getAttribute('data-lang-key');
-            if (translations[lang][key]) {
-                const icon = el.querySelector('i');
-                el.innerHTML = icon ? `${icon.outerHTML} ${translations[lang][key]}` : translations[lang][key];
-            }
-        });
-        renderProducts();
-        langSubmenu.classList.add('hidden');
-    }
 
-    function renderLibrary() {
-        checkExpirations();
-        const list = document.getElementById('libraryList');
-        list.innerHTML = '';
-        if(userPurchases.length === 0) {
-            list.innerHTML = `<p style="color:#aaa">${translations[currentLang].noSubs}</p>`;
-        } else {
-            userPurchases.forEach(purchase => {
-                const p = products.find(prod => prod.id === purchase.id);
-                if(p) {
-                    const dateEnd = new Date(purchase.expires).toLocaleString();
-                    const dlText = translations[currentLang].download;
-                    list.innerHTML += `<div class="lib-item"><div><span style="font-weight:bold; display:block;">${p.title}</span><span style="font-size:0.8em; color:#4ade80;">До: ${dateEnd}</span></div><a href="#" class="download-link" onclick="alert('${dlText}: ${p.file}')"><i class="fa fa-download"></i> ${dlText}</a></div>`;
-                }
-            });
-        }
-    }
+    window.buyProduct = (id) => {
+        if (!currentUser) { alert(translations[currentLang].loginAlert); authModal.classList.remove('hidden'); return; }
+        const product = products.find(p => p.id === id);
+        const amountTon = (product.price / TON_EXCHANGE_RATE).toFixed(2);
+        const memo = `ACUS_${Math.floor(10000 + Math.random()*90000)}`;
 
+        currentOrder = { productId: id, title: product.title, amountTon, memo };
+        document.getElementById('payName').textContent = product.title;
+        document.getElementById('payAmount').textContent = `${amountTon} TON`;
+        document.getElementById('walletAddr').value = MY_TON_ADDRESS;
+        document.getElementById('payMemo').value = memo;
+        paymentModal.classList.remove('hidden');
+
+        if (checkInterval) clearInterval(checkInterval);
+        checkInterval = setInterval(checkPayment, 8000);
+    };
+
+    // --- ОСТАЛЬНЫЕ ОБРАБОТЧИКИ (МЕНЮ, ЛОГИН) ---
     function updateAuthUI() {
         loadAndMigratePurchases(currentUser);
         if(currentUser) {
-            guestNav.classList.add('hidden');
-            userNav.classList.remove('hidden');
-            menuUserName.textContent = currentUser;
+            document.getElementById('guestNav').classList.add('hidden');
+            document.getElementById('userNav').classList.remove('hidden');
+            document.getElementById('menuUserName').textContent = currentUser;
         } else {
-            guestNav.classList.remove('hidden');
-            userNav.classList.add('hidden');
+            document.getElementById('guestNav').classList.remove('hidden');
+            document.getElementById('userNav').classList.add('hidden');
         }
         renderProducts();
     }
 
-    // ==========================================
-    // ⚡️ ОБРАБОТЧИКИ (ОПЛАТА)
-    // ==========================================
-    window.buyProduct = (id) => {
-        if (!currentUser) {
-            alert(translations[currentLang].loginAlert);
-            authModal.classList.remove('hidden');
-            return;
-        }
-        currentProductToBuy = products.find(p => p.id === id);
-        if(currentProductToBuy) {
-            document.getElementById('payName').textContent = currentProductToBuy.title;
-            document.getElementById('payAmount').textContent = currentProductToBuy.price + ' ₽';
-            paymentModal.classList.remove('hidden');
-        }
-    };
+    document.getElementById('hamburgerBtn').addEventListener('click', (e) => { e.stopPropagation(); mainMenu.classList.toggle('hidden'); });
+    document.getElementById('menuLoginBtn').addEventListener('click', () => { authModal.classList.remove('hidden'); mainMenu.classList.add('hidden'); });
+    document.getElementById('menuRegisterBtn').addEventListener('click', () => { document.getElementById('regModal').classList.remove('hidden'); mainMenu.classList.add('hidden'); });
+    document.getElementById('menuLogoutBtn').addEventListener('click', () => { localStorage.removeItem('acus_user'); currentUser = null; updateAuthUI(); mainMenu.classList.add('hidden'); });
     
-    document.getElementById('paymentForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const btn = e.target.querySelector('button');
-        btn.textContent = '...';
-        btn.disabled = true;
+    document.querySelectorAll('.close, .close-reg, .close-payment, .close-library').forEach(b => b.addEventListener('click', () => {
+        clearInterval(checkInterval);
+        document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+    }));
 
-        // Отправка в TG
-        const message = `💰 <b>НОВАЯ ОПЛАТА</b>\n\n👤 <b>Юзер:</b> ${currentUser}\n📦 <b>Товар:</b> ${currentProductToBuy.title}\n💵 <b>Сумма:</b> ${currentProductToBuy.price} ₽\n\n<i>Пользователь нажал "Я оплатил", проверьте кошелек!</i>`;
-        
-        fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, { 
-            method: 'POST', 
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'HTML' }) 
-        })
-        .then(() => {
-            setTimeout(() => {
-                userPurchases.push({ id: currentProductToBuy.id, expires: Date.now() + SUBSCRIPTION_DURATION });
-                localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
-                alert(translations[currentLang].paySuccess);
-                paymentModal.classList.add('hidden');
-                renderProducts(); 
-                btn.textContent = 'Я оплатил(а)';
-                btn.disabled = false;
-            }, 1000);
-        });
-    });
-
-    // ОСТАЛЬНЫЕ КНОПКИ
-    if (menuLangBtn) menuLangBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); langSubmenu.classList.toggle('hidden'); });
-    langLinks.forEach(link => link.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); setLanguage(e.target.getAttribute('data-lang')); }));
-    if(menuLibraryBtn) menuLibraryBtn.addEventListener('click', (e) => { e.preventDefault(); mainMenu.classList.add('hidden'); renderLibrary(); libraryModal.classList.remove('hidden'); });
-    if(menuLogoutBtn) menuLogoutBtn.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('acus_user'); currentUser = null; updateAuthUI(); mainMenu.classList.add('hidden'); });
-    
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
-        const login = document.getElementById('loginEmail').value;
-        if(login) {
-            currentUser = login;
-            localStorage.setItem('acus_user', login);
-            updateAuthUI(); authModal.classList.add('hidden');
-            alert(`${translations[currentLang].welcome} ${login}!`);
-        }
+        currentUser = document.getElementById('loginEmail').value;
+        localStorage.setItem('acus_user', currentUser);
+        updateAuthUI(); authModal.classList.add('hidden');
     });
 
     document.getElementById('regFormRequest').addEventListener('submit', (e) => {
         e.preventDefault();
         const login = document.getElementById('newLogin').value;
         const pass = document.getElementById('newPass').value;
-        const btn = e.target.querySelector('button');
-        btn.disabled = true;
-        const message = `🔔 <b>Заявка на регистрацию</b>\n\n👤 <b>Логин:</b> ${login}\n🔑 <b>Пароль:</b> ${pass}`;
-        fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, { 
-            method: 'POST', 
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'HTML' }) 
-        }).then(() => {
-            alert(translations[currentLang].regSuccess);
-            regModal.classList.add('hidden');
-            btn.disabled = false;
-        });
-    });
-
-    hamburgerBtn.addEventListener('click', (e) => { e.stopPropagation(); mainMenu.classList.toggle('hidden'); });
-    if(menuLoginBtn) menuLoginBtn.addEventListener('click', () => { authModal.classList.remove('hidden'); mainMenu.classList.add('hidden'); });
-    if(menuRegisterBtn) menuRegisterBtn.addEventListener('click', () => { regModal.classList.remove('hidden'); mainMenu.classList.add('hidden'); });
-    document.querySelectorAll('.close, .close-reg, .close-payment, .close-library').forEach(btn => {
-        btn.addEventListener('click', () => {
-            authModal.classList.add('hidden'); regModal.classList.add('hidden');
-            paymentModal.classList.add('hidden'); libraryModal.classList.add('hidden');
-        });
+        const msg = `🔔 <b>Новая регистрация:</b>\nЛогин: ${login}\nПасс: ${pass}`;
+        fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({chat_id: TG_CHAT_ID, text: msg, parse_mode: 'HTML'})});
+        alert(translations[currentLang].regSuccess);
+        document.getElementById('regModal').classList.add('hidden');
     });
 
     function apply3DEffect() {
@@ -235,6 +192,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.style.transform = `perspective(1000px) rotateX(${y * -15}deg) rotateY(${x * 15}deg) scale3d(1.05, 1.05, 1.05)`;
             });
             card.addEventListener('mouseleave', () => card.style.transform = 'none');
+        });
+    }
+
+    // Аврора анимация
+    if (!isMobile) {
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            document.querySelector('.aurora.one').style.transform = `translate(${x*80-40}%, ${y*80-40}%)`;
+            document.querySelector('.aurora.two').style.transform = `translate(${x*-80+40}%, ${y*-80+40}%)`;
         });
     }
 
