@@ -1,256 +1,263 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- !!! НАСТРОЙКИ TELEGRAM !!! ---
     // Вставьте сюда токен, который дал @BotFather
     const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; 
     // Вставьте сюда цифры вашего ID (от @userinfobot)
     const TG_CHAT_ID = '5683927471'; 
 
-    // --- СЛОВАРЬ ПЕРЕВОДОВ ---
-    const translations = {
+   document.addEventListener('DOMContentLoaded', () => {
+    // === ТЕКСТОВЫЕ ДАННЫЕ (Языки) ===
+    const langData = {
         ru: {
-            languageBtn: "Язык", headerTitle: "Многофункциональный профессиональный инструмент", loginBtn: "Войти", logoutBtn: "Выйти",
-            registerBtn: "Регистрация", registerTitle: "Регистрация", sendRequestBtn: "Отправить заявку",
+            headerTitle: "SEO УТИЛИТА",
+            loginBtn: "Войти",
+            registerBtn: "Регистрация",
+            logoutBtn: "Выход",
+            languageBtn: "Язык",
             videoTitle: "Посмотрите наш продукт в действии",
+            multitoolTitle: "SEO Мультитул",
             multitoolDesc: "Наш инструмент анализирует ключевые слова, отслеживает позиции и помогает вам обойти конкурентов.",
-            loading: "Загрузка товаров...", authTitle: "Авторизация", passwordPlaceholder: "Пароль", authBtn: "Войти",
-            demoMode: "Введите данные для входа", developedIn: "Разработан в 2026.", telegramBtn: "Наш Telegram канал"
+            loading: "Загрузка товаров...",
+            developedIn: "Разработан в 2026.",
+            authTitle: "Авторизация",
+            authBtn: "Войти",
+            passwordPlaceholder: "Пароль",
+            demoMode: "Демо режим: введите любые данные",
+            registerTitle: "Регистрация",
+            sendRequestBtn: "Отправить заявку",
+            
+            // Товары
+            card1Title: "Parser Pro",
+            card1Desc: "Сбор данных с любых сайтов в пару кликов.",
+            card2Title: "Rank Tracker",
+            card2Desc: "Точный мониторинг позиций в Google и Яндекс.",
+            card3Title: "SEO Audit",
+            card3Desc: "Полный технический аудит вашего сайта.",
+            card4Title: "Unlimited",
+            card4Desc: "Доступ ко всем инструментам без ограничений.",
+            pricePrefix: "Купить за"
         },
         en: {
-            languageBtn: "Language", headerTitle: "Multifunctional professional tool", loginBtn: "Login", logoutBtn: "Logout",
-            registerBtn: "Registration", registerTitle: "Registration", sendRequestBtn: "Send Request",
+            headerTitle: "SEO UTILITY",
+            loginBtn: "Login",
+            registerBtn: "Register",
+            logoutBtn: "Logout",
+            languageBtn: "Language",
             videoTitle: "See our product in action",
-            multitoolDesc: "Our tool analyzes keywords, tracks rankings, and helps you outperform competitors.",
-            loading: "Loading products...", authTitle: "Authorization", passwordPlaceholder: "Password", authBtn: "Login",
-            demoMode: "Enter login credentials", developedIn: "Developed in 2026.", telegramBtn: "Our Telegram channel"
+            multitoolTitle: "SEO Multitool",
+            multitoolDesc: "Our tool analyzes keywords, tracks rankings, and helps you outrank competitors.",
+            loading: "Loading products...",
+            developedIn: "Developed in 2026.",
+            authTitle: "Authorization",
+            authBtn: "Sign In",
+            passwordPlaceholder: "Password",
+            demoMode: "Demo mode: enter any data",
+            registerTitle: "Registration",
+            sendRequestBtn: "Send Request",
+            
+            card1Title: "Parser Pro",
+            card1Desc: "Data scraping from any website in a few clicks.",
+            card2Title: "Rank Tracker",
+            card2Desc: "Accurate rank monitoring in Google and Yandex.",
+            card3Title: "SEO Audit",
+            card3Desc: "Full technical audit of your website.",
+            card4Title: "Unlimited",
+            card4Desc: "Access to all tools without limits.",
+            pricePrefix: "Buy for"
         }
     };
 
-    // --- ЭЛЕМЕНТЫ DOM ---
+    let currentLang = 'ru';
+
+    // === СПИСОК ТОВАРОВ (МОК ДАННЫЕ) ===
+    const products = [
+        {
+            id: 1,
+            titleKey: 'card1Title',
+            descKey: 'card1Desc',
+            title: "Parser Pro",
+            desc: "Сбор данных с любых сайтов в пару кликов.",
+            price: 1500,
+            image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=500&q=80"
+        },
+        {
+            id: 2,
+            titleKey: 'card2Title',
+            descKey: 'card2Desc',
+            title: "Rank Tracker",
+            desc: "Точный мониторинг позиций в Google и Яндекс.",
+            price: 2500,
+            image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80"
+        },
+        {
+            id: 3,
+            titleKey: 'card3Title',
+            descKey: 'card3Desc',
+            title: "SEO Audit",
+            desc: "Полный технический аудит вашего сайта.",
+            price: 3500,
+            image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=500&q=80"
+        },
+        {
+            id: 4,
+            titleKey: 'card4Title',
+            descKey: 'card4Desc',
+            title: "Unlimited",
+            desc: "Доступ ко всем инструментам без ограничений.",
+            price: 9990,
+            image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=500&q=80"
+        }
+    ];
+
+    // === ГЕНЕРАЦИЯ ТОВАРОВ ===
+    const productsGrid = document.getElementById('products-grid');
+
+    function displayProducts(lang) {
+        productsGrid.innerHTML = ''; // Очистка
+        
+        // Получаем тексты для текущего языка
+        const t = langData[lang];
+
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            
+            // Получаем перевод для конкретного товара
+            const title = t[product.titleKey] || product.title;
+            const desc = t[product.descKey] || product.desc;
+
+            // ВАЖНО: Новая структура HTML для карточки
+            card.innerHTML = `
+                <div class="card-content">
+                    <div class="card-img-wrapper">
+                        <img src="${product.image}" alt="${title}">
+                    </div>
+                    <div class="card-info-block">
+                        <h3 data-lang-key="${product.titleKey}">${title}</h3>
+                        <p data-lang-key="${product.descKey}">${desc}</p>
+                        <button class="price-button" onclick="alert('Товар добавлен в корзину (Демо)')">
+                            <span data-lang-key="pricePrefix">${t.pricePrefix}</span> ${product.price} ₽
+                        </button>
+                    </div>
+                </div>
+            `;
+            productsGrid.appendChild(card);
+        });
+    }
+
+    // Имитация загрузки
+    setTimeout(() => {
+        displayProducts(currentLang);
+    }, 800);
+
+    // === ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА ===
+    function setLanguage(lang) {
+        currentLang = lang;
+        const t = langData[lang];
+
+        // 1. Обновляем все статические элементы с атрибутом data-lang-key
+        document.querySelectorAll('[data-lang-key]').forEach(elem => {
+            const key = elem.getAttribute('data-lang-key');
+            if (t[key]) {
+                elem.textContent = t[key];
+            }
+        });
+
+        // 2. Обновляем плейсхолдеры
+        document.querySelectorAll('[data-lang-placeholder]').forEach(elem => {
+            const key = elem.getAttribute('data-lang-placeholder');
+            if (t[key]) {
+                elem.placeholder = t[key];
+            }
+        });
+
+        // 3. Перерисовываем товары (чтобы обновились названия внутри JS)
+        displayProducts(lang);
+    }
+
+    // Обработчик клика по языкам
+    document.querySelectorAll('.lang-submenu a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const lang = e.target.getAttribute('data-lang');
+            setLanguage(lang);
+        });
+    });
+
+
+    // === МЕНЮ БУРГЕР И ВЫПАДАШКИ ===
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mainMenu = document.getElementById('mainMenu');
-    
-    // Внутренние блоки меню
-    const guestNav = document.getElementById('guestNav');
-    const userNav = document.getElementById('userNav');
-    const menuUserName = document.getElementById('menuUserName');
-    
-    // Кнопки
-    const menuLoginBtn = document.getElementById('menuLoginBtn');
-    const menuRegisterBtn = document.getElementById('menuRegisterBtn');
-    const menuLogoutBtn = document.getElementById('menuLogoutBtn');
-    
     const menuLangBtn = document.getElementById('menuLangBtn');
     const langSubmenu = document.getElementById('langSubmenu');
 
-    // Модальные окна
-    const authModal = document.getElementById('authModal');
-    const regModal = document.getElementById('regModal');
-    const loginForm = document.getElementById('loginForm');
-    const regFormRequest = document.getElementById('regFormRequest');
-    const closeBtns = document.querySelectorAll('.close, .close-reg');
+    // Тоггл главного меню
+    hamburgerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mainMenu.classList.toggle('hidden');
+    });
 
-    // --- УПРАВЛЕНИЕ МЕНЮ ---
-    if(hamburgerBtn) {
-        hamburgerBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            mainMenu.classList.toggle('hidden');
-            if (!mainMenu.classList.contains('hidden')) {
-                if(langSubmenu) langSubmenu.classList.add('hidden');
-            }
-        });
-    }
+    // Тоггл подменю языка
+    menuLangBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        langSubmenu.classList.toggle('hidden');
+    });
 
-    if(menuLangBtn) {
-        menuLangBtn.addEventListener('click', (e) => {
-            e.preventDefault(); e.stopPropagation();
-            if(langSubmenu) langSubmenu.classList.toggle('hidden');
-        });
-    }
-
-    if(langSubmenu) {
-        langSubmenu.addEventListener('click', (e) => {
-            if(e.target.tagName === 'A') {
-                e.preventDefault();
-                const selectedLang = e.target.dataset.lang;
-                setLanguage(selectedLang);
-                mainMenu.classList.add('hidden');
-                langSubmenu.classList.add('hidden');
-            }
-        });
-    }
-
+    // Закрытие меню при клике вне
     document.addEventListener('click', (e) => {
-        if (mainMenu && !mainMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+        if (!mainMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
             mainMenu.classList.add('hidden');
-            if(langSubmenu) langSubmenu.classList.add('hidden');
+            langSubmenu.classList.add('hidden');
         }
     });
 
-    // --- СМЕНА ЯЗЫКА ---
-    const setLanguage = (lang) => {
-        localStorage.setItem('language', lang);
-        document.querySelectorAll('[data-lang-key]').forEach(elem => {
-            const key = elem.dataset.langKey;
-            if (translations[lang][key]) elem.textContent = translations[lang][key];
-        });
-        document.querySelectorAll('[data-lang-placeholder]').forEach(elem => {
-            const key = elem.dataset.langPlaceholder;
-            if (translations[lang][key]) elem.placeholder = translations[lang][key];
-        });
-    };
-    setLanguage(localStorage.getItem('language') || 'ru');
+    // === МОДАЛЬНЫЕ ОКНА ===
+    const authModal = document.getElementById('authModal');
+    const regModal = document.getElementById('regModal');
+    
+    // Кнопки открытия
+    document.getElementById('menuLoginBtn').addEventListener('click', (e) => { e.preventDefault(); authModal.classList.remove('hidden'); });
+    document.getElementById('menuRegisterBtn').addEventListener('click', (e) => { e.preventDefault(); regModal.classList.remove('hidden'); });
+    
+    // Кнопки закрытия (крестики)
+    document.querySelector('.close').addEventListener('click', () => authModal.classList.add('hidden'));
+    document.querySelector('.close-reg').addEventListener('click', () => regModal.classList.add('hidden'));
 
-    // --- ЗАГРУЗКА ТОВАРОВ ---
-    const grid = document.getElementById('products-grid');
-    if(grid) {
-        fetch('db.json')
-            .then(res => res.json())
-            .then(data => {
-                grid.innerHTML = '';
-                data.forEach(product => {
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    let videoHTML = product.video ? `<div class="video-container"><video controls muted><source src="${product.video}" type="video/mp4"></video></div>` : '';
+    // Закрытие по клику на фон
+    window.addEventListener('click', (e) => {
+        if (e.target === authModal) authModal.classList.add('hidden');
+        if (e.target === regModal) regModal.classList.add('hidden');
+    });
 
-                    card.innerHTML = `
-                        <div class="card-img-wrapper">
-                            <img src="${product.image}" alt="${product.title}">
-                            ${videoHTML}
-                        </div>
-                        <div class="card-info-block">
-                            <h3>${product.title}</h3>
-                            <p>${product.description}</p>
-                        </div>
-                        <button class="price-button">${product.price}</button>
-                    `;
-                    grid.appendChild(card);
-                });
-            })
-            .catch(err => {
-                grid.innerHTML = '<p style="color:red">Ошибка db.json</p>';
-                console.error(err);
-            });
-    }
+    // === ЛОГИКА АВТОРИЗАЦИИ (ДЕМО) ===
+    const guestNav = document.getElementById('guestNav');
+    const userNav = document.getElementById('userNav');
+    const menuUserName = document.getElementById('menuUserName');
 
-    // --- МОДАЛЬНЫЕ ОКНА ---
-    function closeModal() {
-        if(authModal) authModal.classList.add('hidden');
-        if(regModal) regModal.classList.add('hidden');
-    }
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const login = document.getElementById('loginEmail').value;
+        
+        // "Входим"
+        authModal.classList.add('hidden');
+        guestNav.classList.add('hidden');
+        userNav.classList.remove('hidden');
+        menuUserName.textContent = login;
+        
+        alert('Добро пожаловать, ' + login + '!');
+    });
 
-    closeBtns.forEach(btn => btn.addEventListener('click', closeModal));
-
-    if(menuLoginBtn) {
-        menuLoginBtn.addEventListener('click', () => {
-            if(authModal) authModal.classList.remove('hidden');
-            if(mainMenu) mainMenu.classList.add('hidden');
-        });
-    }
-
-    if(menuRegisterBtn) {
-        menuRegisterBtn.addEventListener('click', () => {
-            if(regModal) regModal.classList.remove('hidden');
-            if(mainMenu) mainMenu.classList.add('hidden');
-        });
-    }
-
-    // --- ЛОГИКА ВХОДА (users.json) ---
-    if(loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const emailInput = document.getElementById('loginEmail').value.trim();
-            const passInput = document.getElementById('loginPass').value.trim();
-            const btn = loginForm.querySelector('button');
-            const originalText = btn.textContent;
-
-            btn.textContent = '...';
-            
-            fetch('users.json')
-                .then(r => r.json())
-                .then(users => {
-                    const found = users.find(u => u.login === emailInput && u.password === passInput);
-                    if(found) {
-                        localStorage.setItem('user', found.login);
-                        updateAuthUI(found.login);
-                        closeModal();
-                        alert(`Добро пожаловать, ${found.login}!`);
-                    } else {
-                        alert('Неверный логин или пароль');
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert('Ошибка чтения users.json');
-                })
-                .finally(() => btn.textContent = originalText);
-        });
-    }
-
-    // --- ЛОГИКА РЕГИСТРАЦИИ (TELEGRAM) ---
-    if(regFormRequest) {
-        regFormRequest.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const login = document.getElementById('newLogin').value;
-            const pass = document.getElementById('newPass').value;
-            const btn = regFormRequest.querySelector('button');
-            
-            btn.textContent = 'Отправка...';
-            btn.disabled = true;
-
-            const msg = `🚀 <b>НОВАЯ ЗАЯВКА</b>\n👤: <code>${login}</code>\n🔑: <code>${pass}</code>`;
-
-            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg, parse_mode: 'HTML' })
-            })
-            .then(r => {
-                if(r.ok) {
-                    alert('Заявка отправлена!');
-                    closeModal();
-                    regFormRequest.reset();
-                } else {
-                    alert('Ошибка Telegram API');
-                }
-            })
-            .catch(() => alert('Ошибка сети'))
-            .finally(() => {
-                btn.textContent = 'Отправить заявку';
-                btn.disabled = false;
-            });
-        });
-    }
-
-    // --- ВЫХОД ---
-    if(menuLogoutBtn) {
-        menuLogoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('user');
-            updateAuthUI(null);
-            mainMenu.classList.add('hidden');
-        });
-    }
-
-    // --- ПЕРЕКЛЮЧЕНИЕ ИНТЕРФЕЙСА ---
-    function updateAuthUI(user) {
-        if(user) {
-            // Вошли
-            if(guestNav) guestNav.classList.add('hidden');
-            if(userNav) userNav.classList.remove('hidden');
-            if(menuUserName) menuUserName.textContent = user;
-        } else {
-            // Не вошли
-            if(guestNav) guestNav.classList.remove('hidden');
-            if(userNav) userNav.classList.add('hidden');
-        }
-    }
-
-    const savedUser = localStorage.getItem('user');
-    updateAuthUI(savedUser);
-
+    document.getElementById('menuLogoutBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        guestNav.classList.remove('hidden');
+        userNav.classList.add('hidden');
+    });
+    
+    // === ЛОГИКА РЕГИСТРАЦИИ (ДЕМО) ===
+    document.getElementById('regFormRequest').addEventListener('submit', (e) => {
+        e.preventDefault();
+        regModal.classList.add('hidden');
+        alert('Заявка отправлена администратору!');
+    });
 });
-
-
-
-
