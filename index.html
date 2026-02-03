@@ -3,68 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ACUS — Premium SEO Tools</title>
+    <title>ACUS — Sovereign Interface</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="background-glow">
-        <div class="aurora one"></div>
-        <div class="aurora two"></div>
+    <div class="ambient-layer">
+        <div class="noise-overlay"></div>
     </div>
-    
+
     <header>
-        <div class="logo">ACUS</div>
-        <div class="menu-container">
-            <button id="hamburgerBtn" class="hamburger-btn">
-                <span></span><span></span><span></span>
+        <div class="header-content">
+            <div class="brand-logo">ACUS</div>
+            <button id="triggerMenu" class="menu-toggle">
+                <span></span>
+                <span></span>
             </button>
-            <div id="mainMenu" class="main-menu hidden">
-                <div id="userNav" class="hidden">
-                    <a href="#" id="menuUserName" style="font-weight: 800; color: #4ade80;"><i class="fa fa-user"></i> User</a>
-                    <a href="#" id="menuLibraryBtn"><i class="fa fa-download"></i> Покупки</a>
-                    <a href="#" id="menuLogoutBtn"><i class="fa fa-sign-out-alt"></i> Выход</a>
-                </div>
-                <div id="guestNav">
-                    <a href="#" id="menuLoginBtn"><i class="fa fa-sign-in-alt"></i> Войти</a>
-                    <a href="#" id="menuRegisterBtn"><i class="fa fa-user-plus"></i> Регистрация</a>
-                </div>
-            </div>
         </div>
     </header>
 
-    <main class="hero">
-        <div class="grid" id="products-grid"></div>
-    </main>
-
-    <!-- ОПЛАТА ADI / CRYPTO -->
-    <div id="paymentModal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-payment" style="float:right; cursor:pointer;">&times;</span>
-            <h2 style="color: #4ade80; margin-top: 0;">Оплата ADI</h2>
-            <p id="payName" style="font-weight: bold;">...</p>
-            <div id="payAmount" style="font-size: 2rem; margin: 15px 0; font-weight: 800;">0 ADI</div>
+    <!-- DRAWER -->
+    <div id="appDrawer" class="drawer">
+        <div class="drawer-backdrop"></div>
+        <div class="drawer-panel">
+            <span class="close-icon" id="closeDrawer">&times;</span>
             
-            <div style="text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px;">
-                <label style="font-size: 0.7rem; color: #94a3b8;">КОШЕЛЕК (TON/ADI):</label>
-                <input type="text" id="walletAddr" readonly>
-                
-                <label style="font-size: 0.7rem; color: #ffcc00; font-weight: bold;">КОММЕНТАРИЙ:</label>
-                <input type="text" id="payMemo" readonly style="color: #4ade80; font-weight: bold; text-align: center;">
+            <div id="guestState">
+                <a href="#" id="lnkLogin" class="nav-item"><i class="fa fa-lock"></i> <span data-lang-key="loginBtn">Вход</span></a>
+                <a href="#" id="lnkReg" class="nav-item"><i class="fa fa-plus"></i> <span data-lang-key="registerBtn">Регистрация</span></a>
             </div>
-            <p style="font-size: 0.7rem; color: #888; margin-top: 10px;">Проверка транзакции происходит автоматически в течение минуты.</p>
+
+            <div id="userState" class="hidden">
+                <div style="margin-bottom: 40px; padding: 0 10px;">
+                    <div style="font-size: 0.8rem; color: #666; margin-bottom: 5px;">ACCOUNT</div>
+                    <div id="displayUser" style="font-size: 1.5rem; color: #fff;">User</div>
+                </div>
+                <a href="#" id="lnkLib" class="nav-item"><i class="fa fa-box"></i> <span data-lang-key="myPurchases">Мои покупки</span></a>
+                <a href="#" id="lnkOut" class="nav-item"><i class="fa fa-arrow-right"></i> <span data-lang-key="logoutBtn">Выход</span></a>
+            </div>
+
+            <div class="lang-switch">
+                <button data-lang="ru" class="lang-btn active">RU</button>
+                <button data-lang="en" class="lang-btn">EN</button>
+            </div>
         </div>
     </div>
 
-    <!-- ВХОД -->
-    <div id="authModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Авторизация</h2>
-            <form id="loginForm">
-                <input type="text" id="loginEmail" placeholder="Логин" required>
-                <input type="password" id="loginPass" placeholder="Пароль" required>
-                <button class="price-button" type="submit" style="width:100%">Войти</button>
+    <main class="wrapper">
+        <div class="hero-section">
+            <h1 class="hero-title" data-lang-key="headerTitle">Premium Ecosystem</h1>
+            <p class="hero-subtitle" data-lang-key="headerDesc">Профессиональные инструменты. Безупречная точность. Абсолютная анонимность.</p>
+        </div>
+
+        <!-- VIDEO -->
+        <div class="video-container">
+            <video controls muted poster="Pins.png">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="separator"></div>
+
+        <!-- GRID -->
+        <div id="mainGrid" class="product-grid">
+            <!-- JS -->
+        </div>
+    </main>
+
+    <!-- AUTH MODAL -->
+    <div id="authOverlay" class="modal-overlay">
+        <div class="modal-backdrop"></div>
+        <div class="vault-box">
+            <span class="close-icon" id="closeAuth">&times;</span>
+            <div class="vault-title">AUTHENTICATION</div>
+            <form id="formAuth">
+                <input type="text" id="inUser" class="clean-input" placeholder="Identity" required>
+                <input type="password" id="inPass" class="clean-input" placeholder="Passkey" required>
+                <button type="submit" class="action-btn" style="margin-top: 30px;" data-lang-key="authBtn">Enter System</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PAYMENT MODAL -->
+    <div id="payOverlay" class="modal-overlay">
+        <div class="modal-backdrop"></div>
+        <div class="vault-box">
+            <span class="close-icon" id="closePay">&times;</span>
+            <div class="vault-title" id="payLabel">INVOICING</div>
+            <div id="payValue" class="vault-value">0 ADI</div>
+            
+            <div class="copy-field" id="btnCopy">
+                UQBK...3xL9 <i class="fa fa-copy" style="margin-left: 10px;"></i>
+            </div>
+
+            <form id="formPay">
+                <input type="text" id="inHash" class="clean-input" placeholder="Transaction Hash" required>
+                <button type="submit" class="action-btn" style="margin-top: 30px;" data-lang-key="checkBtn">Verify Asset</button>
             </form>
         </div>
     </div>
