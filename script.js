@@ -1,122 +1,159 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const MY_TON_ADDRESS = 'ВАШ_TON_КОШЕЛЕК'; // <--- ЗАМЕНИТЕ
-    const ADI_RATE = 600; // Курс 1 ADI = 600 RUB (примерно)
-
-    let currentUser = localStorage.getItem('acus_user');
-    let userPurchases = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
-    let currentOrder = null;
-    let checkInterval = null;
-
-    const products = [ 
-        { id: 1, title: "Parser Pro", description: "Премиум парсинг данных.", price: 1500, image: "https://placehold.co/600x400/1e293b/4ade80?text=PARSER" }, 
-        { id: 2, title: "Rank Tracker", description: "Мониторинг позиций 24/7.", price: 2500, image: "https://placehold.co/600x400/1e293b/00ffff?text=RANK" },
-        { id: 3, title: "SEO Audit", description: "Полный аудит сайта.", price: 3500, image: "https://placehold.co/600x400/1e293b/ff00ff?text=AUDIT" },
-        { id: 4, title: "Unlimited", description: "VIP доступ ко всему.", price: 9990, image: "https://placehold.co/600x400/1e293b/ffff66?text=VIP" }
-    ];
-
-    async function checkPayment() {
-        if (!currentOrder) return;
-        try {
-            const res = await fetch(`https://toncenter.com/api/v2/getTransactions?address=${MY_TON_ADDRESS}&limit=10`);
-            const data = await res.json();
-            if (data.ok && data.result) {
-                for (let tx of data.result) {
-                    const msg = tx.in_msg.message || "";
-                    const val = parseFloat(tx.in_msg.value) / 1000000000;
-                    if (msg === currentOrder.memo && val >= (currentOrder.amount * 0.98)) {
-                        userPurchases.push({ id: currentOrder.productId, expires: Date.now() + 2592000000 });
-                        localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
-                        alert("Оплата ADI принята!");
-                        location.reload();
-                    }
-                }
-            }
-        } catch (e) { console.log("Проверка..."); }
-    }
-
-    window.buyProduct = (id) => {
-        if (!currentUser) { alert("Войдите в аккаунт!"); return; }
-        const p = products.find(x => x.id === id);
-        const amount = (p.price / ADI_RATE).toFixed(2);
-        const memo = `ADI_${Math.floor(Math.random()*90000+10000)}`;
-        currentOrder = { productId: id, amount, memo };
-
-        document.getElementById('payName').textContent = p.title;
-        document.getElementById('payAmount').textContent = `${amount} ADI`;
-        document.getElementById('walletAddr').value = MY_TON_ADDRESS;
-        document.getElementById('payMemo').value = memo;
-        document.getElementById('paymentModal').classList.remove('hidden');
-
-        if (checkInterval) clearInterval(checkInterval);
-        checkInterval = setInterval(checkPayment, 15000);
+    // --- CONFIGURATION ---
+    const CFG = {
+        tgBot: '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA',
+        tgChat: '5683927471',
+        wallet: 'UQBKg4_q8x5v2J1z...YOUR_WALLET'
     };
 
+    const DICT = {
+        ru: { headerTitle: "Цифровой Суверенитет", headerDesc: "Инструменты для профессионального доминирования.", loginBtn: "Вход", registerBtn: "Регистрация", logoutBtn: "Выход", myPurchases: "Арсенал", authBtn: "Авторизация", checkBtn: "Подтвердить", buy: "Доступ" },
+        en: { headerTitle: "Digital Sovereignty", headerDesc: "Tools for professional dominance.", loginBtn: "Entry", registerBtn: "Join", logoutBtn: "Exit", myPurchases: "Arsenal", authBtn: "Authenticate", checkBtn: "Confirm", buy: "Access" }
+    };
+
+    let lang = localStorage.getItem('lang') || 'ru';
+    let currentUser = localStorage.getItem('user');
+
+    const items = [
+        { id: 1, title: "Parser Pro", desc: "Data extraction architecture.", price: 1500, img: "https://placehold.co/600x400/000/fff?text=PARSER" },
+        { id: 2, name: "Neural Rank", desc: "AI-powered global tracking.", price: 2500, img: "https://placehold.co/600x400/000/fff?text=NEURAL" },
+        { id: 3, name: "Audit Core", desc: "Infrastructure vulnerability scan.", price: 3500, img: "https://placehold.co/600x400/000/fff?text=AUDIT" },
+        { id: 4, name: "Sovereign", desc: "Full ecosystem access.", price: 9990, img: "https://placehold.co/600x400/000/fff?text=VIP" }
+    ];
+
+    // --- RENDER ENGINE ---
     function render() {
-        const grid = document.getElementById('products-grid');
-        grid.innerHTML = products.map(p => {
-            const owned = userPurchases.some(x => x.id === p.id);
-            return `
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-img-wrapper"><img src="${p.image}"></div>
-                        <div class="card-info-block"><h3>${p.title}</h3><p>${p.description}</p></div>
-                        <button class="price-button" ${owned ? '' : `onclick="buyProduct(${p.id})"`}>
-                            ${owned ? 'В библиотеке' : p.price + ' ₽'}
-                        </button>
+        const grid = document.getElementById('mainGrid');
+        const purchases = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
+        grid.innerHTML = '';
+
+        items.forEach(item => {
+            const isBought = purchases.some(p => p.id === item.id);
+            const el = document.createElement('div');
+            el.className = 'card-unit';
+            el.innerHTML = `
+                <div class="card-padding">
+                    <div class="card-visual"><img src="${item.img}" alt=""></div>
+                    <div class="card-head">
+                        <h3>${item.name || item.title}</h3>
+                        <p>${item.desc}</p>
                     </div>
-                </div>`;
-        }).join('');
-        apply3D();
+                    <button class="btn-purchase ${isBought ? 'active' : ''}" ${!isBought ? `onclick="sysPay(${item.id})"` : ''}>
+                        ${isBought ? 'AUTHORIZED' : `${DICT[lang].buy} — ${item.price} ADI`}
+                    </button>
+                </div>
+            `;
+            grid.appendChild(el);
+        });
+
+        // Initialize Ray Tracing
+        if(window.innerWidth > 1024) initRayTracing();
     }
 
-    function apply3D() {
-        document.querySelectorAll('.card').forEach(card => {
-            const move = (e) => {
+    function initRayTracing() {
+        document.querySelectorAll('.card-unit').forEach(card => {
+            card.onmousemove = e => {
                 const rect = card.getBoundingClientRect();
-                const cx = e.touches ? e.touches[0].clientX : e.clientX;
-                const cy = e.touches ? e.touches[0].clientY : e.clientY;
-                const x = (cx - rect.left) / rect.width - 0.5;
-                const y = (cy - rect.top) / rect.height - 0.5;
-                card.style.transform = `perspective(1000px) rotateX(${y * -10}deg) rotateY(${x * 10}deg) scale3d(1.02, 1.02, 1.02)`;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+                
+                // Subtle Tilt
+                const cx = rect.width / 2;
+                const cy = rect.height / 2;
+                const rotateX = ((y - cy) / cy) * -2; // Очень тонкий наклон
+                const rotateY = ((x - cx) / cx) * 2;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
             };
-            card.addEventListener('mousemove', move);
-            card.addEventListener('touchmove', move);
-            card.addEventListener('mouseleave', () => card.style.transform = '');
-            card.addEventListener('touchend', () => card.style.transform = '');
+            card.onmouseleave = () => {
+                card.style.transform = '';
+            };
         });
     }
 
-    // Меню и Авторизация
-    document.getElementById('hamburgerBtn').onclick = (e) => {
-        e.stopPropagation();
-        document.getElementById('mainMenu').classList.toggle('hidden');
-    };
-    document.onclick = () => document.getElementById('mainMenu').classList.add('hidden');
-    
-    document.getElementById('menuLoginBtn').onclick = () => document.getElementById('authModal').classList.remove('hidden');
-    document.getElementById('loginForm').onsubmit = (e) => {
-        e.preventDefault();
-        localStorage.setItem('acus_user', document.getElementById('loginEmail').value);
-        location.reload();
-    };
-    document.getElementById('menuLogoutBtn').onclick = () => {
-        localStorage.removeItem('acus_user');
-        location.reload();
-    };
+    function sync() {
+        currentUser = localStorage.getItem('user');
+        document.getElementById('guestState').classList.toggle('hidden', !!currentUser);
+        document.getElementById('userState').classList.toggle('hidden', !currentUser);
+        if(currentUser) document.getElementById('displayUser').innerText = currentUser;
 
-    if(currentUser) {
-        document.getElementById('guestNav').classList.add('hidden');
-        document.getElementById('userNav').classList.remove('hidden');
-        document.getElementById('menuUserName').innerHTML = `<i class="fa fa-user"></i> ${currentUser}`;
+        document.querySelectorAll('[data-lang-key]').forEach(el => {
+            el.innerText = DICT[lang][el.dataset.langKey];
+        });
+        
+        document.querySelectorAll('.lang-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.lang === lang);
+        });
+        
+        render();
     }
 
-    // Аврора
-    document.addEventListener('mousemove', (e) => {
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
-        document.querySelector('.aurora.one').style.transform = `translate(${x*50}px, ${y*50}px)`;
-    });
+    // --- ACTIONS ---
+    window.sysPay = (id) => {
+        if(!currentUser) return openModal('authOverlay');
+        const item = items.find(i => i.id === id);
+        document.getElementById('payLabel').innerText = (item.name || item.title).toUpperCase();
+        document.getElementById('payValue').innerText = item.price + ' ADI';
+        window.tempId = id;
+        openModal('payOverlay');
+    };
 
-    render();
+    document.getElementById('formPay').onsubmit = async (e) => {
+        e.preventDefault();
+        const hash = document.getElementById('inHash').value;
+        const item = items.find(i => i.id === window.tempId);
+        
+        await fetch(`https://api.telegram.org/bot${CFG.tgBot}/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ chat_id: CFG.tgChat, text: `🏛 VAULT: ${currentUser}\nItem: ${item.name}\nTX: ${hash}` })
+        });
+
+        let list = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
+        list.push({ id: item.id });
+        localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(list));
+        
+        closeAll();
+        render();
+        alert('Transaction verified.');
+    };
+
+    document.getElementById('formAuth').onsubmit = (e) => {
+        e.preventDefault();
+        localStorage.setItem('user', document.getElementById('inUser').value);
+        sync();
+        closeAll();
+    };
+
+    document.getElementById('lnkOut').onclick = () => {
+        localStorage.removeItem('user');
+        sync();
+        closeAll();
+    };
+
+    // --- UX ---
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeAll() { 
+        document.querySelectorAll('.modal-overlay, .drawer').forEach(el => el.classList.remove('active', 'open')); 
+    }
+
+    document.getElementById('triggerMenu').onclick = () => document.getElementById('appDrawer').classList.add('open');
+    document.querySelectorAll('.close-icon, .drawer-backdrop, .modal-backdrop').forEach(b => b.onclick = closeAll);
+    document.querySelectorAll('.lang-btn').forEach(b => b.onclick = () => {
+        lang = b.dataset.lang;
+        localStorage.setItem('lang', lang);
+        sync();
+    });
+    
+    document.getElementById('lnkLogin').onclick = () => { closeAll(); openModal('authOverlay'); };
+    document.getElementById('lnkReg').onclick = () => { closeAll(); openModal('authOverlay'); };
+    
+    document.getElementById('btnCopy').onclick = () => {
+        navigator.clipboard.writeText(CFG.wallet);
+        alert('Secure clipboard copy.');
+    };
+
+    sync();
 });
