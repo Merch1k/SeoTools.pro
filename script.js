@@ -4,188 +4,158 @@ const CONFIG = {
     wallet: "0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB"
 };
 
-// Премиум-карточки и переводы
+// Продукты из твоего db.json (подгружаем или используем структуру)
 const products = [
-    { 
-        id: 1, 
-        name: "Parser Ultra", 
-        price: 1500, 
-        img: "https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&q=80&w=1000",
-        desc: { ru: "Профессиональный инструмент для анализа данных нейросетями.", en: "Professional AI-driven data analysis tool." }
-    },
-    { 
-        id: 2, 
-        name: "SEO Neural", 
-        price: 2500, 
-        img: "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&q=80&w=1000",
-        desc: { ru: "Автоматическое продвижение в топ через поведенческие факторы.", en: "Automatic TOP ranking via behavioral factor simulation." }
-    },
-    { 
-        id: 3, 
-        name: "Data Cyber Guard", 
-        price: 3500, 
-        img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1000",
-        desc: { ru: "Криптографическая защита ваших рабочих сессий и данных.", en: "Cryptographic protection for your work sessions and data." }
-    }
+    { id: 1, name: "Неделя", price: "990 руб.", desc: "Лицензия на 7 дней. Полный функционал SEO Tools Pro.", img: "Pins.png" },
+    { id: 2, name: "Месяц", price: "2990 руб.", desc: "Лицензия на 30 дней. Оптимальный выбор для профи.", img: "Pins.png" },
+    { id: 3, name: "Год", price: "14900 руб.", desc: "Лицензия на 365 дней. Экономия более 50%.", img: "Pins.png" },
+    { id: 4, name: "Безлимит", price: "24990 руб.", desc: "Пожизненный доступ. Все будущие обновления бесплатно.", img: "Pins.png" }
 ];
 
-const UI_TEXT = {
-    ru: {
-        heroTitle: "Premium <span>Utility</span>",
-        heroSub: "Профессиональный софт. Синхронизация между всеми вашими устройствами.",
-        loginLabel: "Войти",
-        authTitle: "Авторизация",
-        authDesc: "Используйте один ник на всех устройствах для синхронизации.",
-        loginBtn: "Войти",
-        logout: "Выход",
-        owned: "Приобретено",
-        payInstr: "Отправьте <b>TON</b> на адрес:",
-        btnPay: "Я оплатил",
-        wait: "Заявка #ID отправлена! Ждите подтверждения админом.",
-        done: "✅ Оплата подтверждена! Доступ открыт.",
-        lib: "Ваши покупки: ",
-        libEmpty: "У вас пока нет покупок."
-    },
-    en: {
-        heroTitle: "Premium <span>Utility</span>",
-        heroSub: "Professional software. Sync across all your devices.",
-        loginLabel: "Login",
-        authTitle: "Authentication",
-        authDesc: "Use the same nickname on all devices to sync purchases.",
-        loginBtn: "Login",
-        logout: "Logout",
-        owned: "Owned",
-        payInstr: "Send <b>TON</b> to this address:",
-        btnPay: "I have paid",
-        wait: "Order #ID sent! Wait for admin confirmation.",
-        done: "✅ Payment confirmed! Access granted.",
-        lib: "Your purchases: ",
-        libEmpty: "You have no purchases yet."
-    }
-};
-
-let currentLang = localStorage.getItem('lang') || 'ru';
-let user = localStorage.getItem('user');
-// Загружаем библиотеку, привязанную к никнейму
-let lib = JSON.parse(localStorage.getItem(`lib_${user}`) || '[]');
+let currentUser = localStorage.getItem('user');
 let currentProd = null;
 
-function setLang(lang) {
-    currentLang = lang;
-    localStorage.setItem('lang', lang);
-    renderUI();
+// Функция для получения "библиотеки" пользователя. 
+// В идеале тут должен быть fetch(`api/getLib?user=${user}`)
+function getUserLibrary() {
+    const allLibs = JSON.parse(localStorage.getItem('cloud_libs') || '{}');
+    return allLibs[currentUser] || [];
 }
 
-function renderUI() {
-    // Перевод текстов
-    const t = UI_TEXT[currentLang];
-    document.getElementById('heroTitle').innerHTML = t.heroTitle;
-    document.getElementById('heroSub').textContent = t.heroSub;
-    document.getElementById('loginLabel').textContent = user ? `${user} (${t.logout})` : t.loginLabel;
-    document.getElementById('authTitleText').textContent = t.authTitle;
-    document.getElementById('authDesc').textContent = t.authDesc;
-    document.getElementById('loginBtnAction').textContent = t.loginBtn;
-    document.getElementById('payInstrText').innerHTML = t.payInstr;
-    document.getElementById('payBtn').textContent = t.btnPay;
+function saveToUserLibrary(prodId) {
+    const allLibs = JSON.parse(localStorage.getItem('cloud_libs') || '{}');
+    if(!allLibs[currentUser]) allLibs[currentUser] = [];
+    if(!allLibs[currentUser].includes(prodId)) {
+        allLibs[currentUser].push(prodId);
+    }
+    localStorage.setItem('cloud_libs', JSON.stringify(allLibs));
+}
 
-    document.getElementById('btn-ru').classList.toggle('active', currentLang === 'ru');
-    document.getElementById('btn-en').classList.toggle('active', currentLang === 'en');
-
-    // Отрисовка карточек
+function init() {
     const grid = document.getElementById('grid');
+    const lib = currentUser ? getUserLibrary() : [];
+    
     grid.innerHTML = products.map(p => {
         const isOwned = lib.includes(p.id);
         return `
         <div class="card">
-            <div class="card-img" style="background-image: url('${p.img}')"></div>
+            <div class="card-img-container">
+                <div class="card-img" style="background-image: url('${p.img}')"></div>
+            </div>
             <div class="card-content">
                 <h3>${p.name}</h3>
-                <p>${p.desc[currentLang]}</p>
-                <button class="btn-buy ${isOwned ? 'owned' : ''}" onclick="${isOwned ? '' : `openPay(${p.id})`}">
-                    ${isOwned ? t.owned : p.price + ' ADI'}
-                </button>
+                <p>${p.desc}</p>
+                <div class="card-footer">
+                    <div class="price-box">${p.price}</div>
+                    <button class="btn-buy ${isOwned ? 'owned' : ''}" onclick="${isOwned ? '' : `openPay(${p.id})`}">
+                        ${isOwned ? 'Активировано' : 'Купить лицензию'}
+                    </button>
+                </div>
             </div>
         </div>`;
     }).join('');
-
-    if(user) {
-        document.getElementById('authZone').innerHTML = `<div class="user-pill" onclick="logout()">${user} (${t.logout})</div>`;
+    
+    if(currentUser) {
+        document.getElementById('authZone').innerHTML = `
+            <div class="user-pill" onclick="logout()">
+                <i class="fa-solid fa-user-check" style="margin-right:8px; color:var(--accent-bright)"></i>
+                ${currentUser}
+            </div>`;
     }
     
-    document.getElementById('walletDisplay').textContent = CONFIG.wallet.slice(0,8) + '...' + CONFIG.wallet.slice(-4);
+    document.getElementById('walletDisplay').textContent = CONFIG.wallet.slice(0,10) + '...' + CONFIG.wallet.slice(-6);
 }
 
+// Модалки
+window.openModal = (id) => {
+    const el = document.getElementById(id);
+    el.classList.remove('hidden');
+    el.style.display = 'flex';
+};
+
+window.closeModals = () => {
+    document.querySelectorAll('.modal').forEach(m => {
+        m.classList.add('hidden');
+        m.style.display = 'none';
+    });
+};
+
 window.openPay = (id) => {
-    if(!user) return openModal('authModal');
+    if(!currentUser) return openModal('authModal');
     currentProd = products.find(p => p.id === id);
-    document.getElementById('pTitle').textContent = currentProd.name;
-    document.getElementById('pPrice').textContent = currentProd.price + ' ADI';
+    document.getElementById('pTitle').textContent = `Тариф: ${currentProd.name}`;
+    document.getElementById('pPrice').textContent = currentProd.price;
     openModal('payModal');
 };
 
+// Логика оплаты
 window.sendOrder = async () => {
     const hash = document.getElementById('txHash').value;
     const btn = document.getElementById('payBtn');
     const status = document.getElementById('statusMsg');
-    if(hash.length < 5) return alert('Error Hash!');
-
-    const orderId = Math.floor(10000 + Math.random() * 90000);
-    btn.disabled = true;
-    btn.textContent = "...";
-
-    // Отправляем админу никнейм пользователя для синхронизации
-    const text = `💰 НОВЫЙ ЗАКАЗ #${orderId}\nЮзер: ${user}\nТовар: ${currentProd.name}\nHash: ${hash}\n\nЧтобы одобрить, напиши: ОК ${orderId}`;
     
-    await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ chat_id: CONFIG.adminId, text })
-    });
+    if(hash.length < 10) return alert('Пожалуйста, введите корректный TXID транзакции');
 
-    status.className = "status-box wait";
-    status.innerHTML = UI_TEXT[currentLang].wait.replace('#ID', orderId);
-    status.classList.remove('hidden');
+    const orderId = Math.floor(100000 + Math.random() * 900000);
+    btn.disabled = true;
+    btn.textContent = "Проверка транзакции...";
 
-    const poller = setInterval(async () => {
-        const res = await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/getUpdates?offset=-1`);
-        const data = await res.json();
-        const lastMsg = data.result[0]?.message?.text || "";
+    const text = `🚀 ЗАКАЗ #${orderId}\n👤 Юзер: ${currentUser}\n📦 Тариф: ${currentProd.name}\n🔗 Hash: ${hash}\n\nКоманда: OK ${orderId}`;
+    
+    try {
+        await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ chat_id: CONFIG.adminId, text })
+        });
 
-        if(lastMsg.includes(`ОК ${orderId}`)) {
-            clearInterval(poller);
-            lib.push(currentProd.id);
-            // Сохраняем покупку именно для этого пользователя
-            localStorage.setItem(`lib_${user}`, JSON.stringify(lib));
-            status.className = "status-box done";
-            status.textContent = UI_TEXT[currentLang].done;
-            setTimeout(() => location.reload(), 2000);
-        }
-    }, 4000);
+        status.className = "status-box wait";
+        status.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Заявка #${orderId} на проверке. Не закрывайте страницу.`;
+        status.classList.remove('hidden');
+
+        // Опрос обновлений (Short Polling)
+        const poller = setInterval(async () => {
+            const res = await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/getUpdates?offset=-1`);
+            const data = await res.json();
+            const lastMsg = data.result[0]?.message?.text || "";
+
+            if(lastMsg.includes(`OK ${orderId}`)) {
+                clearInterval(poller);
+                saveToUserLibrary(currentProd.id);
+                status.className = "status-box done";
+                status.textContent = "✅ Доступ успешно активирован!";
+                setTimeout(() => location.reload(), 2500);
+            }
+        }, 5000);
+    } catch (e) {
+        alert("Ошибка сети. Попробуйте позже.");
+        btn.disabled = false;
+    }
 };
 
 window.login = () => {
     const name = document.getElementById('username').value.trim();
-    if(name) { 
+    if(name.length > 2) { 
         localStorage.setItem('user', name); 
-        // При логине подгружаем данные этого пользователя
-        lib = JSON.parse(localStorage.getItem(`lib_${name}`) || '[]');
         location.reload(); 
+    } else {
+        alert("Введите валидный никнейм");
     }
 };
 
-window.logout = () => { 
-    localStorage.removeItem('user'); 
-    location.reload(); 
+window.logout = () => {
+    if(confirm("Выйти из аккаунта?")) {
+        localStorage.removeItem('user');
+        location.reload();
+    }
 };
 
-window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
-window.closeModals = () => document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-window.copyAddr = () => { navigator.clipboard.writeText(CONFIG.wallet); alert('Copied!'); };
-
-window.showLib = () => {
-    const t = UI_TEXT[currentLang];
-    const names = products.filter(p => lib.includes(p.id)).map(p => p.name).join(', ');
-    alert(lib.length ? t.lib + names : t.libEmpty);
+window.copyAddr = () => {
+    navigator.clipboard.writeText(CONFIG.wallet);
+    const box = document.querySelector('.wallet-box');
+    box.style.borderColor = '#10b981';
+    setTimeout(() => box.style.borderColor = '', 1000);
 };
 
-renderUI();
+// Запуск
+document.addEventListener('DOMContentLoaded', init);
