@@ -3,82 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ACUS — High Sovereign Access</title>
+    <title>ACUS — The Sovereign Standard</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="vfx-core">
-        <div class="vfx-grain"></div>
+    <div class="vfx-canvas">
+        <div class="glow-core"></div>
     </div>
 
     <header>
-        <div class="header-wrap">
+        <div class="header-inner">
             <div class="logo">ACUS</div>
-            <button id="openVault" class="nav-toggle">
+            <button id="openNav" class="nav-trigger">
                 <span></span>
                 <span></span>
             </button>
         </div>
     </header>
 
-    <!-- NAVIGATION VAULT -->
-    <div id="vaultNav" class="vault-nav">
-        <div class="vault-blur"></div>
-        <div class="vault-panel">
-            <span class="close-vault" id="closeVault">&times;</span>
+    <!-- NAVIGATION OVERLAY -->
+    <div id="sideNav" class="nav-panel-wrap">
+        <div class="nav-overlay"></div>
+        <div class="nav-content">
+            <span class="close-trigger" id="closeNav">&times;</span>
             
-            <div id="authGuest">
-                <a href="#" id="actLogin" class="nav-link"><i class="fa fa-unlock-alt"></i> <span data-lang-key="loginBtn">Вход</span></a>
-                <a href="#" id="actReg" class="nav-link"><i class="fa fa-plus-circle"></i> <span data-lang-key="registerBtn">Регистрация</span></a>
+            <div id="guestBox">
+                <a href="#" id="loginAction" class="nav-link"><i class="fa fa-key"></i> <span data-lang-key="loginBtn">Вход</span></a>
+                <a href="#" id="regAction" class="nav-link"><i class="fa fa-plus"></i> <span data-lang-key="registerBtn">Регистрация</span></a>
             </div>
 
-            <div id="authUser" class="hidden">
-                <div style="font-size: 3rem; font-weight: 900; color: #fff; margin-bottom: 50px;" id="userName">User</div>
-                <a href="#" id="actLib" class="nav-link"><i class="fa fa-hdd"></i> <span data-lang-key="myPurchases">Арсенал</span></a>
-                <a href="#" id="actLogout" class="nav-link"><i class="fa fa-power-off"></i> <span data-lang-key="logoutBtn">Выход</span></a>
+            <div id="userBox" class="hidden">
+                <div style="font-size: 2.5rem; font-weight: 900; margin-bottom: 40px;" id="userName">User</div>
+                <a href="#" id="libAction" class="nav-link"><i class="fa fa-box-open"></i> <span data-lang-key="myPurchases">Библиотека</span></a>
+                <a href="#" id="logoutBtn" class="nav-link"><i class="fa fa-power-off"></i> <span data-lang-key="logoutBtn">Выход</span></a>
             </div>
 
-            <div class="lang-wrap">
-                <button data-lang="ru" class="l-node active">RU</button>
-                <button data-lang="en" class="l-node">EN</button>
+            <div class="lang-footer">
+                <div class="lang-nodes">
+                    <button data-lang="ru" class="l-node active">RU</button>
+                    <button data-lang="en" class="l-node">EN</button>
+                </div>
             </div>
         </div>
     </div>
 
     <main class="container">
-        <div class="hero-header">
-            <div class="hero-status">Status: Sovereign Ready</div>
-            <h1 data-lang-key="headerTitle">Premium Ecosystem</h1>
+        <div class="hero-block">
+            <h1 data-lang-key="headerTitle">Elite Systems</h1>
+            <div class="hero-line"></div>
         </div>
 
+        <!-- VIDEO THEATRE -->
+        <section class="video-wrapper">
+            <video controls muted poster="Pins.png">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            </video>
+        </section>
+
         <!-- PRODUCT GRID -->
-        <div id="monolithGrid" class="main-grid">
+        <div id="sovereignGrid" class="elite-grid">
             <!-- JS Inject -->
         </div>
     </main>
 
-    <!-- LOGIN MODAL -->
-    <div id="authModal" class="modal-overlay">
-        <div class="vault-blur"></div>
+    <!-- AUTH MODAL -->
+    <div id="authModal" class="modal-frame">
+        <div class="modal-bg"></div>
         <div class="modal-box">
-            <span class="close-vault" id="authClose">&times;</span>
-            <div class="modal-header">Identity Verification</div>
+            <span class="close-trigger" id="closeAuth">&times;</span>
+            <h3>Authentication</h3>
             <form id="authForm">
-                <input type="text" id="inpUser" placeholder="ACCESS_ID" required>
-                <input type="password" id="inpPass" placeholder="SECURITY_KEY" required>
-                <button type="submit" class="btn-confirm" data-lang-key="authBtn">Authenticate</button>
+                <input type="text" id="inpUser" placeholder="Username" required>
+                <input type="password" id="inpPass" placeholder="Password" required>
+                <button type="submit" class="confirm-trigger" data-lang-key="authBtn">Authorize</button>
             </form>
         </div>
     </div>
 
     <!-- PAYMENT MODAL -->
-    <div id="payModal" class="modal-overlay">
-        <div class="vault-blur"></div>
+    <div id="payModal" class="modal-frame">
+        <div class="modal-bg"></div>
         <div class="modal-box">
-            <span class="close-vault" id="payClose">&times;</span>
-            <div class="modal-header" id="pTitle">System Activation</div>
+            <span class="close-trigger" id="closePay">&times;</span>
+            <h3 id="pTitle">System Invoicing</h3>
             <div id="pAmount" class="modal-price">0 ADI</div>
             
             <div class="wallet-plate" id="copyAddr">
@@ -86,8 +95,8 @@
             </div>
 
             <form id="payForm">
-                <input type="text" id="txHash" placeholder="TRANSACTION_HASH" required>
-                <button type="submit" class="btn-confirm" data-lang-key="checkBtn">Verify Asset Transfer</button>
+                <input type="text" id="txHash" placeholder="Transaction Hash" required>
+                <button type="submit" class="confirm-trigger" data-lang-key="checkBtn">Confirm Transaction</button>
             </form>
         </div>
     </div>
