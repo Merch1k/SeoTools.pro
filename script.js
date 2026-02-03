@@ -1,221 +1,122 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // === ⚙️ НАСТРОЙКИ ===
-    const TG_BOT_TOKEN = '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA'; 
-    const TG_CHAT_ID = '5683927471'; 
-    const CRYPTO_WALLET = 'UQBKg4_q8x5v2J1z...ВАШ_КОШЕЛЕК'; 
-    const ADI_RATE = 1; // 1 ADI = 1 Рубль (для примера)
-
-    // Проверка устройства
-    const isMobile = window.innerWidth <= 1024;
-
-    // === ДАННЫЕ ===
-    const products = [ 
-        { id: 1, title: "Parser Pro", description: "Мощный парсер данных. Собирает всё.", price: 1500, image: "https://placehold.co/600x400/09090b/10b981?text=PARSER", file: "parser.exe" }, 
-        { id: 2, title: "Rank Tracker", description: "Топ-1 в отслеживании позиций Google.", price: 2500, image: "https://placehold.co/600x400/09090b/8b5cf6?text=TRACKER", file: "tracker.zip" }, 
-        { id: 3, title: "SEO Audit", description: "Технический аудит сайта за 1 минуту.", price: 3500, image: "https://placehold.co/600x400/09090b/06b6d4?text=AUDIT", file: "audit.dmg" }, 
-        { id: 4, title: "VIP Access", description: "Безлимитный доступ ко всем тулзам.", price: 9990, image: "https://placehold.co/600x400/09090b/ec4899?text=VIP", file: "vip.rar" },
-        { id: 5, title: "Indexer", description: "Быстрая индексация страниц в поисковиках.", price: 1200, image: "https://placehold.co/600x400/09090b/eab308?text=INDEXER", file: "indexer.exe" },
-        { id: 6, title: "Keywords", description: "Подбор ключевых слов с AI анализом.", price: 1800, image: "https://placehold.co/600x400/09090b/ef4444?text=KEYS", file: "keys.zip" }
-    ];
+    const MY_TON_ADDRESS = 'ВАШ_TON_КОШЕЛЕК'; // <--- ЗАМЕНИТЕ
+    const ADI_RATE = 600; // Курс 1 ADI = 600 RUB (примерно)
 
     let currentUser = localStorage.getItem('acus_user');
     let userPurchases = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
-    let currentProduct = null;
+    let currentOrder = null;
+    let checkInterval = null;
 
-    // === DOM ЭЛЕМЕНТЫ ===
-    const grid = document.getElementById('products-grid');
-    const mainMenu = document.getElementById('mainMenu');
-    const modals = {
-        auth: document.getElementById('authModal'),
-        reg: document.getElementById('regModal'),
-        pay: document.getElementById('paymentModal'),
-        lib: document.getElementById('libraryModal')
-    };
+    const products = [ 
+        { id: 1, title: "Parser Pro", description: "Премиум парсинг данных.", price: 1500, image: "https://placehold.co/600x400/1e293b/4ade80?text=PARSER" }, 
+        { id: 2, title: "Rank Tracker", description: "Мониторинг позиций 24/7.", price: 2500, image: "https://placehold.co/600x400/1e293b/00ffff?text=RANK" },
+        { id: 3, title: "SEO Audit", description: "Полный аудит сайта.", price: 3500, image: "https://placehold.co/600x400/1e293b/ff00ff?text=AUDIT" },
+        { id: 4, title: "Unlimited", description: "VIP доступ ко всему.", price: 9990, image: "https://placehold.co/600x400/1e293b/ffff66?text=VIP" }
+    ];
 
-    // === 🛠 ФУНКЦИИ ===
-    
-    function init() {
-        if(document.getElementById('walletAddress')) 
-            document.getElementById('walletAddress').textContent = CRYPTO_WALLET.substring(0, 10) + '...';
-        
-        updateAuthUI();
-        renderProducts();
-        
-        // Включаем 3D эффект только если не мобильный
-        if (!isMobile) {
-            init3DEffect();
-        }
-    }
-
-    function renderProducts() {
-        grid.innerHTML = '';
-        products.forEach(p => {
-            const isOwned = userPurchases.some(x => x.id === p.id);
-            const btnClass = isOwned ? 'neon-btn owned' : 'neon-btn';
-            const btnText = isOwned ? '<i class="fa fa-check"></i> КУПЛЕНО' : `${p.price} ADI`;
-            const onClick = isOwned ? '' : `onclick="buy(${p.id})"`;
-
-            const card = document.createElement('div');
-            card.className = 'card';
-            // Атрибуты для 3D эффекта
-            card.setAttribute('data-tilt', '');
-            
-            card.innerHTML = `
-                <div class="card-image"><img src="${p.image}" alt="${p.title}"></div>
-                <div class="card-body">
-                    <h3 class="card-title">${p.title}</h3>
-                    <p class="card-desc">${p.description}</p>
-                    <button class="${btnClass}" ${onClick}>${btnText}</button>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
-        
-        if (!isMobile) init3DEffect(); // Обновляем листенеры
-    }
-
-    // === 🎮 ЛОГИКА 3D (DESKTOP) ===
-    function init3DEffect() {
-        const cards = document.querySelectorAll('.card');
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                // Переменные для CSS градиента
-                card.style.setProperty('--x', `${x}px`);
-                card.style.setProperty('--y', `${y}px`);
-
-                // Поворот
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = ((y - centerY) / centerY) * -10; // Max 10deg
-                const rotateY = ((x - centerX) / centerX) * 10;
-
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-            });
-        });
-    }
-
-    // === 💰 ОПЛАТА ===
-    window.buy = (id) => {
-        if (!currentUser) return openModal('auth');
-        currentProduct = products.find(p => p.id === id);
-        document.getElementById('payName').textContent = currentProduct.title;
-        document.getElementById('payAmount').textContent = `${currentProduct.price} ADI`;
-        openModal('pay');
-    };
-
-    document.getElementById('cryptoCheckForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = e.target.querySelector('button');
-        const txHash = document.getElementById('txHash').value;
-        
-        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Checking...';
-        
-        // Отправка в TG
-        const msg = `💎 <b>PAYMENT CHECK</b>\nUser: ${currentUser}\nItem: ${currentProduct.title}\nSum: ${currentProduct.price} ADI\nTX: <code>${txHash}</code>`;
-        
+    async function checkPayment() {
+        if (!currentOrder) return;
         try {
-            await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg, parse_mode: 'HTML' })
-            });
-            
-            // Демо-активация
-            userPurchases.push({ id: currentProduct.id, date: Date.now() });
-            localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
-            
-            alert('Заявка отправлена администратору! Доступ открыт (Демо).');
-            closeModals();
-            renderProducts();
-        } catch(err) {
-            alert('Ошибка сети');
-        } finally {
-            btn.innerHTML = 'Я ОПЛАТИЛ';
-            e.target.reset();
-        }
-    });
-
-    document.getElementById('walletCopyBtn').addEventListener('click', () => {
-        navigator.clipboard.writeText(CRYPTO_WALLET);
-        alert('Кошелек скопирован!');
-    });
-
-    // === 👤 UI & AUTH ===
-    function updateAuthUI() {
-        const guest = document.getElementById('guestNav');
-        const user = document.getElementById('userNav');
-        if(currentUser) {
-            guest.classList.add('hidden');
-            user.classList.remove('hidden');
-            document.getElementById('menuUserName').textContent = currentUser;
-        } else {
-            guest.classList.remove('hidden');
-            user.classList.add('hidden');
-        }
+            const res = await fetch(`https://toncenter.com/api/v2/getTransactions?address=${MY_TON_ADDRESS}&limit=10`);
+            const data = await res.json();
+            if (data.ok && data.result) {
+                for (let tx of data.result) {
+                    const msg = tx.in_msg.message || "";
+                    const val = parseFloat(tx.in_msg.value) / 1000000000;
+                    if (msg === currentOrder.memo && val >= (currentOrder.amount * 0.98)) {
+                        userPurchases.push({ id: currentOrder.productId, expires: Date.now() + 2592000000 });
+                        localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(userPurchases));
+                        alert("Оплата ADI принята!");
+                        location.reload();
+                    }
+                }
+            }
+        } catch (e) { console.log("Проверка..."); }
     }
 
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
+    window.buyProduct = (id) => {
+        if (!currentUser) { alert("Войдите в аккаунт!"); return; }
+        const p = products.find(x => x.id === id);
+        const amount = (p.price / ADI_RATE).toFixed(2);
+        const memo = `ADI_${Math.floor(Math.random()*90000+10000)}`;
+        currentOrder = { productId: id, amount, memo };
+
+        document.getElementById('payName').textContent = p.title;
+        document.getElementById('payAmount').textContent = `${amount} ADI`;
+        document.getElementById('walletAddr').value = MY_TON_ADDRESS;
+        document.getElementById('payMemo').value = memo;
+        document.getElementById('paymentModal').classList.remove('hidden');
+
+        if (checkInterval) clearInterval(checkInterval);
+        checkInterval = setInterval(checkPayment, 15000);
+    };
+
+    function render() {
+        const grid = document.getElementById('products-grid');
+        grid.innerHTML = products.map(p => {
+            const owned = userPurchases.some(x => x.id === p.id);
+            return `
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-img-wrapper"><img src="${p.image}"></div>
+                        <div class="card-info-block"><h3>${p.title}</h3><p>${p.description}</p></div>
+                        <button class="price-button" ${owned ? '' : `onclick="buyProduct(${p.id})"`}>
+                            ${owned ? 'В библиотеке' : p.price + ' ₽'}
+                        </button>
+                    </div>
+                </div>`;
+        }).join('');
+        apply3D();
+    }
+
+    function apply3D() {
+        document.querySelectorAll('.card').forEach(card => {
+            const move = (e) => {
+                const rect = card.getBoundingClientRect();
+                const cx = e.touches ? e.touches[0].clientX : e.clientX;
+                const cy = e.touches ? e.touches[0].clientY : e.clientY;
+                const x = (cx - rect.left) / rect.width - 0.5;
+                const y = (cy - rect.top) / rect.height - 0.5;
+                card.style.transform = `perspective(1000px) rotateX(${y * -10}deg) rotateY(${x * 10}deg) scale3d(1.02, 1.02, 1.02)`;
+            };
+            card.addEventListener('mousemove', move);
+            card.addEventListener('touchmove', move);
+            card.addEventListener('mouseleave', () => card.style.transform = '');
+            card.addEventListener('touchend', () => card.style.transform = '');
+        });
+    }
+
+    // Меню и Авторизация
+    document.getElementById('hamburgerBtn').onclick = (e) => {
+        e.stopPropagation();
+        document.getElementById('mainMenu').classList.toggle('hidden');
+    };
+    document.onclick = () => document.getElementById('mainMenu').classList.add('hidden');
+    
+    document.getElementById('menuLoginBtn').onclick = () => document.getElementById('authModal').classList.remove('hidden');
+    document.getElementById('loginForm').onsubmit = (e) => {
         e.preventDefault();
-        currentUser = document.getElementById('loginEmail').value;
-        localStorage.setItem('acus_user', currentUser);
-        userPurchases = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
-        updateAuthUI();
-        renderProducts();
-        closeModals();
-    });
-
-    document.getElementById('regFormRequest').addEventListener('submit', (e) => {
-        e.preventDefault();
-        // В реале тут отправка в TG
-        alert('Заявка на регистрацию отправлена!');
-        closeModals();
-    });
-
-    document.getElementById('menuLibraryBtn').addEventListener('click', () => {
-        const list = document.getElementById('libraryList');
-        list.innerHTML = '';
-        if(userPurchases.length === 0) list.innerHTML = '<p style="color:#666">Пусто...</p>';
-        else {
-            userPurchases.forEach(pur => {
-                const p = products.find(prod => prod.id === pur.id);
-                if(p) list.innerHTML += `<div style="padding:10px; border-bottom:1px solid #333; display:flex; justify-content:space-between"><span>${p.title}</span><a href="#" style="color:var(--accent)">Скачать</a></div>`;
-            });
-        }
-        openModal('lib');
-    });
-
-    document.getElementById('menuLogoutBtn').addEventListener('click', () => {
+        localStorage.setItem('acus_user', document.getElementById('loginEmail').value);
+        location.reload();
+    };
+    document.getElementById('menuLogoutBtn').onclick = () => {
         localStorage.removeItem('acus_user');
-        currentUser = null;
-        userPurchases = [];
-        updateAuthUI();
-        renderProducts();
-        toggleMenu(false);
+        location.reload();
+    };
+
+    if(currentUser) {
+        document.getElementById('guestNav').classList.add('hidden');
+        document.getElementById('userNav').classList.remove('hidden');
+        document.getElementById('menuUserName').innerHTML = `<i class="fa fa-user"></i> ${currentUser}`;
+    }
+
+    // Аврора
+    document.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        document.querySelector('.aurora.one').style.transform = `translate(${x*50}px, ${y*50}px)`;
     });
 
-    // === MENU ===
-    function toggleMenu(state) {
-        if(state) mainMenu.classList.add('active');
-        else mainMenu.classList.remove('active');
-    }
-    
-    document.getElementById('hamburgerBtn').addEventListener('click', () => toggleMenu(true));
-    document.querySelector('.close-menu').addEventListener('click', () => toggleMenu(false));
-    document.querySelector('.menu-backdrop').addEventListener('click', () => toggleMenu(false));
-    
-    // === MODALS HELPERS ===
-    function openModal(name) { toggleMenu(false); closeModals(); modals[name].classList.remove('hidden'); }
-    function closeModals() { Object.values(modals).forEach(m => m.classList.add('hidden')); }
-    document.querySelectorAll('.close-modal').forEach(b => b.addEventListener('click', closeModals));
-
-    init();
+    render();
 });
