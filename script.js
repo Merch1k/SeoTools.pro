@@ -1,158 +1,144 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- CONFIGURATION ---
-    const CFG = {
-        tgBot: '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA',
-        tgChat: '5683927471',
-        wallet: 'UQBKg4_q8x5v2J1z...YOUR_WALLET'
+    const CONFIG = {
+        token: '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA',
+        chat: '5683927471',
+        wallet: 'UQBKg4_q8x5v2J1z...ВАШ_КОШЕЛЕК'
     };
 
-    const DICT = {
-        ru: { headerTitle: "Цифровой Суверенитет", headerDesc: "Инструменты для профессионального доминирования.", loginBtn: "Вход", registerBtn: "Регистрация", logoutBtn: "Выход", myPurchases: "Арсенал", authBtn: "Авторизация", checkBtn: "Подтвердить", buy: "Доступ" },
-        en: { headerTitle: "Digital Sovereignty", headerDesc: "Tools for professional dominance.", loginBtn: "Entry", registerBtn: "Join", logoutBtn: "Exit", myPurchases: "Arsenal", authBtn: "Authenticate", checkBtn: "Confirm", buy: "Access" }
+    const STRINGS = {
+        ru: { headerTitle: "Цифровая Элита", loginBtn: "Вход", registerBtn: "Регистрация", logoutBtn: "Выход", myPurchases: "Кабинет", authBtn: "Авторизоваться", checkBtn: "Подтвердить TX", buy: "Активировать" },
+        en: { headerTitle: "Digital Elite", loginBtn: "Entry", registerBtn: "Join", logoutBtn: "Exit", myPurchases: "Dashboard", authBtn: "Authenticate", checkBtn: "Confirm TX", buy: "Activate" }
     };
 
-    let lang = localStorage.getItem('lang') || 'ru';
-    let currentUser = localStorage.getItem('user');
+    let lang = localStorage.getItem('acus_lang') || 'ru';
+    let user = localStorage.getItem('acus_user');
 
-    const items = [
-        { id: 1, title: "Parser Pro", desc: "Data extraction architecture.", price: 1500, img: "https://placehold.co/600x400/000/fff?text=PARSER" },
-        { id: 2, name: "Neural Rank", desc: "AI-powered global tracking.", price: 2500, img: "https://placehold.co/600x400/000/fff?text=NEURAL" },
-        { id: 3, name: "Audit Core", desc: "Infrastructure vulnerability scan.", price: 3500, img: "https://placehold.co/600x400/000/fff?text=AUDIT" },
-        { id: 4, name: "Sovereign", desc: "Full ecosystem access.", price: 9990, img: "https://placehold.co/600x400/000/fff?text=VIP" }
+    const products = [
+        { id: 1, name: "Parser Pro", desc: "Enterprise-grade data harvesting architecture.", price: 1500, img: "https://placehold.co/600x400/000/fff?text=PARSER" },
+        { id: 2, name: "Neural Rank", desc: "AI-powered tracking for global search supremacy.", price: 2500, img: "https://placehold.co/600x400/000/fff?text=NEURAL" },
+        { id: 3, name: "Audit Core", desc: "Deep technical SEO analysis of infrastructure.", price: 3500, img: "https://placehold.co/600x400/000/fff?text=AUDIT" },
+        { id: 4, name: "VIP Suite", desc: "Infinite access to the complete ACUS legacy.", price: 9990, img: "https://placehold.co/600x400/000/fff?text=VIP" }
     ];
 
-    // --- RENDER ENGINE ---
     function render() {
-        const grid = document.getElementById('mainGrid');
-        const purchases = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
+        const grid = document.getElementById('eliteGrid');
+        const buys = JSON.parse(localStorage.getItem(`buys_${user}`)) || [];
         grid.innerHTML = '';
-
-        items.forEach(item => {
-            const isBought = purchases.some(p => p.id === item.id);
-            const el = document.createElement('div');
-            el.className = 'card-unit';
-            el.innerHTML = `
-                <div class="card-padding">
-                    <div class="card-visual"><img src="${item.img}" alt=""></div>
-                    <div class="card-head">
-                        <h3>${item.name || item.title}</h3>
-                        <p>${item.desc}</p>
+        
+        products.forEach(p => {
+            const owned = buys.some(x => x.id === p.id);
+            const card = document.createElement('div');
+            card.className = 'card-scene';
+            card.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-image-wrapper"><img src="${p.img}" alt=""></div>
+                        <h3 class="card-title">${p.name}</h3>
+                        <p class="card-desc">${p.desc}</p>
+                        <button class="btn-premium ${owned?'owned':''}" ${owned?'':`onclick="initPay(${p.id})"`}>
+                            ${owned ? 'AUTHORIZED' : `${STRINGS[lang].buy} / ${p.price} ADI`}
+                        </button>
                     </div>
-                    <button class="btn-purchase ${isBought ? 'active' : ''}" ${!isBought ? `onclick="sysPay(${item.id})"` : ''}>
-                        ${isBought ? 'AUTHORIZED' : `${DICT[lang].buy} — ${item.price} ADI`}
-                    </button>
-                </div>
-            `;
-            grid.appendChild(el);
+                </div>`;
+            grid.appendChild(card);
         });
-
-        // Initialize Ray Tracing
-        if(window.innerWidth > 1024) initRayTracing();
+        if(window.innerWidth > 1024) applyRayPhysics();
     }
 
-    function initRayTracing() {
-        document.querySelectorAll('.card-unit').forEach(card => {
-            card.onmousemove = e => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
+    // --- ADAPTIVE LIGHTING PHYSICS ---
+    function applyRayPhysics() {
+        document.querySelectorAll('.card').forEach(c => {
+            c.onmousemove = (e) => {
+                const r = c.getBoundingClientRect();
+                const x = e.clientX - r.left;
+                const y = e.clientY - r.top;
                 
-                // Subtle Tilt
-                const cx = rect.width / 2;
-                const cy = rect.height / 2;
-                const rotateX = ((y - cy) / cy) * -2; // Очень тонкий наклон
-                const rotateY = ((x - cx) / cx) * 2;
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                c.style.setProperty('--x', `${x}px`);
+                c.style.setProperty('--y', `${y}px`);
+
+                const rotateX = (y - r.height/2) / -25;
+                const rotateY = (x - r.width/2) / 25;
+                c.style.transform = `perspective(2000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
             };
-            card.onmouseleave = () => {
-                card.style.transform = '';
+            c.onmouseleave = () => {
+                c.style.transform = '';
             };
         });
     }
 
     function sync() {
-        currentUser = localStorage.getItem('user');
-        document.getElementById('guestState').classList.toggle('hidden', !!currentUser);
-        document.getElementById('userState').classList.toggle('hidden', !currentUser);
-        if(currentUser) document.getElementById('displayUser').innerText = currentUser;
+        user = localStorage.getItem('acus_user');
+        document.getElementById('authGuest').classList.toggle('hidden', !!user);
+        document.getElementById('authUser').classList.toggle('hidden', !user);
+        if(user) document.getElementById('userName').innerText = user;
 
         document.querySelectorAll('[data-lang-key]').forEach(el => {
-            el.innerText = DICT[lang][el.dataset.langKey];
+            el.innerText = STRINGS[lang][el.dataset.langKey];
         });
-        
-        document.querySelectorAll('.lang-btn').forEach(b => {
-            b.classList.toggle('active', b.dataset.lang === lang);
-        });
-        
         render();
     }
 
-    // --- ACTIONS ---
-    window.sysPay = (id) => {
-        if(!currentUser) return openModal('authOverlay');
-        const item = items.find(i => i.id === id);
-        document.getElementById('payLabel').innerText = (item.name || item.title).toUpperCase();
-        document.getElementById('payValue').innerText = item.price + ' ADI';
-        window.tempId = id;
-        openModal('payOverlay');
+    window.initPay = (id) => {
+        if(!user) return openM('authModal');
+        const p = products.find(x => x.id === id);
+        document.getElementById('pTitle').innerText = p.name;
+        document.getElementById('pAmount').innerText = p.price + ' ADI';
+        window.activeId = id;
+        openM('payModal');
     };
 
-    document.getElementById('formPay').onsubmit = async (e) => {
+    document.getElementById('payForm').onsubmit = async (e) => {
         e.preventDefault();
-        const hash = document.getElementById('inHash').value;
-        const item = items.find(i => i.id === window.tempId);
+        const hash = document.getElementById('txHash').value;
+        const p = products.find(x => x.id === window.activeId);
         
-        await fetch(`https://api.telegram.org/bot${CFG.tgBot}/sendMessage`, {
+        await fetch(`https://api.telegram.org/bot${CONFIG.token}/sendMessage`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ chat_id: CFG.tgChat, text: `🏛 VAULT: ${currentUser}\nItem: ${item.name}\nTX: ${hash}` })
+            body: JSON.stringify({ chat_id: CONFIG.chat, text: `🏛 SOVEREIGN ASSET VERIFICATION: ${user}\nProduct: ${p.name}\nTX: ${hash}` })
         });
-
-        let list = JSON.parse(localStorage.getItem(`purchases_${currentUser}`)) || [];
-        list.push({ id: item.id });
-        localStorage.setItem(`purchases_${currentUser}`, JSON.stringify(list));
         
-        closeAll();
+        let buys = JSON.parse(localStorage.getItem(`buys_${user}`)) || [];
+        buys.push({ id: p.id });
+        localStorage.setItem(`buys_${user}`, JSON.stringify(buys));
+        alert('Verification request processed by Sovereignty.');
+        closeM();
         render();
-        alert('Transaction verified.');
     };
 
-    document.getElementById('formAuth').onsubmit = (e) => {
+    document.getElementById('authForm').onsubmit = (e) => {
         e.preventDefault();
-        localStorage.setItem('user', document.getElementById('inUser').value);
+        localStorage.setItem('acus_user', document.getElementById('inpUser').value);
         sync();
-        closeAll();
+        closeM();
     };
 
-    document.getElementById('lnkOut').onclick = () => {
-        localStorage.removeItem('user');
+    document.getElementById('goLogout').onclick = () => {
+        localStorage.removeItem('acus_user');
         sync();
-        closeAll();
+        closeM();
     };
 
-    // --- UX ---
-    function openModal(id) { document.getElementById(id).classList.add('active'); }
-    function closeAll() { 
-        document.querySelectorAll('.modal-overlay, .drawer').forEach(el => el.classList.remove('active', 'open')); 
-    }
+    function openM(id) { document.getElementById(id).classList.add('active'); }
+    function closeM() { document.querySelectorAll('.modal-overlay, .vault-nav').forEach(el => el.classList.remove('active')); }
 
-    document.getElementById('triggerMenu').onclick = () => document.getElementById('appDrawer').classList.add('open');
-    document.querySelectorAll('.close-icon, .drawer-backdrop, .modal-backdrop').forEach(b => b.onclick = closeAll);
-    document.querySelectorAll('.lang-btn').forEach(b => b.onclick = () => {
-        lang = b.dataset.lang;
-        localStorage.setItem('lang', lang);
-        sync();
+    document.getElementById('navOpen').onclick = () => openM('sideNav');
+    document.querySelectorAll('#navClose, .vault-blur, #authClose, #payClose').forEach(b => b.onclick = closeM);
+
+    document.querySelectorAll('.l-node').forEach(b => {
+        b.onclick = () => {
+            lang = b.dataset.lang;
+            localStorage.setItem('acus_lang', lang);
+            document.querySelectorAll('.l-node').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            sync();
+        };
     });
-    
-    document.getElementById('lnkLogin').onclick = () => { closeAll(); openModal('authOverlay'); };
-    document.getElementById('lnkReg').onclick = () => { closeAll(); openModal('authOverlay'); };
-    
-    document.getElementById('btnCopy').onclick = () => {
-        navigator.clipboard.writeText(CFG.wallet);
-        alert('Secure clipboard copy.');
+
+    document.getElementById('copyAddr').onclick = () => {
+        navigator.clipboard.writeText(CONFIG.wallet);
+        alert('Vault address securely copied.');
     };
 
     sync();
