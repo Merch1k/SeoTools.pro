@@ -1,136 +1,146 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const CONFIG = {
-        tgToken: '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA',
-        tgChat: '5683927471',
-        wallet: 'UQBKg4_q8x5v2J1z...YOUR_WALLET'
+    const TG_CONFIG = {
+        token: '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA',
+        chatId: '5683927471'
+    };
+    
+    const CRYPTO_WALLET = 'UQBKg4_q8x5v2J1z...YOUR_WALLET';
+
+    const translations = {
+        ru: { headerTitle: "Премиальная Экосистема", loginBtn: "Войти", registerBtn: "Регистрация", logoutBtn: "Выход", languageBtn: "Язык", myPurchases: "Мои покупки", checkBtn: "Подтвердить оплату", authTitle: "Авторизация", buy: "Купить" },
+        en: { headerTitle: "Premium Ecosystem", loginBtn: "Login", registerBtn: "Join", logoutBtn: "Logout", languageBtn: "Language", myPurchases: "My Library", checkBtn: "Verify TX", authTitle: "Authorization", buy: "Get Access" }
     };
 
-    const TRANSLATIONS = {
-        ru: { headerTitle: "Цифровая Элита", loginBtn: "Вход", registerBtn: "Регистрация", logoutBtn: "Выход", myPurchases: "Арсенал", authTitle: "Доступ к ACUS", authBtn: "Авторизоваться", checkBtn: "Подтвердить TX", buy: "Активировать" },
-        en: { headerTitle: "Digital Elite", loginBtn: "Entry", registerBtn: "Join", logoutBtn: "Exit", myPurchases: "Arsenal", authTitle: "ACUS Access", authBtn: "Authenticate", checkBtn: "Confirm TX", buy: "Activate" }
-    };
-
-    let lang = localStorage.getItem('acus_lang') || 'ru';
-    let user = localStorage.getItem('acus_user');
+    let currentLang = 'ru';
+    let currentUser = localStorage.getItem('p_user');
+    let purchases = JSON.parse(localStorage.getItem(`p_buy_${currentUser}`)) || [];
 
     const products = [
-        { id: 1, name: "Parser Pro", desc: "Absolute data harvesting performance.", price: 1500, img: "https://placehold.co/600x400/000/00ff8f?text=PARSER" },
-        { id: 2, name: "Neural Rank", desc: "AI-driven global ranking dominance.", price: 2500, img: "https://placehold.co/600x400/000/4f46e5?text=NEURAL" },
-        { id: 3, name: "Audit Core", desc: "Exposing infrastructure vulnerabilities.", price: 3500, img: "https://placehold.co/600x400/000/00ff8f?text=AUDIT" },
-        { id: 4, name: "VIP Legacy", desc: "The complete ACUS arsenal forever.", price: 9990, img: "https://placehold.co/600x400/000/4f46e5?text=LEGACY" }
+        { id: 1, name: "Parser X", desc: "Ultimate data extraction tool for enterprise needs.", price: 1500, img: "https://placehold.co/600x400/020203/00ff88?text=PARSER" },
+        { id: 2, name: "Neural Rank", desc: "AI-driven position tracking and analytics.", price: 2500, img: "https://placehold.co/600x400/020203/bf00ff?text=NEURAL" },
+        { id: 3, name: "Audit Core", desc: "Deep technical scanning for modern web apps.", price: 3500, img: "https://placehold.co/600x400/020203/00ff88?text=AUDIT" },
+        { id: 4, name: "VIP Stack", desc: "All-in-one digital arsenal with lifetime updates.", price: 9990, img: "https://placehold.co/600x400/020203/bf00ff?text=VIP" }
     ];
 
+    // --- RENDER ---
     function render() {
-        const grid = document.getElementById('titanGrid');
-        const buys = JSON.parse(localStorage.getItem(`buys_${user}`)) || [];
+        const grid = document.getElementById('products-grid');
         grid.innerHTML = '';
-        
         products.forEach(p => {
-            const owned = buys.some(x => x.id === p.id);
+            const isOwned = purchases.some(x => x.id === p.id);
             const card = document.createElement('div');
-            card.className = 'card-outer';
+            card.className = 'card';
             card.innerHTML = `
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-media"><img src="${p.img}" alt=""></div>
-                        <h3 class="card-title">${p.name}</h3>
-                        <p class="card-desc">${p.desc}</p>
-                        <button class="btn-premium ${owned?'owned':''}" ${owned?'':`onclick="startPay(${p.id})"`}>
-                            ${owned ? 'ACTIVE' : `${TRANSLATIONS[lang].buy} ${p.price} ADI`}
-                        </button>
+                <div class="card-inner">
+                    <div class="card-image"><img src="${p.img}" alt=""></div>
+                    <div class="card-info">
+                        <h3>${p.name}</h3>
+                        <p>${p.desc}</p>
                     </div>
-                </div>`;
+                    <button class="premium-btn ${isOwned?'owned':''}" ${isOwned?'':`onclick="startPay(${p.id})"`}>
+                        ${isOwned ? 'OWNED' : `${p.price} ADI`}
+                    </button>
+                </div>
+            `;
             grid.appendChild(card);
         });
-        if(window.innerWidth > 1024) initTilt();
+        
+        // Tilt Effect for PC
+        if (window.innerWidth > 1024) {
+            document.querySelectorAll('.card').forEach(c => {
+                c.onmousemove = (e) => {
+                    const r = c.getBoundingClientRect();
+                    c.style.transform = `perspective(1000px) rotateX(${(e.clientY - r.top - r.height/2)/10}deg) rotateY(${(e.clientX - r.left - r.width/2)/-10}deg)`;
+                };
+                c.onmouseleave = () => c.style.transform = '';
+            });
+        }
     }
 
-    function initTilt() {
-        document.querySelectorAll('.card').forEach(c => {
-            c.onmousemove = (e) => {
-                const r = c.getBoundingClientRect();
-                const x = e.clientX - r.left - r.width/2;
-                const y = e.clientY - r.top - r.height/2;
-                c.style.transform = `perspective(2000px) rotateX(${-y/30}deg) rotateY(${x/30}deg)`;
-            };
-            c.onmouseleave = () => c.style.transform = '';
-        });
-    }
-
-    function sync() {
-        user = localStorage.getItem('acus_user');
-        document.getElementById('authGuest').classList.toggle('hidden', !!user);
-        document.getElementById('authUser').classList.toggle('hidden', !user);
-        if(user) document.getElementById('userLabel').innerText = user;
-
-        document.querySelectorAll('[data-lang-key]').forEach(el => {
-            el.innerText = TRANSLATIONS[lang][el.dataset.langKey];
-        });
-        render();
-    }
-
+    // --- PAY LOGIC ---
     window.startPay = (id) => {
-        if(!user) return openM('authModal');
+        if (!currentUser) return openModal('auth');
         const p = products.find(x => x.id === id);
-        document.getElementById('pName').innerText = p.name;
-        document.getElementById('pPrice').innerText = p.price + ' ADI';
-        window.activeId = id;
-        openM('payModal');
+        document.getElementById('payName').textContent = p.name;
+        document.getElementById('payAmount').textContent = p.price + ' ADI';
+        window.activePayId = id;
+        openModal('payment');
     };
 
-    document.getElementById('payForm').onsubmit = async (e) => {
+    document.getElementById('cryptoCheckForm').onsubmit = async (e) => {
         e.preventDefault();
         const hash = document.getElementById('txHash').value;
-        const p = products.find(x => x.id === window.activeId);
+        const p = products.find(x => x.id === window.activePayId);
         
-        await fetch(`https://api.telegram.org/bot${CONFIG.tgToken}/sendMessage`, {
+        const msg = `💎 <b>NEW PAYMENT</b>\nUser: ${currentUser}\nSum: ${p.price} ADI\nTX: <code>${hash}</code>`;
+        
+        await fetch(`https://api.telegram.org/bot${TG_CONFIG.token}/sendMessage`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ chat_id: CONFIG.tgChat, text: `💎 GLOBAL PAY: ${user}\nProduct: ${p.name}\nTX: ${hash}` })
+            body: JSON.stringify({ chat_id: TG_CONFIG.chatId, text: msg, parse_mode: 'HTML' })
         });
-        
-        let buys = JSON.parse(localStorage.getItem(`buys_${user}`)) || [];
-        buys.push({ id: p.id });
-        localStorage.setItem(`buys_${user}`, JSON.stringify(buys));
-        alert('Verification request sent.');
-        closeM();
+
+        purchases.push({ id: p.id });
+        localStorage.setItem(`p_buy_${currentUser}`, JSON.stringify(purchases));
+        alert('Verification request sent to Admin!');
+        closeModals();
         render();
     };
 
-    document.getElementById('authForm').onsubmit = (e) => {
+    // --- UI HELPERS ---
+    function openModal(id) { 
+        closeModals();
+        if(id === 'payment') document.getElementById('paymentModal').classList.remove('hidden');
+        if(id === 'auth') document.getElementById('authModal').classList.remove('hidden');
+    }
+    
+    function closeModals() { 
+        document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden')); 
+        document.getElementById('mainMenu').classList.remove('active');
+    }
+
+    document.getElementById('hamburgerBtn').onclick = () => document.getElementById('mainMenu').classList.add('active');
+    document.querySelector('.close-menu-btn').onclick = closeModals;
+    document.querySelector('.menu-blur').onclick = closeModals;
+    document.querySelectorAll('.close-modal').forEach(b => b.onclick = closeModals);
+
+    document.getElementById('loginForm').onsubmit = (e) => {
         e.preventDefault();
-        localStorage.setItem('acus_user', document.getElementById('inpUser').value);
-        sync();
-        closeM();
+        currentUser = document.getElementById('loginEmail').value;
+        localStorage.setItem('p_user', currentUser);
+        purchases = JSON.parse(localStorage.getItem(`p_buy_${currentUser}`)) || [];
+        closeModals();
+        render();
+        location.reload();
     };
 
-    document.getElementById('doLogout').onclick = () => {
-        localStorage.removeItem('acus_user');
-        sync();
-        closeM();
+    document.getElementById('menuLogoutBtn').onclick = () => {
+        localStorage.removeItem('p_user');
+        location.reload();
     };
 
-    function openM(id) { document.getElementById(id).classList.add('active'); }
-    function closeM() { document.querySelectorAll('.modal-overlay, .side-nav').forEach(el => el.classList.remove('active')); }
+    document.getElementById('walletCopyBtn').onclick = () => {
+        navigator.clipboard.writeText(CRYPTO_WALLET);
+        alert('Wallet Copied!');
+    };
 
-    document.getElementById('navOpen').onclick = () => openM('sideNav');
-    document.querySelectorAll('#navClose, .side-blur, #authClose, #payClose, .modal-backdrop').forEach(b => b.onclick = closeM);
-
-    document.querySelectorAll('.lang-node').forEach(b => {
+    // Language
+    document.querySelectorAll('.l-btn').forEach(b => {
         b.onclick = () => {
-            lang = b.dataset.lang;
-            localStorage.setItem('acus_lang', lang);
-            document.querySelectorAll('.lang-node').forEach(x => x.classList.remove('active'));
+            currentLang = b.dataset.lang;
+            document.querySelectorAll('.l-btn').forEach(x => x.classList.remove('active'));
             b.classList.add('active');
-            sync();
+            updateLang();
         };
     });
 
-    document.getElementById('copyBtn').onclick = () => {
-        navigator.clipboard.writeText(CONFIG.wallet);
-        alert('Address Securely Copied');
-    };
+    function updateLang() {
+        document.querySelectorAll('[data-lang-key]').forEach(el => {
+            el.textContent = translations[currentLang][el.dataset.lang-key];
+        });
+        render();
+    }
 
-    sync();
+    render();
 });
