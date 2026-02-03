@@ -1,333 +1,191 @@
-/**
- * ACUS CORE ENGINE v2.0
- * Features: OOP Architecture, Mock Cloud Sync, Multi-language
- */
-
 const CONFIG = {
-    // ЗАМЕНИ НА СВОИ ДАННЫЕ
-    adminId: "5683927471",
     botToken: "8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA",
-    wallet: "0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB",
-    
-    // В реальном проекте здесь должен быть URL твоего JSON-сервера.
-    // Если оставить null, работает LocalStorage (симуляция).
-    apiUrl: null 
+    adminId: "5683927471",
+    wallet: "0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB"
 };
 
-// --- DATA: TRANSLATIONS & PRODUCTS ---
-const I18N = {
-    ru: {
-        login_btn: "Аккаунт",
-        hero_title: "Premium <span>Utility</span>",
-        hero_desc: "Профессиональный софт. Моментальная активация. Единая подписка на всех устройствах.",
-        btn_buy: "Купить",
-        btn_owned: "Приобретено",
-        auth_title: "Вход / Синхронизация",
-        auth_desc: "Введите ваш Secret Key чтобы объединить подписки на Телефоне и ПК.",
-        label_secret: "Ваш Secret Key",
-        btn_sync: "Синхронизировать",
-        btn_new_acc: "Я новый пользователь",
-        pay_instruction: "Отправьте точную сумму на кошелек:",
-        label_tx: "Хэш транзакции (TXID)",
-        btn_confirm_pay: "Подтвердить оплату",
-        status_check: "Проверка блокчейна...",
-        status_success: "Оплата успешна! Доступ открыт.",
-        alert_copy: "Адрес скопирован в буфер!"
-    },
-    en: {
-        login_btn: "Account",
-        hero_title: "Premium <span>Access</span>",
-        hero_desc: "Pro-grade software. Instant activation. Unified subscription across all devices.",
-        btn_buy: "Purchase",
-        btn_owned: "Owned",
-        auth_title: "Login / Sync",
-        auth_desc: "Enter your Secret Key to sync purchases between Phone and PC.",
-        label_secret: "Your Secret Key",
-        btn_sync: "Sync Device",
-        btn_new_acc: "I'm a new user",
-        pay_instruction: "Send exact amount to TON wallet:",
-        label_tx: "Transaction Hash (TXID)",
-        btn_confirm_pay: "Confirm Payment",
-        status_check: "Verifying blockchain...",
-        status_success: "Payment Success! Access Granted.",
-        alert_copy: "Wallet copied to clipboard!"
-    }
-};
-
-const PRODUCTS = [
+// Премиум-карточки и переводы
+const products = [
     { 
-        id: "p_parser", 
-        name: "Parser Pro", 
+        id: 1, 
+        name: "Parser Ultra", 
         price: 1500, 
-        desc: { ru: "Сбор данных в многопоточном режиме.", en: "Multi-threaded data scraping tool." },
-        img: "https://images.unsplash.com/photo-1558494949-ef526b01201b?q=80&w=1000&auto=format&fit=crop" 
+        img: "https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&q=80&w=1000",
+        desc: { ru: "Профессиональный инструмент для анализа данных нейросетями.", en: "Professional AI-driven data analysis tool." }
     },
     { 
-        id: "p_seo", 
-        name: "SEO Core", 
+        id: 2, 
+        name: "SEO Neural", 
         price: 2500, 
-        desc: { ru: "Автоматизация вывода в ТОП-10.", en: "Automated ranking booster engine." },
-        img: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1000&auto=format&fit=crop" 
+        img: "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&q=80&w=1000",
+        desc: { ru: "Автоматическое продвижение в топ через поведенческие факторы.", en: "Automatic TOP ranking via behavioral factor simulation." }
     },
     { 
-        id: "p_guard", 
-        name: "Data Guard", 
+        id: 3, 
+        name: "Data Cyber Guard", 
         price: 3500, 
-        desc: { ru: "AES-256 шифрование и защита трафика.", en: "AES-256 encryption & traffic shield." },
-        img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop" 
+        img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1000",
+        desc: { ru: "Криптографическая защита ваших рабочих сессий и данных.", en: "Cryptographic protection for your work sessions and data." }
     }
 ];
 
-// --- CLASS: AUTH MANAGER (Cloud Sync Logic) ---
-class AuthManager {
-    constructor() {
-        this.userKey = localStorage.getItem('acus_key');
-        this.library = JSON.parse(localStorage.getItem('acus_lib') || '[]');
-        this.init();
+const UI_TEXT = {
+    ru: {
+        heroTitle: "Premium <span>Utility</span>",
+        heroSub: "Профессиональный софт. Синхронизация между всеми вашими устройствами.",
+        loginLabel: "Войти",
+        authTitle: "Авторизация",
+        authDesc: "Используйте один ник на всех устройствах для синхронизации.",
+        loginBtn: "Войти",
+        logout: "Выход",
+        owned: "Приобретено",
+        payInstr: "Отправьте <b>TON</b> на адрес:",
+        btnPay: "Я оплатил",
+        wait: "Заявка #ID отправлена! Ждите подтверждения админом.",
+        done: "✅ Оплата подтверждена! Доступ открыт.",
+        lib: "Ваши покупки: ",
+        libEmpty: "У вас пока нет покупок."
+    },
+    en: {
+        heroTitle: "Premium <span>Utility</span>",
+        heroSub: "Professional software. Sync across all your devices.",
+        loginLabel: "Login",
+        authTitle: "Authentication",
+        authDesc: "Use the same nickname on all devices to sync purchases.",
+        loginBtn: "Login",
+        logout: "Logout",
+        owned: "Owned",
+        payInstr: "Send <b>TON</b> to this address:",
+        btnPay: "I have paid",
+        wait: "Order #ID sent! Wait for admin confirmation.",
+        done: "✅ Payment confirmed! Access granted.",
+        lib: "Your purchases: ",
+        libEmpty: "You have no purchases yet."
     }
+};
 
-    init() {
-        if (this.userKey) {
-            document.getElementById('userBtnLabel').innerText = this.userKey.substring(0, 8) + '...';
-            // В реальном проекте: this.fetchCloudData();
-        }
-    }
+let currentLang = localStorage.getItem('lang') || 'ru';
+let user = localStorage.getItem('user');
+// Загружаем библиотеку, привязанную к никнейму
+let lib = JSON.parse(localStorage.getItem(`lib_${user}`) || '[]');
+let currentProd = null;
 
-    generateNew() {
-        // Генерируем красивый "API ключ"
-        const key = 'USR-' + Math.random().toString(36).substr(2, 9).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
-        this.setKey(key);
-    }
-
-    login() {
-        const input = document.getElementById('authKey').value.trim();
-        if (input.length < 5) return alert('Invalid Key');
-        this.setKey(input);
-    }
-
-    setKey(key) {
-        this.userKey = key;
-        localStorage.setItem('acus_key', key);
-        // При "логине" мы как бы подтягиваем данные. 
-        // Без сервера мы доверяем локальному, но делаем вид синхронизации.
-        ui.modals.closeAll();
-        location.reload();
-    }
-
-    addPurchase(productId) {
-        if (!this.library.includes(productId)) {
-            this.library.push(productId);
-            this.saveData();
-        }
-    }
-
-    has(productId) {
-        return this.library.includes(productId);
-    }
-
-    saveData() {
-        localStorage.setItem('acus_lib', JSON.stringify(this.library));
-        // TODO: Если есть CONFIG.apiUrl, отправляем POST запрос сюда
-        // fetch(CONFIG.apiUrl, { method: 'POST', body: JSON.stringify({ key: this.userKey, lib: this.library }) })
-    }
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang', lang);
+    renderUI();
 }
 
-// --- CLASS: UI MANAGER ---
-class UIManager {
-    constructor() {
-        this.currentLang = localStorage.getItem('acus_lang') || 'ru';
-        this.modals = {
-            open: (id) => {
-                document.getElementById(id).classList.add('active');
-            },
-            closeAll: () => {
-                document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
-            }
-        };
-        this.render();
-        this.updateLangUI();
-    }
+function renderUI() {
+    // Перевод текстов
+    const t = UI_TEXT[currentLang];
+    document.getElementById('heroTitle').innerHTML = t.heroTitle;
+    document.getElementById('heroSub').textContent = t.heroSub;
+    document.getElementById('loginLabel').textContent = user ? `${user} (${t.logout})` : t.loginLabel;
+    document.getElementById('authTitleText').textContent = t.authTitle;
+    document.getElementById('authDesc').textContent = t.authDesc;
+    document.getElementById('loginBtnAction').textContent = t.loginBtn;
+    document.getElementById('payInstrText').innerHTML = t.payInstr;
+    document.getElementById('payBtn').textContent = t.btnPay;
 
-    setLang(lang) {
-        this.currentLang = lang;
-        localStorage.setItem('acus_lang', lang);
-        this.updateLangUI();
-        this.render(); // Перерисовка карточек с новым языком
-    }
+    document.getElementById('btn-ru').classList.toggle('active', currentLang === 'ru');
+    document.getElementById('btn-en').classList.toggle('active', currentLang === 'en');
 
-    updateLangUI() {
-        // Обновляем переключатель
-        document.querySelectorAll('.lang-opt').forEach(el => {
-            el.classList.toggle('active', el.dataset.lang === this.currentLang);
-        });
+    // Отрисовка карточек
+    const grid = document.getElementById('grid');
+    grid.innerHTML = products.map(p => {
+        const isOwned = lib.includes(p.id);
+        return `
+        <div class="card">
+            <div class="card-img" style="background-image: url('${p.img}')"></div>
+            <div class="card-content">
+                <h3>${p.name}</h3>
+                <p>${p.desc[currentLang]}</p>
+                <button class="btn-buy ${isOwned ? 'owned' : ''}" onclick="${isOwned ? '' : `openPay(${p.id})`}">
+                    ${isOwned ? t.owned : p.price + ' ADI'}
+                </button>
+            </div>
+        </div>`;
+    }).join('');
 
-        // Обновляем тексты data-i18n
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.dataset.i18n;
-            if (I18N[this.currentLang][key]) {
-                el.innerHTML = I18N[this.currentLang][key];
-            }
-        });
+    if(user) {
+        document.getElementById('authZone').innerHTML = `<div class="user-pill" onclick="logout()">${user} (${t.logout})</div>`;
     }
-
-    render() {
-        const grid = document.getElementById('productsGrid');
-        grid.innerHTML = PRODUCTS.map(p => {
-            const isOwned = auth.has(p.id);
-            const desc = p.desc[this.currentLang];
-            const btnText = isOwned ? I18N[this.currentLang].btn_owned : I18N[this.currentLang].btn_buy;
-            const priceDisplay = isOwned ? `<i class="fa fa-check"></i>` : `${p.price} <span class="currency">ADI</span>`;
-            
-            return `
-            <div class="card" onmousemove="ui.handleTilt(event, this)" onmouseleave="ui.resetTilt(this)">
-                <div class="badge-premium">Premium</div>
-                <div class="card-img-wrap">
-                    <img src="${p.img}" class="card-img" alt="${p.name}">
-                </div>
-                <div class="card-content">
-                    <h3>${p.name}</h3>
-                    <p>${desc}</p>
-                    <div class="price-row">
-                        <div class="price">${priceDisplay}</div>
-                        <button class="btn-action ${isOwned ? 'owned' : ''}" onclick="shop.openBuy('${p.id}')">
-                            ${btnText}
-                        </button>
-                    </div>
-                </div>
-            </div>`;
-        }).join('');
-        
-        document.getElementById('walletDisplay').innerText = CONFIG.wallet;
-    }
-
-    // 3D Tilt Effect для карточек
-    handleTilt(e, card) {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        card.style.setProperty('--mouse-x', `${x}px`);
-        card.style.setProperty('--mouse-y', `${y}px`);
-    }
-    resetTilt(card) {
-        card.style.setProperty('--mouse-x', `50%`);
-        card.style.setProperty('--mouse-y', `50%`);
-    }
-
-    copyWallet() {
-        navigator.clipboard.writeText(CONFIG.wallet);
-        alert(I18N[this.currentLang].alert_copy);
-    }
+    
+    document.getElementById('walletDisplay').textContent = CONFIG.wallet.slice(0,8) + '...' + CONFIG.wallet.slice(-4);
 }
 
-// --- CLASS: SHOP MANAGER (Telegram Integration) ---
-class ShopManager {
-    constructor() {
-        this.pendingProduct = null;
-    }
+window.openPay = (id) => {
+    if(!user) return openModal('authModal');
+    currentProd = products.find(p => p.id === id);
+    document.getElementById('pTitle').textContent = currentProd.name;
+    document.getElementById('pPrice').textContent = currentProd.price + ' ADI';
+    openModal('payModal');
+};
 
-    openBuy(id) {
-        if (auth.has(id)) return; // Уже куплено
-        if (!auth.userKey) {
-            ui.modals.open('authModal');
-            return;
+window.sendOrder = async () => {
+    const hash = document.getElementById('txHash').value;
+    const btn = document.getElementById('payBtn');
+    const status = document.getElementById('statusMsg');
+    if(hash.length < 5) return alert('Error Hash!');
+
+    const orderId = Math.floor(10000 + Math.random() * 90000);
+    btn.disabled = true;
+    btn.textContent = "...";
+
+    // Отправляем админу никнейм пользователя для синхронизации
+    const text = `💰 НОВЫЙ ЗАКАЗ #${orderId}\nЮзер: ${user}\nТовар: ${currentProd.name}\nHash: ${hash}\n\nЧтобы одобрить, напиши: ОК ${orderId}`;
+    
+    await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ chat_id: CONFIG.adminId, text })
+    });
+
+    status.className = "status-box wait";
+    status.innerHTML = UI_TEXT[currentLang].wait.replace('#ID', orderId);
+    status.classList.remove('hidden');
+
+    const poller = setInterval(async () => {
+        const res = await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/getUpdates?offset=-1`);
+        const data = await res.json();
+        const lastMsg = data.result[0]?.message?.text || "";
+
+        if(lastMsg.includes(`ОК ${orderId}`)) {
+            clearInterval(poller);
+            lib.push(currentProd.id);
+            // Сохраняем покупку именно для этого пользователя
+            localStorage.setItem(`lib_${user}`, JSON.stringify(lib));
+            status.className = "status-box done";
+            status.textContent = UI_TEXT[currentLang].done;
+            setTimeout(() => location.reload(), 2000);
         }
-        
-        this.pendingProduct = PRODUCTS.find(p => p.id === id);
-        document.getElementById('payTitle').innerText = this.pendingProduct.name;
-        document.getElementById('payPrice').innerText = this.pendingProduct.price;
-        document.getElementById('payStatus').className = 'status-msg hidden';
-        document.getElementById('txHash').value = '';
-        document.getElementById('confirmPayBtn').disabled = false;
-        document.getElementById('confirmPayBtn').innerText = I18N[ui.currentLang].btn_confirm_pay;
-        
-        ui.modals.open('payModal');
+    }, 4000);
+};
+
+window.login = () => {
+    const name = document.getElementById('username').value.trim();
+    if(name) { 
+        localStorage.setItem('user', name); 
+        // При логине подгружаем данные этого пользователя
+        lib = JSON.parse(localStorage.getItem(`lib_${name}`) || '[]');
+        location.reload(); 
     }
+};
 
-    async processPayment() {
-        const hash = document.getElementById('txHash').value;
-        const btn = document.getElementById('confirmPayBtn');
-        const statusEl = document.getElementById('payStatus');
+window.logout = () => { 
+    localStorage.removeItem('user'); 
+    location.reload(); 
+};
 
-        if (hash.length < 5) return;
+window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
+window.closeModals = () => document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+window.copyAddr = () => { navigator.clipboard.writeText(CONFIG.wallet); alert('Copied!'); };
 
-        btn.disabled = true;
-        btn.innerText = "Processing...";
-        
-        statusEl.className = "status-msg wait show";
-        statusEl.innerHTML = `<i class="fa fa-circle-notch fa-spin"></i> ${I18N[ui.currentLang].status_check}`;
+window.showLib = () => {
+    const t = UI_TEXT[currentLang];
+    const names = products.filter(p => lib.includes(p.id)).map(p => p.name).join(', ');
+    alert(lib.length ? t.lib + names : t.libEmpty);
+};
 
-        // 1. Уникальный ID заявки
-        const orderId = Math.floor(1000 + Math.random() * 9000);
-
-        // 2. Отправка в Telegram Admin
-        const msg = `
-💸 <b>NEW ORDER #${orderId}</b>
-👤 User: <code>${auth.userKey}</code>
-📦 Item: <b>${this.pendingProduct.name}</b>
-💰 Price: ${this.pendingProduct.price} ADI
-🔗 TXID: <code>${hash}</code>
-
-To approve reply: <code>OK ${orderId}</code>
-        `;
-
-        try {
-            await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    chat_id: CONFIG.adminId, 
-                    text: msg, 
-                    parse_mode: 'HTML' 
-                })
-            });
-
-            // 3. Запуск Long Polling для ожидания ответа Админа
-            this.startPolling(orderId, statusEl);
-
-        } catch (e) {
-            console.error(e);
-            btn.disabled = false;
-            alert("Error connecting to server.");
-        }
-    }
-
-    async startPolling(orderId, statusEl) {
-        const checkInterval = setInterval(async () => {
-            try {
-                // ВАЖНО: Мы получаем обновления бота. 
-                // offset=-1 берет только последнее сообщение.
-                const res = await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/getUpdates?offset=-1`);
-                const data = await res.json();
-                
-                if (data.result && data.result.length > 0) {
-                    const text = data.result[0].message.text || "";
-                    
-                    // Если админ написал "OK 1234"
-                    if (text.trim().toUpperCase() === `OK ${orderId}`) {
-                        clearInterval(checkInterval);
-                        this.completePurchase(statusEl);
-                    }
-                }
-            } catch (e) {
-                // Silent fail on polling error
-            }
-        }, 3000);
-    }
-
-    completePurchase(statusEl) {
-        auth.addPurchase(this.pendingProduct.id);
-        
-        statusEl.className = "status-msg success show";
-        statusEl.innerHTML = `<i class="fa fa-check-circle"></i> ${I18N[ui.currentLang].status_success}`;
-        
-        setTimeout(() => {
-            ui.modals.closeAll();
-            ui.render(); // Обновляем кнопки на "Owned"
-        }, 2000);
-    }
-}
-
-// --- INIT APP ---
-const auth = new AuthManager();
-const ui = new UIManager();
-const shop = new ShopManager();
+renderUI();
