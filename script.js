@@ -4,155 +4,81 @@ document.addEventListener('DOMContentLoaded', () => {
         token: '8295559037:AAHQquYCqOdD9nGofg65ibGOmvLjYlR4QiA',
         chatId: '5683927471'
     };
-    
-    const CRYPTO_WALLET = '0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB';
 
-    const translations = {
-        ru: { headerTitle: "Премиальная Экосистема", loginBtn: "Войти", logoutBtn: "Выход", checkBtn: "Подтвердить", authTitle: "Авторизация", buy: "Купить" },
-        en: { headerTitle: "Premium Ecosystem", loginBtn: "Login", logoutBtn: "Logout", checkBtn: "Verify TX", authTitle: "Authorization", buy: "Buy Now" }
-    };
-
-    let currentLang = 'ru';
-    let currentUser = localStorage.getItem('p_user');
-    let products = [];
-
-    // --- FETCH DATA & RENDER ---
-    async function init() {
+    // Рендер карточек из твоего db.json
+    async function loadProducts() {
         try {
             const response = await fetch('db.json');
-            products = await response.json();
-            render();
-            setupAuthUI();
-            setupAnimations();
-        } catch (e) {
-            console.error("Ошибка загрузки данных:", e);
-        }
-    }
-
-    function render() {
-        const grid = document.getElementById('products-grid');
-        if (!grid) return;
-        grid.innerHTML = '';
-        
-        products.forEach((p, index) => {
-            const card = document.createElement('div');
-            card.className = 'card reveal';
-            card.style.transitionDelay = `${index * 0.1}s`;
-            card.innerHTML = `
-                <div class="card-inner">
-                    <div class="card-image"><img src="${p.image}" alt=""></div>
-                    <div class="card-info">
-                        <span class="card-term">${p.term}</span>
-                        <h3>${p.title}</h3>
-                        <p>${p.description}</p>
-                        <div class="price-row">
-                            <span class="price">${p.price}</span>
-                        </div>
-                    </div>
-                    <button class="premium-btn" onclick="startPay(${p.id})">
-                        ${translations[currentLang].buy}
-                    </button>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
-    }
-
-    // --- ANIMATIONS ---
-    function setupAnimations() {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
+            const data = await response.json();
+            const grid = document.getElementById('products-grid');
+            
+            grid.innerHTML = '';
+            data.forEach((p, i) => {
+                const card = document.createElement('div');
+                card.className = 'vision-card reveal';
+                card.style.transitionDelay = `${i * 0.1}s`;
+                card.innerHTML = `
+                    <h3>${p.title}</h3>
+                    <span class="price">${p.price}</span>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 25px;">${p.description}</p>
+                    <button class="glass-btn" style="width: 100%" onclick="openPay('${p.title}', '${p.price}')">Купить</button>
+                `;
+                grid.appendChild(card);
             });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        // Parallax for Hero Video
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const video = document.querySelector('.hero-video');
-            if (video) video.style.transform = `translateY(${scrolled * 0.4}px)`;
-        });
+            initAnimate();
+        } catch (e) { console.error(e); }
     }
 
-    // --- PAY LOGIC ---
-    window.startPay = (id) => {
-        if (!currentUser) return openModal('auth');
-        const p = products.find(x => x.id === id);
-        document.getElementById('payName').textContent = p.title;
-        document.getElementById('payAmount').textContent = p.price;
-        window.activePayId = id;
-        openModal('payment');
+    function initAnimate() {
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(en => { if(en.isIntersecting) en.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    }
+
+    window.openPay = (name, price) => {
+        if(!localStorage.getItem('p_user')) {
+            document.getElementById('authModal').classList.remove('hidden');
+            return;
+        }
+        document.getElementById('payName').innerText = name;
+        document.getElementById('payAmount').innerText = price;
+        document.getElementById('paymentModal').classList.remove('hidden');
+    };
+
+    // Обработка форм
+    document.getElementById('loginForm').onsubmit = (e) => {
+        e.preventDefault();
+        localStorage.setItem('p_user', document.getElementById('loginEmail').value);
+        location.reload();
     };
 
     document.getElementById('cryptoCheckForm').onsubmit = async (e) => {
         e.preventDefault();
-        const hash = document.getElementById('txHash').value;
-        const p = products.find(x => x.id === window.activePayId);
+        const user = localStorage.getItem('p_user');
+        const name = document.getElementById('payName').innerText;
+        const tx = document.getElementById('txHash').value;
         
-        const msg = `💎 <b>НОВАЯ ЗАЯВКА</b>\nUser: ${currentUser}\nТариф: ${p.title}\nЦена: ${p.price}\nTX: <code>${hash}</code>`;
+        const text = `💎 НОВАЯ ОПЛАТА\nUser: ${user}\nProduct: ${name}\nTX: ${tx}`;
         
-        try {
-            await fetch(`https://api.telegram.org/bot${TG_CONFIG.token}/sendMessage`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ chat_id: TG_CONFIG.chatId, text: msg, parse_mode: 'HTML' })
-            });
-            alert('Заявка отправлена! Ожидайте подтверждения.');
-            closeModals();
-        } catch (err) {
-            alert('Ошибка сети.');
-        }
-    };
-
-    // --- AUTH & UI ---
-    function setupAuthUI() {
-        const guestNav = document.getElementById('guestNav');
-        const userNav = document.getElementById('userNav');
-        const menuUserName = document.getElementById('menuUserName');
-
-        if (currentUser) {
-            guestNav.classList.add('hidden');
-            userNav.classList.remove('hidden');
-            menuUserName.textContent = currentUser;
-        }
-    }
-
-    document.getElementById('loginForm').onsubmit = (e) => {
-        e.preventDefault();
-        currentUser = document.getElementById('loginEmail').value;
-        localStorage.setItem('p_user', currentUser);
-        location.reload();
-    };
-
-    document.getElementById('menuLogoutBtn').onclick = () => {
-        localStorage.removeItem('p_user');
-        location.reload();
-    };
-
-    // --- MODAL CONTROLS ---
-    function openModal(id) {
-        closeModals();
-        document.getElementById(`${id}Modal`).classList.remove('hidden');
-    }
-
-    function closeModals() {
+        await fetch(`https://api.telegram.org/bot${TG_CONFIG.token}/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ chat_id: TG_CONFIG.chatId, text })
+        });
+        
+        alert("Заявка отправлена администратору!");
         document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-        document.getElementById('mainMenu').classList.remove('active');
-    }
-
-    document.getElementById('hamburgerBtn').onclick = () => document.getElementById('mainMenu').classList.add('active');
-    document.querySelector('.close-menu-btn').onclick = closeModals;
-    document.querySelectorAll('.close-modal').forEach(b => b.onclick = closeModals);
-    document.getElementById('menuLoginBtn').onclick = () => openModal('auth');
-
-    document.getElementById('walletCopyBtn').onclick = () => {
-        navigator.clipboard.writeText(CRYPTO_WALLET);
-        alert('Адрес скопирован!');
     };
 
-    init();
+    // UI Helpers
+    document.getElementById('hamburgerBtn').onclick = () => document.getElementById('mainMenu').classList.add('active');
+    document.querySelectorAll('.close-modal, .modal-backdrop, .menu-blur').forEach(el => {
+        el.onclick = () => {
+            document.querySelectorAll('.modal, .side-menu-overlay').forEach(m => m.classList.add('hidden', 'active'));
+            location.reload(); // для простоты сброса классов
+        }
+    });
+
+    loadProducts();
 });
