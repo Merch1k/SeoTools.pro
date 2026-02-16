@@ -3,108 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ACUS — Visionary Pro</title>
+    <title>ACUS — Spatial Experience</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- ДИНАМИЧНЫЙ ФОН (нужен для эффекта стекла) -->
-    <div class="vision-bg">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
+    <!-- SPATIAL ENVIRONMENT (Окружение вокруг пользователя) -->
+    <div class="space-env">
+        <div class="star-field"></div>
+        <div class="nebula-1"></div>
+        <div class="nebula-2"></div>
     </div>
 
-    <header class="vision-header">
-        <div class="container header-wrap">
+    <!-- FLOATING TAB BAR (Навигация в стиле Apple Vision) -->
+    <nav class="spatial-nav">
+        <div class="nav-glass">
             <div class="logo">ACUS</div>
-            <button id="hamburgerBtn" class="burger-btn">
-                <span></span>
-                <span></span>
-            </button>
+            <div class="nav-actions">
+                <button id="authBtn" class="icon-btn"><i class="fa fa-user-circle"></i></button>
+                <button id="menuBtn" class="icon-btn"><i class="fa fa-th-large"></i></button>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <!-- HERO SECTION С МАТОВЫМ ОКНОМ -->
-    <section class="hero-vision">
-        <div class="vision-window-wrapper reveal">
-            <div class="vision-window">
-                <div class="window-glass"></div>
+    <!-- MAIN APP WINDOW (Главное окно с видео) -->
+    <main class="spatial-container">
+        
+        <section class="hero-window reveal">
+            <div class="window-glass">
+                <div class="video-container">
+                    <video autoplay muted loop playsinline class="vision-video">
+                        <source src="https://cdn.pixabay.com/video/2021/04/12/70860-537446700_tiny.mp4" type="video/mp4">
+                    </video>
+                    <div class="video-shine"></div>
+                </div>
                 <div class="window-content">
-                    <div class="video-frame">
-                        <video autoplay muted loop playsinline class="content-video">
-                            <source src="https://cdn.pixabay.com/video/2021/04/12/70860-537446700_tiny.mp4" type="video/mp4">
-                        </video>
-                        <div class="video-overlay"></div>
-                    </div>
-                    <div class="window-text">
-                        <h1>Visionary <span>SEO</span></h1>
-                        <p>Интерфейс будущего для продвижения ваших проектов. <br> Чистая мощь в каждом пикселе.</p>
-                        <a href="#store" class="glass-btn">Начать работу</a>
-                    </div>
+                    <h1>Spatial <span>Intelligence</span></h1>
+                    <p>Добро пожаловать в новую реальность SEO-аналитики. <br>Ваши инструменты теперь в трех измерениях.</p>
                 </div>
             </div>
-            <!-- Световой блик под окном -->
-            <div class="window-shadow"></div>
-        </div>
-    </section>
+        </section>
 
-    <main class="main-wrapper" id="store">
-        <div class="container">
-            <div class="section-title reveal">
-                <h2>Лицензии Pro</h2>
-                <div class="glass-line"></div>
+        <!-- STORE SECTION -->
+        <section class="store-section">
+            <div class="section-label reveal">DASHBOARD / MARKET</div>
+            <div id="products-grid" class="spatial-grid">
+                <!-- Карточки из db.json -->
             </div>
+        </section>
 
-            <div id="products-grid" class="vision-grid">
-                <!-- Сюда JS вставит карточки -->
-            </div>
-        </div>
     </main>
 
-    <!-- MODALS -->
-    <div id="authModal" class="modal hidden">
-        <div class="modal-backdrop"></div>
-        <div class="vision-window modal-window">
-            <span class="close-modal">&times;</span>
-            <h2>Авторизация</h2>
-            <form id="loginForm">
-                <input type="text" id="loginEmail" placeholder="Username" required>
-                <input type="password" id="loginPass" placeholder="Password" required>
-                <button type="submit" class="glass-btn primary">Войти</button>
-            </form>
-        </div>
-    </div>
-
+    <!-- FLOATING MODALS -->
     <div id="paymentModal" class="modal hidden">
         <div class="modal-backdrop"></div>
-        <div class="vision-window modal-window">
+        <div class="spatial-window payment-window">
             <span class="close-modal">&times;</span>
-            <div class="pay-info">
-                <h3 id="payName">---</h3>
-                <p id="payAmount">0 руб.</p>
+            <div class="modal-header">
+                <i class="fa-brands fa-ethereum"></i>
+                <h2>Confirm Purchase</h2>
             </div>
-            <div class="wallet-box">
-                <p>Transfer to ADI:</p>
-                <code id="walletAddress">0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB</code>
+            <div class="pay-body">
+                <p id="payName">---</p>
+                <h3 id="payAmount">0.00 ADI</h3>
+                <div class="wallet-plate">
+                    <span id="walletAddr">0xb472f207cac89DFC6...FEB</span>
+                    <button id="copyBtn"><i class="fa fa-copy"></i></button>
+                </div>
+                <form id="cryptoForm">
+                    <input type="text" id="txHash" placeholder="Enter Transaction Hash" required>
+                    <button type="submit" class="action-btn">Verify Transaction</button>
+                </form>
             </div>
-            <form id="cryptoCheckForm">
-                <input type="text" id="txHash" placeholder="Hash транзакции" required>
-                <button type="submit" class="glass-btn primary">Подтвердить</button>
-            </form>
         </div>
     </div>
 
-    <div id="mainMenu" class="side-menu-overlay">
-        <div class="menu-blur"></div>
-        <div class="vision-window menu-content">
-            <a href="#" id="menuLoginBtn" class="nav-link">Вход</a>
-            <div id="userNav" class="hidden">
-                <p id="menuUserName"></p>
-                <a href="#" id="menuLogoutBtn" class="nav-link">Выход</a>
-            </div>
+    <!-- AUTH MODAL -->
+    <div id="authModal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="spatial-window auth-window">
+            <span class="close-modal">&times;</span>
+            <h2>Sign In</h2>
+            <form id="loginForm">
+                <input type="text" id="loginEmail" placeholder="ID / Username" required>
+                <input type="password" id="loginPass" placeholder="Security Key" required>
+                <button type="submit" class="action-btn">Enter Workspace</button>
+            </form>
         </div>
     </div>
 
