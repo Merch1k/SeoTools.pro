@@ -3,103 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ACUS — Vision Pro Experience</title>
+    <title>ACUS — The Gold Standard</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- ФОНОВОЕ ПРОСТРАНСТВО -->
-    <div class="spatial-bg">
-        <div class="nebula n1"></div>
-        <div class="nebula n2"></div>
+    <!-- LUXURY AMBIENCE -->
+    <div class="luxury-env">
+        <div class="mesh-gradient"></div>
+        <div class="noise-overlay"></div>
     </div>
 
-    <!-- ДИНАМИЧЕСКИЙ ОСТРОВОК (DYNAMIC ISLAND) -->
-    <div class="island-wrapper">
+    <!-- DYNAMIC ISLAND PRO (VISION OS) -->
+    <div class="island-container">
         <div class="dynamic-island" id="mainIsland">
             <div class="island-collapsed">
-                <span class="logo">ACUS</span>
-                <div class="island-user" id="islandAvatarTrigger">
+                <div class="island-logo">ACUS<span>PRO</span></div>
+                <div class="island-avatar-box" id="avatarTrigger">
                     <img id="userAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="">
                 </div>
             </div>
             
             <div class="island-expanded">
-                <div class="expanded-content">
-                    <div class="user-info-row">
-                        <div class="avatar-large-wrapper">
+                <div class="expanded-inner">
+                    <div class="profile-header">
+                        <div class="avatar-edit-wrapper">
                             <img id="modalAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
                             <input type="file" id="avatarInput" hidden accept="image/*">
-                            <div class="edit-overlay" onclick="document.getElementById('avatarInput').click()">
-                                <i class="fa fa-camera"></i>
+                            <div class="edit-badge" onclick="document.getElementById('avatarInput').click()">
+                                <i class="fa fa-pen"></i>
                             </div>
                         </div>
-                        <div class="user-meta">
-                            <h3 id="displayUserName">Guest</h3>
-                            <p id="txt-status">Online</p>
+                        <div class="user-data">
+                            <h3 id="displayUserName">Elite Guest</h3>
+                            <p class="status-pill"><span class="dot"></span> <span id="txt-status">Online</span></p>
                         </div>
                     </div>
-                    
-                    <div class="island-controls">
-                        <button id="langBtn" class="control-btn">RU</button>
-                        <button id="logoutBtn" class="control-btn logout-btn hidden"><i class="fa fa-sign-out"></i></button>
+                    <div class="island-actions">
+                        <button id="langBtn" class="gold-btn-sm">RU</button>
+                        <button id="logoutBtn" class="gold-btn-sm hidden"><i class="fa fa-power-off"></i></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <main class="content-wrapper">
-        <!-- ОКНО С ВИДЕО -->
-        <section class="vision-window reveal">
-            <div class="glass-frame">
-                <div class="video-container">
-                    <video autoplay muted loop playsinline>
+    <main class="viewport">
+        <!-- HERO STAGE -->
+        <section class="hero-stage reveal">
+            <div class="premium-frame">
+                <div class="video-shield">
+                    <video autoplay muted loop playsinline class="bg-video">
                         <source src="https://cdn.pixabay.com/video/2021/04/12/70860-537446700_tiny.mp4" type="video/mp4">
                     </video>
-                    <div class="v-shine"></div>
+                    <div class="gold-reflection"></div>
                 </div>
-                <div class="vision-content">
-                    <h1 id="txt-hero-title">Spatial Reality</h1>
-                    <p id="txt-hero-sub">Добро пожаловать в мир высокотехнологичных SEO инструментов.</p>
+                <div class="hero-text">
+                    <h1 id="txt-hero-title">Pure <span>Excellence</span></h1>
+                    <p id="txt-hero-sub">Высшая ступень инструментов для цифрового доминирования.</p>
                 </div>
             </div>
         </section>
 
-        <!-- МАРКЕТПЛЕЙС -->
-        <div class="section-tag reveal" id="txt-market-tag">MARKETPLACE</div>
-        <div id="products-grid" class="spatial-grid">
-            <!-- Сюда JS вставит карточки -->
+        <!-- MARKET GRID -->
+        <div class="container">
+            <div class="label-reveal" id="txt-market-tag">CURATED COLLECTION</div>
+            <div id="products-grid" class="luxury-grid">
+                <!-- Cards from JS -->
+            </div>
         </div>
     </main>
 
-    <!-- МОДАЛКИ (Оплата/Вход) -->
+    <!-- MODALS -->
     <div id="paymentModal" class="modal hidden">
-        <div class="modal-backdrop"></div>
-        <div class="glass-modal">
-            <span class="close-modal">&times;</span>
-            <h2 id="payName">---</h2>
+        <div class="modal-blur"></div>
+        <div class="gold-modal">
+            <button class="close-modal">&times;</button>
+            <h2 id="payName">Elite Access</h2>
+            <div class="gold-line"></div>
             <p id="payAmount">---</p>
-            <div class="wallet-copy" id="copyWallet">
-                <code>0xb472f2...2FEB</code>
-                <i class="fa fa-copy"></i>
+            <div class="crypto-card" id="copyWallet">
+                <code id="walletText">0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB</code>
+                <i class="fa fa-clone"></i>
             </div>
             <form id="payForm">
-                <input type="text" id="txHash" placeholder="Hash транзакции" required>
-                <button type="submit" class="pay-btn" id="txt-confirm">Подтвердить</button>
+                <input type="text" id="txHash" placeholder="Verification Hash" required>
+                <button type="submit" class="confirm-btn" id="txt-confirm">Validate Purchase</button>
             </form>
         </div>
     </div>
 
     <div id="authModal" class="modal hidden">
-        <div class="modal-backdrop"></div>
-        <div class="glass-modal">
-            <h2 id="txt-auth-title">Вход</h2>
+        <div class="modal-blur"></div>
+        <div class="gold-modal">
+            <h2 id="txt-auth-title">Authorization</h2>
             <form id="loginForm">
-                <input type="text" id="loginUser" placeholder="ID / Username" required>
-                <button type="submit" class="pay-btn" id="txt-auth-btn">Войти</button>
+                <input type="text" id="loginUser" placeholder="Client ID" required>
+                <button type="submit" class="confirm-btn" id="txt-auth-btn">Enter Studio</button>
             </form>
         </div>
     </div>
