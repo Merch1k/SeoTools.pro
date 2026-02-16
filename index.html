@@ -3,103 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ACUS — Spatial Experience</title>
+    <title>ACUS — Vision Pro Experience</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- ОКРУЖЕНИЕ (SPACE) -->
+    <!-- ФОНОВОЕ ПРОСТРАНСТВО -->
     <div class="spatial-bg">
         <div class="nebula n1"></div>
         <div class="nebula n2"></div>
-        <div class="stars"></div>
     </div>
 
-    <!-- ПЛАВАЮЩИЙ TAB BAR (NAV) -->
-    <nav class="glass-nav">
-        <div class="nav-content">
-            <div class="logo">ACUS</div>
-            <div class="nav-tools">
-                <button id="langBtn" class="nav-icon">RU</button>
-                <div class="profile-trigger" id="profileTrigger">
-                    <img id="userAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile">
+    <!-- ДИНАМИЧЕСКИЙ ОСТРОВОК (DYNAMIC ISLAND) -->
+    <div class="island-wrapper">
+        <div class="dynamic-island" id="mainIsland">
+            <div class="island-collapsed">
+                <span class="logo">ACUS</span>
+                <div class="island-user" id="islandAvatarTrigger">
+                    <img id="userAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="">
+                </div>
+            </div>
+            
+            <div class="island-expanded">
+                <div class="expanded-content">
+                    <div class="user-info-row">
+                        <div class="avatar-large-wrapper">
+                            <img id="modalAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+                            <input type="file" id="avatarInput" hidden accept="image/*">
+                            <div class="edit-overlay" onclick="document.getElementById('avatarInput').click()">
+                                <i class="fa fa-camera"></i>
+                            </div>
+                        </div>
+                        <div class="user-meta">
+                            <h3 id="displayUserName">Guest</h3>
+                            <p id="txt-status">Online</p>
+                        </div>
+                    </div>
+                    
+                    <div class="island-controls">
+                        <button id="langBtn" class="control-btn">RU</button>
+                        <button id="logoutBtn" class="control-btn logout-btn hidden"><i class="fa fa-sign-out"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
 
     <main class="content-wrapper">
-        <!-- ГЛАВНОЕ ОКНО С ВИДЕО -->
-        <section class="hero-window reveal">
-            <div class="window-glass">
-                <div class="video-box">
+        <!-- ОКНО С ВИДЕО -->
+        <section class="vision-window reveal">
+            <div class="glass-frame">
+                <div class="video-container">
                     <video autoplay muted loop playsinline>
                         <source src="https://cdn.pixabay.com/video/2021/04/12/70860-537446700_tiny.mp4" type="video/mp4">
                     </video>
+                    <div class="v-shine"></div>
                 </div>
-                <div class="hero-info">
-                    <h1 id="txt-hero-title">Spatial Intelligence</h1>
-                    <p id="txt-hero-sub">Будущее SEO-инструментов в дополненной реальности.</p>
+                <div class="vision-content">
+                    <h1 id="txt-hero-title">Spatial Reality</h1>
+                    <p id="txt-hero-sub">Добро пожаловать в мир высокотехнологичных SEO инструментов.</p>
                 </div>
             </div>
         </section>
 
-        <!-- СЕТКА ТОВАРОВ -->
-        <section class="store-section">
-            <div id="products-grid" class="spatial-grid">
-                <!-- Карточки из JS -->
-            </div>
-        </section>
+        <!-- МАРКЕТПЛЕЙС -->
+        <div class="section-tag reveal" id="txt-market-tag">MARKETPLACE</div>
+        <div id="products-grid" class="spatial-grid">
+            <!-- Сюда JS вставит карточки -->
+        </div>
     </main>
 
-    <!-- МОДАЛЬНОЕ ОКНО ПРОФИЛЯ -->
-    <div id="profileModal" class="modal hidden">
-        <div class="modal-backdrop"></div>
-        <div class="glass-window profile-window">
-            <span class="close-modal">&times;</span>
-            <h2 id="txt-profile-title">Профиль</h2>
-            <div class="avatar-upload">
-                <img id="modalAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
-                <input type="file" id="avatarInput" accept="image/*" hidden>
-                <button class="action-btn small" onclick="document.getElementById('avatarInput').click()" id="txt-upload">Сменить фото</button>
-            </div>
-            <div id="userInfoDisplay">
-                <p id="txt-user-label">Пользователь:</p>
-                <h3 id="displayUserName">Guest</h3>
-                <button class="action-btn logout" id="logoutBtn">Выход</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ОПЛАТА -->
+    <!-- МОДАЛКИ (Оплата/Вход) -->
     <div id="paymentModal" class="modal hidden">
         <div class="modal-backdrop"></div>
-        <div class="glass-window">
+        <div class="glass-modal">
             <span class="close-modal">&times;</span>
-            <h3 id="payName">---</h3>
+            <h2 id="payName">---</h2>
             <p id="payAmount">---</p>
-            <div class="wallet-plate" id="copyWallet">
-                <code>0xb472f207cac89DFC...FEB</code>
+            <div class="wallet-copy" id="copyWallet">
+                <code>0xb472f2...2FEB</code>
                 <i class="fa fa-copy"></i>
             </div>
             <form id="payForm">
-                <input type="text" id="txHash" placeholder="Transaction ID (Hash)" required>
-                <button type="submit" class="action-btn" id="txt-confirm">Подтвердить</button>
+                <input type="text" id="txHash" placeholder="Hash транзакции" required>
+                <button type="submit" class="pay-btn" id="txt-confirm">Подтвердить</button>
             </form>
         </div>
     </div>
 
-    <!-- АВТОРИЗАЦИЯ -->
     <div id="authModal" class="modal hidden">
         <div class="modal-backdrop"></div>
-        <div class="glass-window">
-            <h2 id="txt-auth-title">Вход в систему</h2>
+        <div class="glass-modal">
+            <h2 id="txt-auth-title">Вход</h2>
             <form id="loginForm">
-                <input type="text" id="loginUser" placeholder="Username" required>
-                <input type="password" placeholder="Password" required>
-                <button type="submit" class="action-btn" id="txt-auth-btn">Войти</button>
+                <input type="text" id="loginUser" placeholder="ID / Username" required>
+                <button type="submit" class="pay-btn" id="txt-auth-btn">Войти</button>
             </form>
         </div>
     </div>
