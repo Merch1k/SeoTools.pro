@@ -5,32 +5,32 @@ document.addEventListener('DOMContentLoaded', () => {
         chatId: '5683927471'
     };
 
-    const lexicon = {
+    const dictionary = {
         ru: {
-            heroT: "Pure Excellence", heroS: "Цифровое доминирование высшего уровня.",
-            market: "КОЛЛЕКЦИЯ ТАРИФОВ", buy: "Оформить доступ", verify: "Валидация",
-            authT: "Авторизация", authB: "Войти в студию", status: "В сети"
+            heroT: "Bionic Future", heroS: "Органический дизайн в цифровой оболочке.",
+            market: "НЕЙРОННЫЕ ЛИЦЕНЗИИ", buy: "Активировать", verify: "Валидация",
+            authT: "Авторизация", authB: "Инициализировать", status: "Система онлайн"
         },
         en: {
-            heroT: "Pure Excellence", heroS: "Elite digital dominance ecosystem.",
-            market: "CURATED COLLECTION", buy: "Get Access", verify: "Verify Purchase",
-            authT: "Client Login", authB: "Enter Studio", status: "Online"
+            heroT: "Bionic Future", heroS: "Organic synthesis in a digital shell.",
+            market: "NEURAL LICENSES", buy: "Activate Link", verify: "Verification",
+            authT: "Authentication", authB: "Enter Nexus", status: "System Online"
         }
     };
 
-    let curLang = localStorage.getItem('p_lang') || 'ru';
-    let user = localStorage.getItem('p_user');
+    let curLang = localStorage.getItem('n_lang') || 'ru';
+    let user = localStorage.getItem('n_user');
     let db = [];
 
-    async function start() {
+    async function init() {
         try {
             const r = await fetch('db.json');
             db = await r.json();
-            updateLanguage();
-            renderGrid();
+            updateUI();
+            renderCards();
             handleIsland();
-            loadProfileData();
-        } catch (e) { console.error("Luxury Error", e); }
+            loadAvatar();
+        } catch (e) { console.error("Neural Error", e); }
     }
 
     function handleIsland() {
@@ -46,15 +46,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('langBtn').onclick = (e) => {
         e.stopPropagation();
         curLang = curLang === 'ru' ? 'en' : 'ru';
-        localStorage.setItem('p_lang', curLang);
-        updateLanguage();
-        renderGrid();
+        localStorage.setItem('n_lang', curLang);
+        updateUI();
+        renderGrid(); // Refresh cards for language
     };
 
-    function updateLanguage() {
-        const t = lexicon[curLang];
+    function updateUI() {
+        const t = dictionary[curLang];
         document.getElementById('langBtn').innerText = curLang.toUpperCase();
-        document.getElementById('txt-hero-title').innerHTML = `Pure <span>Excellence</span>`;
+        document.getElementById('txt-hero-title').innerHTML = `Bionic <span>Future</span>`;
         document.getElementById('txt-hero-sub').innerText = t.heroS;
         document.getElementById('txt-market-tag').innerText = t.market;
         document.getElementById('txt-confirm').innerText = t.verify;
@@ -68,19 +68,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function renderGrid() {
+    function renderCards() {
         const grid = document.getElementById('products-grid');
         grid.innerHTML = '';
         db.forEach((p, i) => {
             const card = document.createElement('div');
             card.className = 'card reveal';
-            card.style.transitionDelay = `${i * 0.15}s`;
+            card.style.transitionDelay = `${i * 0.1}s`;
             card.innerHTML = `
-                <div style="font-size:0.7rem; letter-spacing:2px; color:var(--gold); margin-bottom:10px;">TIER ${i+1}</div>
+                <div style="font-size:0.6rem; letter-spacing:3px; color:var(--neon-green); margin-bottom:15px;">LINK-UNIT ${i+1}</div>
                 <h3>${p.title}</h3>
-                <div style="font-size:1.8rem; font-weight:800; color:#fff; margin:20px 0;">${p.price}</div>
-                <button class="confirm-btn" onclick="triggerPay('${p.title}', '${p.price}')">
-                    ${lexicon[curLang].buy}
+                <div style="font-size:1.8rem; font-weight:900; color:#fff; margin:20px 0;">${p.price}</div>
+                <button class="prime-btn" onclick="openPay('${p.title}', '${p.price}')">
+                    ${dictionary[curLang].buy}
                 </button>
             `;
             grid.appendChild(card);
@@ -98,24 +98,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (f) {
             const r = new FileReader();
             r.onload = (ev) => {
-                localStorage.setItem(`p_img_${user}`, ev.target.result);
-                loadProfileData();
+                localStorage.setItem(`n_img_${user}`, ev.target.result);
+                loadAvatar();
             };
             r.readAsDataURL(f);
         }
     };
 
-    function loadProfileData() {
+    function loadAvatar() {
         if (!user) return;
-        const img = localStorage.getItem(`p_img_${user}`);
+        const img = localStorage.getItem(`n_img_${user}`);
         if (img) {
             document.getElementById('userAvatar').src = img;
             document.getElementById('modalAvatar').src = img;
         }
     }
 
-    // ACTIONS
-    window.triggerPay = (n, p) => {
+    // PAY
+    window.openPay = (n, p) => {
         if (!user) return openM('auth');
         document.getElementById('payName').innerText = n;
         document.getElementById('payAmount').innerText = p;
@@ -124,36 +124,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('loginForm').onsubmit = (e) => {
         e.preventDefault();
-        localStorage.setItem('p_user', document.getElementById('loginUser').value);
+        localStorage.setItem('n_user', document.getElementById('loginUser').value);
         location.reload();
     };
 
     document.getElementById('logoutBtn').onclick = () => {
-        localStorage.removeItem('p_user');
+        localStorage.removeItem('n_user');
         location.reload();
     };
 
     document.getElementById('payForm').onsubmit = async (e) => {
         e.preventDefault();
-        const msg = `👑 **LUXURY ORDER**\nClient: ${user}\nProduct: ${document.getElementById('payName').innerText}\nHash: ${document.getElementById('txHash').value}`;
+        const msg = `🍀 **NEURAL PROTOCOL**\nUser: ${user}\nProduct: ${document.getElementById('payName').innerText}\nTX: ${document.getElementById('txHash').value}`;
         await fetch(`https://api.telegram.org/bot${TG_CONFIG.token}/sendMessage`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ chat_id: TG_CONFIG.chatId, text: msg, parse_mode: 'Markdown' })
         });
-        alert("Transaction Logged. Verification in process.");
+        alert("Link request broadcasted.");
         location.reload();
     };
 
     function openM(id) { document.getElementById(`${id}Modal`).classList.remove('hidden'); }
-    document.querySelectorAll('.close-modal, .modal-blur').forEach(el => {
+    document.querySelectorAll('.close-btn, .modal-blur').forEach(el => {
         el.onclick = () => document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
     });
 
     document.getElementById('copyWallet').onclick = () => {
         navigator.clipboard.writeText(document.getElementById('walletText').innerText);
-        alert("Gold Network Address Copied.");
+        alert("Encrypted Address Copied.");
     };
 
-    start();
+    init();
 });
