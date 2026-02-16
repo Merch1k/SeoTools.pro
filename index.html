@@ -3,135 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ACUS — Digital Industries</title>
+    <title>ACUS — Visionary Pro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- LUXURY BACKGROUND -->
-    <div class="luxury-bg">
-        <div class="glow-orb orb-1"></div>
-        <div class="glow-orb orb-2"></div>
-        <div class="noise-overlay"></div>
+    <!-- ДИНАМИЧНЫЙ ФОН (нужен для эффекта стекла) -->
+    <div class="vision-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
     </div>
 
-    <!-- HEADER -->
-    <header class="premium-header">
-        <div class="header-container">
-            <div class="logo-group">
-                <span class="logo">ACUS</span>
-            </div>
-            
-            <button id="hamburgerBtn" class="premium-burger">
+    <header class="vision-header">
+        <div class="container header-wrap">
+            <div class="logo">ACUS</div>
+            <button id="hamburgerBtn" class="burger-btn">
                 <span></span>
                 <span></span>
             </button>
         </div>
     </header>
 
-    <!-- HERO SECTION -->
-    <section class="hero-section">
-        <div class="video-container">
-            <div class="video-mask"></div>
-            <!-- Замените ссылку на свое видео, если нужно -->
-            <video autoplay muted loop playsinline class="hero-video">
-                <source src="https://cdn.pixabay.com/video/2021/04/12/70860-537446700_tiny.mp4" type="video/mp4">
-            </video>
-        </div>
-        <div class="hero-content">
-            <h1 class="reveal">Supreme <span>Experience</span></h1>
-            <p class="reveal">Экосистема премиальных инструментов для профессионального SEO-продвижения нового поколения.</p>
+    <!-- HERO SECTION С МАТОВЫМ ОКНОМ -->
+    <section class="hero-vision">
+        <div class="vision-window-wrapper reveal">
+            <div class="vision-window">
+                <div class="window-glass"></div>
+                <div class="window-content">
+                    <div class="video-frame">
+                        <video autoplay muted loop playsinline class="content-video">
+                            <source src="https://cdn.pixabay.com/video/2021/04/12/70860-537446700_tiny.mp4" type="video/mp4">
+                        </video>
+                        <div class="video-overlay"></div>
+                    </div>
+                    <div class="window-text">
+                        <h1>Visionary <span>SEO</span></h1>
+                        <p>Интерфейс будущего для продвижения ваших проектов. <br> Чистая мощь в каждом пикселе.</p>
+                        <a href="#store" class="glass-btn">Начать работу</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Световой блик под окном -->
+            <div class="window-shadow"></div>
         </div>
     </section>
 
-    <!-- SIDEBAR MENU -->
-    <div id="mainMenu" class="side-menu-overlay">
-        <div class="menu-blur"></div>
-        <div class="menu-content">
-            <div class="menu-top">
-                <span class="menu-label">NAVIGATIONS</span>
-                <button class="close-menu-btn">&times;</button>
-            </div>
-
-            <div id="guestNav" class="nav-section">
-                <a href="#" id="menuLoginBtn" class="nav-link"><i class="fa fa-bolt"></i> <span data-lang-key="loginBtn">Войти</span></a>
-            </div>
-
-            <div id="userNav" class="nav-section hidden">
-                <div class="user-info-box">
-                    <div class="user-avatar">A</div>
-                    <span id="menuUserName">User</span>
-                </div>
-                <a href="#" id="menuLogoutBtn" class="nav-link"><i class="fa fa-arrow-right-from-bracket"></i> <span data-lang-key="logoutBtn">Выход</span></a>
-            </div>
-
-            <div class="lang-selector">
-                <div class="lang-btns">
-                    <button data-lang="ru" class="l-btn active">RU</button>
-                    <button data-lang="en" class="l-btn">EN</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN GRID -->
-    <main class="main-wrapper">
+    <main class="main-wrapper" id="store">
         <div class="container">
             <div class="section-title reveal">
-                <h2 data-lang-key="headerTitle">Premium Ecosystem</h2>
-                <div class="title-line"></div>
+                <h2>Лицензии Pro</h2>
+                <div class="glass-line"></div>
             </div>
 
-            <div id="products-grid" class="premium-grid">
-                <!-- Карточки вставляются через JS -->
+            <div id="products-grid" class="vision-grid">
+                <!-- Сюда JS вставит карточки -->
             </div>
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="premium-footer">
-        <p>ACUS DIGITAL INDUSTRIES &copy; 2026. <br> Built for Excellence.</p>
-    </footer>
-
     <!-- MODALS -->
-    <div id="paymentModal" class="modal hidden">
+    <div id="authModal" class="modal hidden">
         <div class="modal-backdrop"></div>
-        <div class="modal-window crypto-window">
+        <div class="vision-window modal-window">
             <span class="close-modal">&times;</span>
-            <div class="crypto-header">
-                <i class="fa-brands fa-ethereum"></i>
-                <h3>ADI Payment</h3>
-            </div>
-            <div class="pay-details">
-                <span id="payName">---</span>
-                <strong id="payAmount">0 ADI</strong>
-            </div>
-            <div class="wallet-container">
-                <p>Transfer to ADI Network:</p>
-                <div class="wallet-copy" id="walletCopyBtn">
-                    <span id="walletAddress">0xb472f2...2FEB</span>
-                    <i class="fa fa-copy"></i>
-                </div>
-            </div>
-            <form id="cryptoCheckForm">
-                <input type="text" id="txHash" placeholder="Transaction Hash" required>
-                <button type="submit" class="pay-confirm-btn" data-lang-key="checkBtn">Verify Payment</button>
+            <h2>Авторизация</h2>
+            <form id="loginForm">
+                <input type="text" id="loginEmail" placeholder="Username" required>
+                <input type="password" id="loginPass" placeholder="Password" required>
+                <button type="submit" class="glass-btn primary">Войти</button>
             </form>
         </div>
     </div>
 
-    <div id="authModal" class="modal hidden">
+    <div id="paymentModal" class="modal hidden">
         <div class="modal-backdrop"></div>
-        <div class="modal-window">
+        <div class="vision-window modal-window">
             <span class="close-modal">&times;</span>
-            <h2 data-lang-key="authTitle">Авторизация</h2>
-            <form id="loginForm">
-                <input type="text" id="loginEmail" placeholder="Username" required>
-                <input type="password" id="loginPass" placeholder="Password" required>
-                <button type="submit" class="pay-confirm-btn" data-lang-key="authBtn">Enter</button>
+            <div class="pay-info">
+                <h3 id="payName">---</h3>
+                <p id="payAmount">0 руб.</p>
+            </div>
+            <div class="wallet-box">
+                <p>Transfer to ADI:</p>
+                <code id="walletAddress">0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB</code>
+            </div>
+            <form id="cryptoCheckForm">
+                <input type="text" id="txHash" placeholder="Hash транзакции" required>
+                <button type="submit" class="glass-btn primary">Подтвердить</button>
             </form>
+        </div>
+    </div>
+
+    <div id="mainMenu" class="side-menu-overlay">
+        <div class="menu-blur"></div>
+        <div class="vision-window menu-content">
+            <a href="#" id="menuLoginBtn" class="nav-link">Вход</a>
+            <div id="userNav" class="hidden">
+                <p id="menuUserName"></p>
+                <a href="#" id="menuLogoutBtn" class="nav-link">Выход</a>
+            </div>
         </div>
     </div>
 
