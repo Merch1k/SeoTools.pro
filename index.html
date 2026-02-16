@@ -6,90 +6,100 @@
     <title>ACUS — Spatial Experience</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- SPATIAL ENVIRONMENT (Окружение вокруг пользователя) -->
-    <div class="space-env">
-        <div class="star-field"></div>
-        <div class="nebula-1"></div>
-        <div class="nebula-2"></div>
+    <!-- ОКРУЖЕНИЕ (SPACE) -->
+    <div class="spatial-bg">
+        <div class="nebula n1"></div>
+        <div class="nebula n2"></div>
+        <div class="stars"></div>
     </div>
 
-    <!-- FLOATING TAB BAR (Навигация в стиле Apple Vision) -->
-    <nav class="spatial-nav">
-        <div class="nav-glass">
+    <!-- ПЛАВАЮЩИЙ TAB BAR (NAV) -->
+    <nav class="glass-nav">
+        <div class="nav-content">
             <div class="logo">ACUS</div>
-            <div class="nav-actions">
-                <button id="authBtn" class="icon-btn"><i class="fa fa-user-circle"></i></button>
-                <button id="menuBtn" class="icon-btn"><i class="fa fa-th-large"></i></button>
+            <div class="nav-tools">
+                <button id="langBtn" class="nav-icon">RU</button>
+                <div class="profile-trigger" id="profileTrigger">
+                    <img id="userAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile">
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- MAIN APP WINDOW (Главное окно с видео) -->
-    <main class="spatial-container">
-        
+    <main class="content-wrapper">
+        <!-- ГЛАВНОЕ ОКНО С ВИДЕО -->
         <section class="hero-window reveal">
             <div class="window-glass">
-                <div class="video-container">
-                    <video autoplay muted loop playsinline class="vision-video">
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
                         <source src="https://cdn.pixabay.com/video/2021/04/12/70860-537446700_tiny.mp4" type="video/mp4">
                     </video>
-                    <div class="video-shine"></div>
                 </div>
-                <div class="window-content">
-                    <h1>Spatial <span>Intelligence</span></h1>
-                    <p>Добро пожаловать в новую реальность SEO-аналитики. <br>Ваши инструменты теперь в трех измерениях.</p>
+                <div class="hero-info">
+                    <h1 id="txt-hero-title">Spatial Intelligence</h1>
+                    <p id="txt-hero-sub">Будущее SEO-инструментов в дополненной реальности.</p>
                 </div>
             </div>
         </section>
 
-        <!-- STORE SECTION -->
+        <!-- СЕТКА ТОВАРОВ -->
         <section class="store-section">
-            <div class="section-label reveal">DASHBOARD / MARKET</div>
             <div id="products-grid" class="spatial-grid">
-                <!-- Карточки из db.json -->
+                <!-- Карточки из JS -->
             </div>
         </section>
-
     </main>
 
-    <!-- FLOATING MODALS -->
-    <div id="paymentModal" class="modal hidden">
+    <!-- МОДАЛЬНОЕ ОКНО ПРОФИЛЯ -->
+    <div id="profileModal" class="modal hidden">
         <div class="modal-backdrop"></div>
-        <div class="spatial-window payment-window">
+        <div class="glass-window profile-window">
             <span class="close-modal">&times;</span>
-            <div class="modal-header">
-                <i class="fa-brands fa-ethereum"></i>
-                <h2>Confirm Purchase</h2>
+            <h2 id="txt-profile-title">Профиль</h2>
+            <div class="avatar-upload">
+                <img id="modalAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+                <input type="file" id="avatarInput" accept="image/*" hidden>
+                <button class="action-btn small" onclick="document.getElementById('avatarInput').click()" id="txt-upload">Сменить фото</button>
             </div>
-            <div class="pay-body">
-                <p id="payName">---</p>
-                <h3 id="payAmount">0.00 ADI</h3>
-                <div class="wallet-plate">
-                    <span id="walletAddr">0xb472f207cac89DFC6...FEB</span>
-                    <button id="copyBtn"><i class="fa fa-copy"></i></button>
-                </div>
-                <form id="cryptoForm">
-                    <input type="text" id="txHash" placeholder="Enter Transaction Hash" required>
-                    <button type="submit" class="action-btn">Verify Transaction</button>
-                </form>
+            <div id="userInfoDisplay">
+                <p id="txt-user-label">Пользователь:</p>
+                <h3 id="displayUserName">Guest</h3>
+                <button class="action-btn logout" id="logoutBtn">Выход</button>
             </div>
         </div>
     </div>
 
-    <!-- AUTH MODAL -->
+    <!-- ОПЛАТА -->
+    <div id="paymentModal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="glass-window">
+            <span class="close-modal">&times;</span>
+            <h3 id="payName">---</h3>
+            <p id="payAmount">---</p>
+            <div class="wallet-plate" id="copyWallet">
+                <code>0xb472f207cac89DFC...FEB</code>
+                <i class="fa fa-copy"></i>
+            </div>
+            <form id="payForm">
+                <input type="text" id="txHash" placeholder="Transaction ID (Hash)" required>
+                <button type="submit" class="action-btn" id="txt-confirm">Подтвердить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- АВТОРИЗАЦИЯ -->
     <div id="authModal" class="modal hidden">
         <div class="modal-backdrop"></div>
-        <div class="spatial-window auth-window">
-            <span class="close-modal">&times;</span>
-            <h2>Sign In</h2>
+        <div class="glass-window">
+            <h2 id="txt-auth-title">Вход в систему</h2>
             <form id="loginForm">
-                <input type="text" id="loginEmail" placeholder="ID / Username" required>
-                <input type="password" id="loginPass" placeholder="Security Key" required>
-                <button type="submit" class="action-btn">Enter Workspace</button>
+                <input type="text" id="loginUser" placeholder="Username" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit" class="action-btn" id="txt-auth-btn">Войти</button>
             </form>
         </div>
     </div>
