@@ -5,96 +5,143 @@ document.addEventListener('DOMContentLoaded', () => {
         chatId: '5683927471'
     };
 
-    // 1. Загрузка товаров из db.json
-    async function loadProducts() {
+    const langData = {
+        ru: {
+            heroTitle: "Spatial Intelligence", heroSub: "Будущее SEO-инструментов в дополненной реальности.",
+            profile: "Профиль", userLabel: "Пользователь:", upload: "Сменить фото",
+            confirm: "Подтвердить", authTitle: "Вход в систему", authBtn: "Войти", buy: "Купить"
+        },
+        en: {
+            heroTitle: "Spatial Intelligence", heroSub: "The future of SEO tools in augmented reality.",
+            profile: "Profile", userLabel: "User:", upload: "Upload Photo",
+            confirm: "Verify", authTitle: "Sign In", authBtn: "Enter", buy: "Get Access"
+        }
+    };
+
+    let curLang = localStorage.getItem('p_lang') || 'ru';
+    let currentUser = localStorage.getItem('p_user');
+    let products = [];
+
+    // --- ИНИЦИАЛИЗАЦИЯ ---
+    async function init() {
         try {
             const res = await fetch('db.json');
-            const data = await res.json();
-            const grid = document.getElementById('products-grid');
-            
-            grid.innerHTML = '';
-            data.forEach((p, i) => {
-                const card = document.createElement('div');
-                card.className = 'spatial-card reveal';
-                card.style.transitionDelay = `${i * 0.1}s`;
-                card.innerHTML = `
-                    <div class="card-glass-glow"></div>
-                    <h3>${p.title}</h3>
-                    <div class="price">${p.price}</div>
-                    <p style="opacity:0.5; font-size:0.85rem; margin: 15px 0;">${p.description}</p>
-                    <button class="action-btn" onclick="openPay('${p.title}', '${p.price}')">Get Access</button>
-                `;
-                grid.appendChild(card);
-            });
-            initSpatialEffects();
-        } catch (e) { console.error("Error loading products", e); }
+            products = await res.json();
+            updateLangUI();
+            renderCards();
+            checkUser();
+            loadAvatar();
+        } catch (e) { console.error("Data error", e); }
     }
 
-    // 2. Эффекты visionOS (Параллакс окон)
-    function initSpatialEffects() {
-        // Плавное появление
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(en => { if(en.isIntersecting) en.target.classList.add('active'); });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        // Параллакс при движении мыши (для Hero окна)
-        const hero = document.querySelector('.hero-window');
-        document.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth / 2 - e.pageX) / 50;
-            const y = (window.innerHeight / 2 - e.pageY) / 50;
-            if(hero) hero.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+    function renderCards() {
+        const grid = document.getElementById('products-grid');
+        grid.innerHTML = '';
+        products.forEach((p, i) => {
+            const card = document.createElement('div');
+            card.className = 'card reveal';
+            card.style.transitionDelay = `${i * 0.1}s`;
+            card.innerHTML = `
+                <h3>${p.title}</h3>
+                <div class="price">${p.price}</div>
+                <button class="action-btn" onclick="openPay('${p.title}', '${p.price}')" style="margin-top:15px">
+                    ${langData[curLang].buy}
+                </button>
+            `;
+            grid.appendChild(card);
         });
+        setTimeout(() => document.querySelectorAll('.reveal').forEach(el => el.classList.add('active')), 100);
     }
 
-    // 3. Логика оплаты
-    window.openPay = (name, price) => {
-        if(!localStorage.getItem('p_user')) {
-            document.getElementById('authModal').classList.remove('hidden');
-            return;
+    // --- ЯЗЫК ---
+    document.getElementById('langBtn').onclick = () => {
+        curLang = curLang === 'ru' ? 'en' : 'ru';
+        localStorage.setItem('p_lang', curLang);
+        updateLangUI();
+        renderCards();
+    };
+
+    function updateLangUI() {
+        document.getElementById('langBtn').innerText = curLang.toUpperCase();
+        document.getElementById('txt-hero-title').innerText = langData[curLang].heroTitle;
+        document.getElementById('txt-hero-sub').innerText = langData[curLang].heroSub;
+        document.getElementById('txt-profile-title').innerText = langData[curLang].profile;
+        document.getElementById('txt-user-label').innerText = langData[curLang].userLabel;
+        document.getElementById('txt-upload').innerText = langData[curLang].upload;
+        document.getElementById('txt-confirm').innerText = langData[curLang].confirm;
+        document.getElementById('txt-auth-title').innerText = langData[curLang].authTitle;
+        document.getElementById('txt-auth-btn').innerText = langData[curLang].authBtn;
+    }
+
+    // --- ПРОФИЛЬ И АВАТАР ---
+    document.getElementById('profileTrigger').onclick = () => {
+        if (!currentUser) return document.getElementById('authModal').classList.remove('hidden');
+        document.getElementById('profileModal').classList.remove('hidden');
+    };
+
+    document.getElementById('avatarInput').onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const base64 = event.target.result;
+                localStorage.setItem(`p_avatar_${currentUser}`, base64);
+                loadAvatar();
+            };
+            reader.readAsDataURL(file);
         }
-        document.getElementById('payName').innerText = name;
+    };
+
+    function loadAvatar() {
+        if (!currentUser) return;
+        const saved = localStorage.getItem(`p_avatar_${currentUser}`);
+        if (saved) {
+            document.getElementById('userAvatar').src = saved;
+            document.getElementById('modalAvatar').src = saved;
+        }
+    }
+
+    // --- AUTH & PAY ---
+    window.openPay = (title, price) => {
+        if (!currentUser) return document.getElementById('authModal').classList.remove('hidden');
+        document.getElementById('payName').innerText = title;
         document.getElementById('payAmount').innerText = price;
         document.getElementById('paymentModal').classList.remove('hidden');
     };
 
-    // Отправка в Telegram
-    document.getElementById('cryptoForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const user = localStorage.getItem('p_user');
-        const hash = document.getElementById('txHash').value;
-        const product = document.getElementById('payName').innerText;
-
-        const text = `🛸 **SPATIAL ORDER**\nUser: ${user}\nProduct: ${product}\nTX Hash: ${hash}`;
-
-        await fetch(`https://api.telegram.org/bot${TG_CONFIG.token}/sendMessage`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ chat_id: TG_CONFIG.chatId, text, parse_mode: 'Markdown' })
-        });
-
-        alert("Запрос на верификацию отправлен в систему!");
-        closeModals();
-    };
-
-    // 4. UI Helpers
-    function closeModals() {
-        document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-    }
-
-    document.querySelectorAll('.close-modal, .modal-backdrop').forEach(el => el.onclick = closeModals);
-    document.getElementById('authBtn').onclick = () => document.getElementById('authModal').classList.remove('hidden');
-
     document.getElementById('loginForm').onsubmit = (e) => {
         e.preventDefault();
-        localStorage.setItem('p_user', document.getElementById('loginEmail').value);
+        currentUser = document.getElementById('loginUser').value;
+        localStorage.setItem('p_user', currentUser);
         location.reload();
     };
 
-    document.getElementById('copyBtn').onclick = () => {
-        navigator.clipboard.writeText("0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB");
-        alert("Wallet address copied!");
+    document.getElementById('logoutBtn').onclick = () => {
+        localStorage.removeItem('p_user');
+        location.reload();
     };
 
-    loadProducts();
+    function checkUser() {
+        if (currentUser) document.getElementById('displayUserName').innerText = currentUser;
+    }
+
+    // Отправка в ТГ
+    document.getElementById('payForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const msg = `💎 ОПЛАТА\nUser: ${currentUser}\nItem: ${document.getElementById('payName').innerText}\nTX: ${document.getElementById('txHash').value}`;
+        await fetch(`https://api.telegram.org/bot${TG_CONFIG.token}/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ chat_id: TG_CONFIG.chatId, text: msg })
+        });
+        alert("Wait for admin verify!");
+        location.reload();
+    };
+
+    // Закрытие модалок
+    document.querySelectorAll('.close-modal, .modal-backdrop').forEach(el => {
+        el.onclick = () => document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+    });
+
+    init();
 });
