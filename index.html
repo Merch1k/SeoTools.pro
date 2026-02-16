@@ -3,104 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ACUS — Bio-Neon Edition</title>
+    <title>ACUS — Vision Pro Edition</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- BIOLUMINESCENT BACKGROUND -->
-    <div class="bio-bg">
-        <div class="orb purple-orb"></div>
-        <div class="orb green-orb"></div>
-        <div class="scanline"></div>
+    <!-- ОКРУЖЕНИЕ (ENVIRONMENT) -->
+    <div class="vision-space">
+        <div class="orb purple-glow"></div>
+        <div class="orb green-glow"></div>
+        <div class="glass-grain"></div>
     </div>
 
-    <!-- DYNAMIC NEON ISLAND -->
-    <div class="island-anchor">
-        <div class="dynamic-island" id="mainIsland">
-            <div class="island-top">
-                <div class="island-brand">ACUS <span>NEON</span></div>
-                <div class="island-user" id="avatarTrigger">
+    <!-- DYNAMIC ISLAND (SPATIAL BAR) -->
+    <div class="spatial-bar-container">
+        <div class="spatial-bar" id="mainIsland">
+            <div class="bar-collapsed">
+                <div class="bar-logo">ACUS <span>PRO</span></div>
+                <div class="bar-user" id="avatarTrigger">
                     <img id="userAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="">
                 </div>
             </div>
             
-            <div class="island-content">
-                <div class="profile-card">
-                    <div class="avatar-ring">
-                        <img id="modalAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
-                        <input type="file" id="avatarInput" hidden accept="image/*">
-                        <div class="avatar-overlay" onclick="document.getElementById('avatarInput').click()">
-                            <i class="fa fa-bolt"></i>
+            <div class="bar-expanded">
+                <div class="expanded-wrap">
+                    <div class="user-card">
+                        <div class="avatar-ring">
+                            <img id="modalAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+                            <input type="file" id="avatarInput" hidden accept="image/*">
+                            <div class="avatar-edit" onclick="document.getElementById('avatarInput').click()">
+                                <i class="fa fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="user-info">
+                            <h3 id="displayUserName">Spatial User</h3>
+                            <p class="status-badge"><span class="pulse"></span> <span id="txt-status">Online</span></p>
                         </div>
                     </div>
-                    <div class="user-meta">
-                        <h3 id="displayUserName">Neural Guest</h3>
-                        <p class="status"><span class="pulse-green"></span> <span id="txt-status">System Online</span></p>
+                    <div class="bar-actions">
+                        <button id="langBtn" class="glass-btn-sm">RU</button>
+                        <button id="logoutBtn" class="glass-btn-sm hidden"><i class="fa fa-sign-out"></i></button>
                     </div>
-                </div>
-                <div class="island-btns">
-                    <button id="langBtn" class="neon-btn-sm">RU</button>
-                    <button id="logoutBtn" class="neon-btn-sm logout hidden"><i class="fa fa-power-off"></i></button>
                 </div>
             </div>
         </div>
     </div>
 
-    <main class="neon-viewport">
-        <!-- VIDEO HERO STAGE -->
-        <section class="hero-stage reveal">
-            <div class="glass-container">
-                <div class="video-shield">
+    <main class="spatial-content">
+        <!-- HERO SECTION -->
+        <section class="hero-window reveal">
+            <div class="frosted-glass">
+                <div class="video-container">
                     <video autoplay muted loop playsinline class="hero-video">
                         <source src="https://cdn.pixabay.com/video/2021/04/12/70860-537446700_tiny.mp4" type="video/mp4">
                     </video>
-                    <div class="purple-overlay"></div>
+                    <div class="light-leak"></div>
                 </div>
-                <div class="hero-caption">
-                    <h1 id="txt-hero-title">Bionic <span>Future</span></h1>
-                    <p id="txt-hero-sub">Синтез органического дизайна и цифровой мощи.</p>
+                <div class="hero-text">
+                    <h1 id="txt-hero-title">Spatial <span>SEO</span></h1>
+                    <p id="txt-hero-sub">Инструменты нового измерения в иммерсивном исполнении.</p>
                 </div>
             </div>
         </section>
 
-        <!-- MARKET GRID -->
+        <!-- GRID -->
         <div class="container">
-            <div class="grid-label reveal" id="txt-market-tag">NEURAL LICENSES</div>
-            <div id="products-grid" class="neon-grid">
-                <!-- Cards from JS -->
+            <div class="grid-tag reveal" id="txt-market-tag">SPATIAL LICENSES</div>
+            <div id="products-grid" class="spatial-grid">
+                <!-- Карточки из db.json -->
             </div>
         </div>
     </main>
 
     <!-- MODALS -->
     <div id="paymentModal" class="modal hidden">
-        <div class="modal-blur"></div>
-        <div class="neon-modal">
+        <div class="spatial-blur"></div>
+        <div class="vision-window">
             <button class="close-btn">&times;</button>
-            <h2 id="payName">Neural Link</h2>
-            <div class="separator"></div>
+            <h2 id="payName">Transaction</h2>
+            <div class="glass-line"></div>
             <p id="payAmount">---</p>
-            <div class="wallet-plate" id="copyWallet">
+            <div class="wallet-field" id="copyWallet">
                 <code id="walletText">0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB</code>
-                <i class="fa fa-fingerprint"></i>
+                <i class="fa fa-clone"></i>
             </div>
             <form id="payForm">
-                <input type="text" id="txHash" placeholder="Tx Hash ID" required>
-                <button type="submit" class="prime-btn" id="txt-confirm">Verify Link</button>
+                <input type="text" id="txHash" placeholder="ID Транзакции" required>
+                <button type="submit" class="prime-action" id="txt-confirm">Confirm Payment</button>
             </form>
         </div>
     </div>
 
     <div id="authModal" class="modal hidden">
-        <div class="modal-blur"></div>
-        <div class="neon-modal">
+        <div class="spatial-blur"></div>
+        <div class="vision-window">
             <h2 id="txt-auth-title">Authentication</h2>
             <form id="loginForm">
-                <input type="text" id="loginUser" placeholder="Neural ID" required>
-                <button type="submit" class="prime-btn" id="txt-auth-btn">Initialize</button>
+                <input type="text" id="loginUser" placeholder="Client ID" required>
+                <button type="submit" class="prime-action" id="txt-auth-btn">Authorize</button>
             </form>
         </div>
     </div>
