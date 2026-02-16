@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chatId: '5683927471'
     };
     
-    const CRYPTO_WALLET = 'UQBKg4_q8x5v2J1z...YOUR_WALLET';
+    const CRYPTO_WALLET = '0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB';
 
     const translations = {
         ru: { headerTitle: "Премиальная Экосистема", loginBtn: "Войти", registerBtn: "Регистрация", logoutBtn: "Выход", languageBtn: "Язык", myPurchases: "Мои покупки", checkBtn: "Подтвердить оплату", authTitle: "Авторизация", buy: "Купить" },
@@ -144,3 +144,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     render();
 });
+
