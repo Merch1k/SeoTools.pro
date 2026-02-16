@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ACUS — Vision Pro Edition</title>
+    <title>ACUS — Absolute Vision</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
         <div class="glass-grain"></div>
     </div>
 
-    <!-- DYNAMIC ISLAND (SPATIAL BAR) -->
+    <!-- DYNAMIC ISLAND (ГЛАВНЫЙ ЦЕНТР УПРАВЛЕНИЯ) -->
     <div class="spatial-bar-container">
         <div class="spatial-bar" id="mainIsland">
             <div class="bar-collapsed">
@@ -34,17 +34,18 @@
                             <img id="modalAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
                             <input type="file" id="avatarInput" hidden accept="image/*">
                             <div class="avatar-edit" onclick="document.getElementById('avatarInput').click()">
-                                <i class="fa fa-plus"></i>
+                                <i class="fa fa-camera"></i>
                             </div>
                         </div>
                         <div class="user-info">
-                            <h3 id="displayUserName">Spatial User</h3>
+                            <h3 id="displayUserName">Guest User</h3>
                             <p class="status-badge"><span class="pulse"></span> <span id="txt-status">Online</span></p>
                         </div>
                     </div>
                     <div class="bar-actions">
                         <button id="langBtn" class="glass-btn-sm">RU</button>
-                        <button id="logoutBtn" class="glass-btn-sm hidden"><i class="fa fa-sign-out"></i></button>
+                        <button id="libBtn" class="glass-btn-sm"><i class="fa fa-box-open"></i></button>
+                        <button id="logoutBtn" class="glass-btn-sm logout-red hidden"><i class="fa fa-sign-out-alt"></i></button>
                     </div>
                 </div>
             </div>
@@ -52,7 +53,7 @@
     </div>
 
     <main class="spatial-content">
-        <!-- HERO SECTION -->
+        <!-- ГЛАВНОЕ ОКНО С ВИДЕО -->
         <section class="hero-window reveal">
             <div class="frosted-glass">
                 <div class="video-container">
@@ -68,16 +69,30 @@
             </div>
         </section>
 
-        <!-- GRID -->
+        <!-- МАРКЕТПЛЕЙС -->
         <div class="container">
             <div class="grid-tag reveal" id="txt-market-tag">SPATIAL LICENSES</div>
             <div id="products-grid" class="spatial-grid">
-                <!-- Карточки из db.json -->
+                <!-- Карточки вставляются через JS из db.json -->
             </div>
         </div>
     </main>
 
-    <!-- MODALS -->
+    <!-- МОДАЛЬНЫЕ ОКНА -->
+    
+    <!-- Авторизация -->
+    <div id="authModal" class="modal hidden">
+        <div class="spatial-blur"></div>
+        <div class="vision-window">
+            <h2 id="txt-auth-title">Authentication</h2>
+            <form id="loginForm">
+                <input type="text" id="loginUser" placeholder="Client ID" required>
+                <button type="submit" class="prime-action" id="txt-auth-btn">Authorize</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Оплата -->
     <div id="paymentModal" class="modal hidden">
         <div class="spatial-blur"></div>
         <div class="vision-window">
@@ -90,20 +105,21 @@
                 <i class="fa fa-clone"></i>
             </div>
             <form id="payForm">
-                <input type="text" id="txHash" placeholder="ID Транзакции" required>
-                <button type="submit" class="prime-action" id="txt-confirm">Confirm Payment</button>
+                <input type="text" id="txHash" placeholder="ID Транзакции (Hash)" required>
+                <button type="submit" class="prime-action" id="txt-confirm">Verify</button>
             </form>
         </div>
     </div>
 
-    <div id="authModal" class="modal hidden">
+    <!-- Мои покупки (Библиотека) -->
+    <div id="libModal" class="modal hidden">
         <div class="spatial-blur"></div>
         <div class="vision-window">
-            <h2 id="txt-auth-title">Authentication</h2>
-            <form id="loginForm">
-                <input type="text" id="loginUser" placeholder="Client ID" required>
-                <button type="submit" class="prime-action" id="txt-auth-btn">Authorize</button>
-            </form>
+            <button class="close-btn">&times;</button>
+            <h2 id="txt-lib-title">My Licenses</h2>
+            <div id="libList" class="lib-container">
+                <!-- Здесь будут купленные товары -->
+            </div>
         </div>
     </div>
 
