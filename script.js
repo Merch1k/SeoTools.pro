@@ -5,37 +5,49 @@ document.addEventListener('DOMContentLoaded', () => {
         chatId: '5683927471'
     };
 
-    // Рендер карточек из твоего db.json
+    // 1. Загрузка товаров из db.json
     async function loadProducts() {
         try {
-            const response = await fetch('db.json');
-            const data = await response.json();
+            const res = await fetch('db.json');
+            const data = await res.json();
             const grid = document.getElementById('products-grid');
             
             grid.innerHTML = '';
             data.forEach((p, i) => {
                 const card = document.createElement('div');
-                card.className = 'vision-card reveal';
+                card.className = 'spatial-card reveal';
                 card.style.transitionDelay = `${i * 0.1}s`;
                 card.innerHTML = `
+                    <div class="card-glass-glow"></div>
                     <h3>${p.title}</h3>
-                    <span class="price">${p.price}</span>
-                    <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 25px;">${p.description}</p>
-                    <button class="glass-btn" style="width: 100%" onclick="openPay('${p.title}', '${p.price}')">Купить</button>
+                    <div class="price">${p.price}</div>
+                    <p style="opacity:0.5; font-size:0.85rem; margin: 15px 0;">${p.description}</p>
+                    <button class="action-btn" onclick="openPay('${p.title}', '${p.price}')">Get Access</button>
                 `;
                 grid.appendChild(card);
             });
-            initAnimate();
-        } catch (e) { console.error(e); }
+            initSpatialEffects();
+        } catch (e) { console.error("Error loading products", e); }
     }
 
-    function initAnimate() {
-        const obs = new IntersectionObserver(entries => {
+    // 2. Эффекты visionOS (Параллакс окон)
+    function initSpatialEffects() {
+        // Плавное появление
+        const observer = new IntersectionObserver(entries => {
             entries.forEach(en => { if(en.isIntersecting) en.target.classList.add('active'); });
         }, { threshold: 0.1 });
-        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Параллакс при движении мыши (для Hero окна)
+        const hero = document.querySelector('.hero-window');
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.pageX) / 50;
+            const y = (window.innerHeight / 2 - e.pageY) / 50;
+            if(hero) hero.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+        });
     }
 
+    // 3. Логика оплаты
     window.openPay = (name, price) => {
         if(!localStorage.getItem('p_user')) {
             document.getElementById('authModal').classList.remove('hidden');
@@ -46,39 +58,43 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('paymentModal').classList.remove('hidden');
     };
 
-    // Обработка форм
+    // Отправка в Telegram
+    document.getElementById('cryptoForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const user = localStorage.getItem('p_user');
+        const hash = document.getElementById('txHash').value;
+        const product = document.getElementById('payName').innerText;
+
+        const text = `🛸 **SPATIAL ORDER**\nUser: ${user}\nProduct: ${product}\nTX Hash: ${hash}`;
+
+        await fetch(`https://api.telegram.org/bot${TG_CONFIG.token}/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ chat_id: TG_CONFIG.chatId, text, parse_mode: 'Markdown' })
+        });
+
+        alert("Запрос на верификацию отправлен в систему!");
+        closeModals();
+    };
+
+    // 4. UI Helpers
+    function closeModals() {
+        document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+    }
+
+    document.querySelectorAll('.close-modal, .modal-backdrop').forEach(el => el.onclick = closeModals);
+    document.getElementById('authBtn').onclick = () => document.getElementById('authModal').classList.remove('hidden');
+
     document.getElementById('loginForm').onsubmit = (e) => {
         e.preventDefault();
         localStorage.setItem('p_user', document.getElementById('loginEmail').value);
         location.reload();
     };
 
-    document.getElementById('cryptoCheckForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const user = localStorage.getItem('p_user');
-        const name = document.getElementById('payName').innerText;
-        const tx = document.getElementById('txHash').value;
-        
-        const text = `💎 НОВАЯ ОПЛАТА\nUser: ${user}\nProduct: ${name}\nTX: ${tx}`;
-        
-        await fetch(`https://api.telegram.org/bot${TG_CONFIG.token}/sendMessage`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ chat_id: TG_CONFIG.chatId, text })
-        });
-        
-        alert("Заявка отправлена администратору!");
-        document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+    document.getElementById('copyBtn').onclick = () => {
+        navigator.clipboard.writeText("0xb472f207cac89DFC64A518d97535D3BbfEaf2FEB");
+        alert("Wallet address copied!");
     };
-
-    // UI Helpers
-    document.getElementById('hamburgerBtn').onclick = () => document.getElementById('mainMenu').classList.add('active');
-    document.querySelectorAll('.close-modal, .modal-backdrop, .menu-blur').forEach(el => {
-        el.onclick = () => {
-            document.querySelectorAll('.modal, .side-menu-overlay').forEach(m => m.classList.add('hidden', 'active'));
-            location.reload(); // для простоты сброса классов
-        }
-    });
 
     loadProducts();
 });
